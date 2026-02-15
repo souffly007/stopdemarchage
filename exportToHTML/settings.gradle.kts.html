@@ -1,0 +1,37 @@
+<html>
+<head>
+<title>settings.gradle.kts</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #bcbec4;}
+.s1 { color: #bcbec4;}
+.s2 { color: #6aab73;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+settings.gradle.kts</font>
+</center></td></tr></table>
+<pre><span class="s0">pluginManagement </span><span class="s1">{</span>
+    <span class="s0">repositories </span><span class="s1">{</span>
+        <span class="s0">google</span><span class="s1">()</span>
+        <span class="s0">mavenCentral</span><span class="s1">()</span>
+        <span class="s0">maven </span><span class="s1">{ </span><span class="s0">url </span><span class="s1">= </span><span class="s0">uri</span><span class="s1">(</span><span class="s2">&quot;https://jitpack.io&quot;</span><span class="s1">) }</span>
+        <span class="s0">gradlePluginPortal</span><span class="s1">()</span>
+    <span class="s1">}</span>
+<span class="s1">}</span>
+<span class="s0">dependencyResolutionManagement </span><span class="s1">{</span>
+    <span class="s0">repositoriesMode</span><span class="s1">.</span><span class="s0">set</span><span class="s1">(</span><span class="s0">RepositoriesMode</span><span class="s1">.</span><span class="s0">FAIL_ON_PROJECT_REPOS</span><span class="s1">)</span>
+    <span class="s0">repositories </span><span class="s1">{</span>
+        <span class="s0">google</span><span class="s1">()</span>
+        <span class="s0">mavenCentral</span><span class="s1">()</span>
+        <span class="s0">maven </span><span class="s1">{ </span><span class="s0">url </span><span class="s1">= </span><span class="s0">uri</span><span class="s1">(</span><span class="s2">&quot;https://jitpack.io&quot;</span><span class="s1">) }</span>
+    <span class="s1">}</span>
+<span class="s1">}</span>
+
+<span class="s0">rootProject</span><span class="s1">.</span><span class="s0">name </span><span class="s1">= </span><span class="s2">&quot;stopdemarchage&quot;</span>
+<span class="s0">include</span><span class="s1">(</span><span class="s2">&quot;:app&quot;</span><span class="s1">)</span></pre>
+</body>
+</html>

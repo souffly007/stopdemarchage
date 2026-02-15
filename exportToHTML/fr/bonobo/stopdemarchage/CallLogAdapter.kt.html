@@ -1,0 +1,233 @@
+<html>
+<head>
+<title>CallLogAdapter.kt</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #7a7e85;}
+.s4 { color: #2aacb8;}
+.s5 { color: #6aab73;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+CallLogAdapter.kt</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">fr</span><span class="s2">.</span><span class="s1">bonobo</span><span class="s2">.</span><span class="s1">stopdemarchage</span>
+
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">content</span><span class="s2">.</span><span class="s1">Context</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">provider</span><span class="s2">.</span><span class="s1">CallLog</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">view</span><span class="s2">.</span><span class="s1">LayoutInflater</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">view</span><span class="s2">.</span><span class="s1">View</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">view</span><span class="s2">.</span><span class="s1">ViewGroup</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">widget</span><span class="s2">.</span><span class="s1">ImageButton</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">widget</span><span class="s2">.</span><span class="s1">ImageView</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">widget</span><span class="s2">.</span><span class="s1">PopupMenu</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">widget</span><span class="s2">.</span><span class="s1">TextView</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">widget</span><span class="s2">.</span><span class="s1">Toast </span><span class="s3">// Garder pour les messages, mais la logique de block/unblock sera déplacée</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">core</span><span class="s2">.</span><span class="s1">content</span><span class="s2">.</span><span class="s1">ContextCompat</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">recyclerview</span><span class="s2">.</span><span class="s1">widget</span><span class="s2">.</span><span class="s1">DiffUtil</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">recyclerview</span><span class="s2">.</span><span class="s1">widget</span><span class="s2">.</span><span class="s1">RecyclerView</span>
+
+<span class="s0">class </span><span class="s1">CallLogAdapter</span><span class="s2">(</span>
+    <span class="s1">private </span><span class="s0">val </span><span class="s1">context: Context</span><span class="s2">,</span>
+    <span class="s1">private </span><span class="s0">val </span><span class="s1">onCallClick: </span><span class="s2">(</span><span class="s1">CallLogEntry</span><span class="s2">) -&gt; </span><span class="s1">Unit</span><span class="s2">,</span>
+    <span class="s3">// Le callback sera maintenant responsable de demander à l'activité de gérer le toggle</span>
+    <span class="s1">private </span><span class="s0">val </span><span class="s1">onBlockToggle: </span><span class="s2">(</span><span class="s1">CallLogEntry</span><span class="s2">) -&gt; </span><span class="s1">Unit</span><span class="s2">, </span><span class="s3">// NE PAS MODIFIER LA SIGNATURE ICI</span>
+    <span class="s1">private </span><span class="s0">val </span><span class="s1">onAddToContacts: </span><span class="s2">(</span><span class="s1">CallLogEntry</span><span class="s2">) -&gt; </span><span class="s1">Unit</span><span class="s2">,</span>
+    <span class="s1">private </span><span class="s0">val </span><span class="s1">onSendMessage: </span><span class="s2">(</span><span class="s1">CallLogEntry</span><span class="s2">) -&gt; </span><span class="s1">Unit</span><span class="s2">,</span>
+    <span class="s1">private </span><span class="s0">val </span><span class="s1">onShowDetails: </span><span class="s2">(</span><span class="s1">CallLogEntry</span><span class="s2">) -&gt; </span><span class="s1">Unit </span><span class="s2">= {}</span>
+<span class="s2">) </span><span class="s1">: RecyclerView</span><span class="s2">.</span><span class="s1">Adapter</span><span class="s2">&lt;</span><span class="s1">CallLogAdapter</span><span class="s2">.</span><span class="s1">CallLogViewHolder</span><span class="s2">&gt;() {</span>
+
+    <span class="s1">private </span><span class="s0">var </span><span class="s1">callList </span><span class="s2">= </span><span class="s1">mutableListOf</span><span class="s2">&lt;</span><span class="s1">CallLogEntry</span><span class="s2">&gt;()</span>
+
+    <span class="s0">fun </span><span class="s1">updateCalls</span><span class="s2">(</span><span class="s1">newCalls: List</span><span class="s2">&lt;</span><span class="s1">CallLogEntry</span><span class="s2">&gt;) {</span>
+        <span class="s0">val </span><span class="s1">diffCallback </span><span class="s2">= </span><span class="s1">CallLogDiffCallback</span><span class="s2">(</span><span class="s1">callList</span><span class="s2">, </span><span class="s1">newCalls</span><span class="s2">)</span>
+        <span class="s0">val </span><span class="s1">diffResult </span><span class="s2">= </span><span class="s1">DiffUtil</span><span class="s2">.</span><span class="s1">calculateDiff</span><span class="s2">(</span><span class="s1">diffCallback</span><span class="s2">)</span>
+
+        <span class="s1">callList</span><span class="s2">.</span><span class="s1">clear</span><span class="s2">()</span>
+        <span class="s1">callList</span><span class="s2">.</span><span class="s1">addAll</span><span class="s2">(</span><span class="s1">newCalls</span><span class="s2">)</span>
+        <span class="s1">diffResult</span><span class="s2">.</span><span class="s1">dispatchUpdatesTo</span><span class="s2">(</span><span class="s0">this</span><span class="s2">)</span>
+        <span class="s3">// Pas besoin de Toast ici, la logique est dans l'activité maintenant</span>
+    <span class="s2">}</span>
+
+    <span class="s1">override </span><span class="s0">fun </span><span class="s1">onCreateViewHolder</span><span class="s2">(</span><span class="s1">parent: ViewGroup</span><span class="s2">, </span><span class="s1">viewType: Int</span><span class="s2">)</span><span class="s1">: CallLogViewHolder </span><span class="s2">{</span>
+        <span class="s0">val </span><span class="s1">view </span><span class="s2">= </span><span class="s1">LayoutInflater</span><span class="s2">.</span><span class="s1">from</span><span class="s2">(</span><span class="s1">parent</span><span class="s2">.</span><span class="s1">context</span><span class="s2">).</span><span class="s1">inflate</span><span class="s2">(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.</span><span class="s1">item_call_log</span><span class="s2">, </span><span class="s1">parent</span><span class="s2">, </span><span class="s0">false</span><span class="s2">)</span>
+        <span class="s0">return </span><span class="s1">CallLogViewHolder</span><span class="s2">(</span><span class="s1">view</span><span class="s2">)</span>
+    <span class="s2">}</span>
+
+    <span class="s1">override </span><span class="s0">fun </span><span class="s1">onBindViewHolder</span><span class="s2">(</span><span class="s1">holder: CallLogViewHolder</span><span class="s2">, </span><span class="s1">position: Int</span><span class="s2">) {</span>
+        <span class="s1">holder</span><span class="s2">.</span><span class="s1">bind</span><span class="s2">(</span><span class="s1">callList</span><span class="s2">[</span><span class="s1">position</span><span class="s2">])</span>
+    <span class="s2">}</span>
+
+    <span class="s1">override </span><span class="s0">fun </span><span class="s1">getItemCount</span><span class="s2">()</span><span class="s1">: Int </span><span class="s2">= </span><span class="s1">callList</span><span class="s2">.</span><span class="s1">size</span>
+
+    <span class="s1">inner </span><span class="s0">class </span><span class="s1">CallLogViewHolder</span><span class="s2">(</span><span class="s1">itemView: View</span><span class="s2">) </span><span class="s1">: RecyclerView</span><span class="s2">.</span><span class="s1">ViewHolder</span><span class="s2">(</span><span class="s1">itemView</span><span class="s2">) {</span>
+        <span class="s1">private </span><span class="s0">val </span><span class="s1">callTypeIcon: ImageView </span><span class="s2">= </span><span class="s1">itemView</span><span class="s2">.</span><span class="s1">findViewById</span><span class="s2">(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">call_type_icon</span><span class="s2">)</span>
+        <span class="s1">private </span><span class="s0">val </span><span class="s1">contactName: TextView </span><span class="s2">= </span><span class="s1">itemView</span><span class="s2">.</span><span class="s1">findViewById</span><span class="s2">(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">contact_name</span><span class="s2">)</span>
+        <span class="s1">private </span><span class="s0">val </span><span class="s1">phoneNumber: TextView </span><span class="s2">= </span><span class="s1">itemView</span><span class="s2">.</span><span class="s1">findViewById</span><span class="s2">(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">phone_number</span><span class="s2">)</span>
+        <span class="s1">private </span><span class="s0">val </span><span class="s1">callTime: TextView </span><span class="s2">= </span><span class="s1">itemView</span><span class="s2">.</span><span class="s1">findViewById</span><span class="s2">(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">call_time</span><span class="s2">)</span>
+        <span class="s1">private </span><span class="s0">val </span><span class="s1">callDuration: TextView </span><span class="s2">= </span><span class="s1">itemView</span><span class="s2">.</span><span class="s1">findViewById</span><span class="s2">(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">call_duration</span><span class="s2">)</span>
+        <span class="s1">private </span><span class="s0">val </span><span class="s1">blockedIcon: ImageView </span><span class="s2">= </span><span class="s1">itemView</span><span class="s2">.</span><span class="s1">findViewById</span><span class="s2">(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">blocked_icon</span><span class="s2">) </span><span class="s3">// C'est l'icône de la capture, pas un bouton</span>
+        <span class="s1">private </span><span class="s0">val </span><span class="s1">menuButton: ImageButton </span><span class="s2">= </span><span class="s1">itemView</span><span class="s2">.</span><span class="s1">findViewById</span><span class="s2">(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">menu_button</span><span class="s2">) </span><span class="s3">// Le bouton 3 points qui ouvre le menu</span>
+
+        <span class="s0">fun </span><span class="s1">bind</span><span class="s2">(</span><span class="s1">call: CallLogEntry</span><span class="s2">) {</span>
+            <span class="s1">bindContactInfo</span><span class="s2">(</span><span class="s1">call</span><span class="s2">)</span>
+            <span class="s1">bindCallTime</span><span class="s2">(</span><span class="s1">call</span><span class="s2">)</span>
+            <span class="s1">bindCallDuration</span><span class="s2">(</span><span class="s1">call</span><span class="s2">)</span>
+            <span class="s1">bindCallTypeIcon</span><span class="s2">(</span><span class="s1">call</span><span class="s2">)</span>
+            <span class="s1">bindBlockedState</span><span class="s2">(</span><span class="s1">call</span><span class="s2">) </span><span class="s3">// Met à jour la visibilité de l'icône de blocage</span>
+            <span class="s1">setupClickListeners</span><span class="s2">(</span><span class="s1">call</span><span class="s2">)</span>
+        <span class="s2">}</span>
+
+        <span class="s1">private </span><span class="s0">fun </span><span class="s1">bindContactInfo</span><span class="s2">(</span><span class="s1">call: CallLogEntry</span><span class="s2">) {</span>
+            <span class="s1">contactName</span><span class="s2">.</span><span class="s1">text </span><span class="s2">= </span><span class="s1">call</span><span class="s2">.</span><span class="s1">getDisplayName</span><span class="s2">()</span>
+            <span class="s3">// Afficher le numéro seulement si un nom de contact est présent et différent du numéro</span>
+            <span class="s3">// Ou toujours si vous voulez les deux</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">call</span><span class="s2">.</span><span class="s1">contactName </span><span class="s2">!= </span><span class="s0">null </span><span class="s2">&amp;&amp; </span><span class="s1">call</span><span class="s2">.</span><span class="s1">contactName </span><span class="s2">!= </span><span class="s1">call</span><span class="s2">.</span><span class="s1">number</span><span class="s2">) {</span>
+                <span class="s1">phoneNumber</span><span class="s2">.</span><span class="s1">text </span><span class="s2">= </span><span class="s1">call</span><span class="s2">.</span><span class="s1">number</span>
+                <span class="s1">phoneNumber</span><span class="s2">.</span><span class="s1">visibility </span><span class="s2">= </span><span class="s1">View</span><span class="s2">.</span><span class="s1">VISIBLE</span>
+            <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+                <span class="s3">// Si pas de nom de contact, le numéro est le DisplayName, donc cacher le champ numéro double</span>
+                <span class="s1">phoneNumber</span><span class="s2">.</span><span class="s1">visibility </span><span class="s2">= </span><span class="s1">View</span><span class="s2">.</span><span class="s1">GONE</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+
+        <span class="s1">private </span><span class="s0">fun </span><span class="s1">bindCallTime</span><span class="s2">(</span><span class="s1">call: CallLogEntry</span><span class="s2">) {</span>
+            <span class="s1">callTime</span><span class="s2">.</span><span class="s1">text </span><span class="s2">= </span><span class="s1">call</span><span class="s2">.</span><span class="s1">getTimeFormatted</span><span class="s2">()</span>
+        <span class="s2">}</span>
+
+        <span class="s1">private </span><span class="s0">fun </span><span class="s1">bindCallDuration</span><span class="s2">(</span><span class="s1">call: CallLogEntry</span><span class="s2">) {</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">call</span><span class="s2">.</span><span class="s1">duration </span><span class="s2">&gt; </span><span class="s4">0</span><span class="s2">) {</span>
+                <span class="s1">callDuration</span><span class="s2">.</span><span class="s1">text </span><span class="s2">= </span><span class="s1">call</span><span class="s2">.</span><span class="s1">getDurationFormatted</span><span class="s2">()</span>
+                <span class="s1">callDuration</span><span class="s2">.</span><span class="s1">visibility </span><span class="s2">= </span><span class="s1">View</span><span class="s2">.</span><span class="s1">VISIBLE</span>
+            <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+                <span class="s1">callDuration</span><span class="s2">.</span><span class="s1">visibility </span><span class="s2">= </span><span class="s1">View</span><span class="s2">.</span><span class="s1">GONE</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+
+        <span class="s1">private </span><span class="s0">fun </span><span class="s1">bindCallTypeIcon</span><span class="s2">(</span><span class="s1">call: CallLogEntry</span><span class="s2">) {</span>
+            <span class="s3">// Assurez-vous d'avoir ces drawables et couleurs dans vos ressources</span>
+            <span class="s0">val </span><span class="s2">(</span><span class="s1">iconRes</span><span class="s2">, </span><span class="s1">colorRes</span><span class="s2">) = </span><span class="s0">when </span><span class="s2">(</span><span class="s1">call</span><span class="s2">.</span><span class="s1">type</span><span class="s2">) {</span>
+                <span class="s1">CallLog</span><span class="s2">.</span><span class="s1">Calls</span><span class="s2">.</span><span class="s1">INCOMING_TYPE </span><span class="s2">-&gt; </span><span class="s1">R</span><span class="s2">.</span><span class="s1">drawable</span><span class="s2">.</span><span class="s1">ic_call_incoming to R</span><span class="s2">.</span><span class="s1">color</span><span class="s2">.</span><span class="s1">call_incoming</span>
+                <span class="s1">CallLog</span><span class="s2">.</span><span class="s1">Calls</span><span class="s2">.</span><span class="s1">OUTGOING_TYPE </span><span class="s2">-&gt; </span><span class="s1">R</span><span class="s2">.</span><span class="s1">drawable</span><span class="s2">.</span><span class="s1">ic_call_outgoing to R</span><span class="s2">.</span><span class="s1">color</span><span class="s2">.</span><span class="s1">call_outgoing</span>
+                <span class="s1">CallLog</span><span class="s2">.</span><span class="s1">Calls</span><span class="s2">.</span><span class="s1">MISSED_TYPE </span><span class="s2">-&gt; </span><span class="s1">R</span><span class="s2">.</span><span class="s1">drawable</span><span class="s2">.</span><span class="s1">ic_call_missed to R</span><span class="s2">.</span><span class="s1">color</span><span class="s2">.</span><span class="s1">call_missed</span>
+                <span class="s3">// Gérer le type BLOCKED si CallLog renvoie ce type</span>
+                <span class="s1">CallLog</span><span class="s2">.</span><span class="s1">Calls</span><span class="s2">.</span><span class="s1">BLOCKED_TYPE </span><span class="s2">-&gt; </span><span class="s1">R</span><span class="s2">.</span><span class="s1">drawable</span><span class="s2">.</span><span class="s1">ic_blocked_circle to R</span><span class="s2">.</span><span class="s1">color</span><span class="s2">.</span><span class="s1">call_blocked </span><span class="s3">// Créez cette couleur</span>
+                <span class="s0">else </span><span class="s2">-&gt; </span><span class="s1">R</span><span class="s2">.</span><span class="s1">drawable</span><span class="s2">.</span><span class="s1">ic_blocked_circle to R</span><span class="s2">.</span><span class="s1">color</span><span class="s2">.</span><span class="s1">call_missed </span><span class="s3">// Fallback</span>
+            <span class="s2">}</span>
+            <span class="s1">callTypeIcon</span><span class="s2">.</span><span class="s1">setImageResource</span><span class="s2">(</span><span class="s1">iconRes</span><span class="s2">)</span>
+            <span class="s1">callTypeIcon</span><span class="s2">.</span><span class="s1">setColorFilter</span><span class="s2">(</span><span class="s1">ContextCompat</span><span class="s2">.</span><span class="s1">getColor</span><span class="s2">(</span><span class="s1">context</span><span class="s2">, </span><span class="s1">colorRes</span><span class="s2">))</span>
+        <span class="s2">}</span>
+
+        <span class="s1">private </span><span class="s0">fun </span><span class="s1">bindBlockedState</span><span class="s2">(</span><span class="s1">call: CallLogEntry</span><span class="s2">) {</span>
+            <span class="s3">// Si le numéro est bloqué, rendre l'icône visible</span>
+            <span class="s1">blockedIcon</span><span class="s2">.</span><span class="s1">visibility </span><span class="s2">= </span><span class="s0">if </span><span class="s2">(</span><span class="s1">call</span><span class="s2">.</span><span class="s1">isBlocked</span><span class="s2">) </span><span class="s1">View</span><span class="s2">.</span><span class="s1">VISIBLE </span><span class="s0">else </span><span class="s1">View</span><span class="s2">.</span><span class="s1">GONE</span>
+            <span class="s3">// Optionnel: Diminuer l'opacité de toute la ligne si bloqué</span>
+            <span class="s1">itemView</span><span class="s2">.</span><span class="s1">alpha </span><span class="s2">= </span><span class="s0">if </span><span class="s2">(</span><span class="s1">call</span><span class="s2">.</span><span class="s1">isBlocked</span><span class="s2">) </span><span class="s4">0.6f </span><span class="s0">else </span><span class="s4">1.0f</span>
+        <span class="s2">}</span>
+
+        <span class="s1">private </span><span class="s0">fun </span><span class="s1">setupClickListeners</span><span class="s2">(</span><span class="s1">call: CallLogEntry</span><span class="s2">) {</span>
+            <span class="s1">itemView</span><span class="s2">.</span><span class="s1">setOnClickListener </span><span class="s2">{</span>
+                <span class="s1">onCallClick</span><span class="s2">(</span><span class="s1">call</span><span class="s2">) </span><span class="s3">// Gère le clic sur l'élément entier (ex: rappeler)</span>
+            <span class="s2">}</span>
+            <span class="s3">// Le bouton de menu (les trois points)</span>
+            <span class="s1">menuButton</span><span class="s2">.</span><span class="s1">setOnClickListener </span><span class="s2">{ </span><span class="s1">view </span><span class="s2">-&gt;</span>
+                <span class="s1">showPopupMenu</span><span class="s2">(</span><span class="s1">view</span><span class="s2">, </span><span class="s1">call</span><span class="s2">)</span>
+            <span class="s2">}</span>
+            <span class="s3">// Si l'icône de blocage (le cercle rouge) est cliquable directement (ce que la capture suggère)</span>
+            <span class="s3">// Alors on peut ajouter un listener ici pour l'action rapide.</span>
+            <span class="s3">// Si ce n'est qu'un indicateur, alors l'action est via le menu contextuel.</span>
+            <span class="s3">// Vu votre capture, le rond rouge est un bouton. Je vais l'utiliser comme tel.</span>
+            <span class="s3">// Assurez-vous que blocked_icon est votre rond rouge barré.</span>
+            <span class="s1">blockedIcon</span><span class="s2">.</span><span class="s1">setOnClickListener </span><span class="s2">{</span>
+                <span class="s1">onBlockToggle</span><span class="s2">(</span><span class="s1">call</span><span class="s2">) </span><span class="s3">// Appelle le callback pour que l'activité gère le blocage</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+
+        <span class="s1">private </span><span class="s0">fun </span><span class="s1">showPopupMenu</span><span class="s2">(</span><span class="s1">view: View</span><span class="s2">, </span><span class="s1">call: CallLogEntry</span><span class="s2">) {</span>
+            <span class="s0">val </span><span class="s1">popup </span><span class="s2">= </span><span class="s1">PopupMenu</span><span class="s2">(</span><span class="s1">context</span><span class="s2">, </span><span class="s1">view</span><span class="s2">)</span>
+            <span class="s0">try </span><span class="s2">{</span>
+                <span class="s1">popup</span><span class="s2">.</span><span class="s1">menuInflater</span><span class="s2">.</span><span class="s1">inflate</span><span class="s2">(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">menu</span><span class="s2">.</span><span class="s1">call_log_menu</span><span class="s2">, </span><span class="s1">popup</span><span class="s2">.</span><span class="s1">menu</span><span class="s2">)</span>
+                <span class="s1">setupMenuItems</span><span class="s2">(</span><span class="s1">popup</span><span class="s2">, </span><span class="s1">call</span><span class="s2">)</span>
+                <span class="s1">popup</span><span class="s2">.</span><span class="s1">setOnMenuItemClickListener </span><span class="s2">{ </span><span class="s1">menuItem </span><span class="s2">-&gt;</span>
+                    <span class="s1">handleMenuItemClick</span><span class="s2">(</span><span class="s1">menuItem</span><span class="s2">.</span><span class="s1">itemId</span><span class="s2">, </span><span class="s1">call</span><span class="s2">)</span>
+                <span class="s2">}</span>
+                <span class="s1">popup</span><span class="s2">.</span><span class="s1">show</span><span class="s2">()</span>
+            <span class="s2">} </span><span class="s1">catch </span><span class="s2">(</span><span class="s1">e: Exception</span><span class="s2">) {</span>
+                <span class="s1">e</span><span class="s2">.</span><span class="s1">printStackTrace</span><span class="s2">()</span>
+                <span class="s1">Toast</span><span class="s2">.</span><span class="s1">makeText</span><span class="s2">(</span><span class="s1">context</span><span class="s2">, </span><span class="s5">&quot;Erreur lors de l'affichage du menu&quot;</span><span class="s2">, </span><span class="s1">Toast</span><span class="s2">.</span><span class="s1">LENGTH_SHORT</span><span class="s2">).</span><span class="s1">show</span><span class="s2">()</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+
+        <span class="s1">private </span><span class="s0">fun </span><span class="s1">setupMenuItems</span><span class="s2">(</span><span class="s1">popup: PopupMenu</span><span class="s2">, </span><span class="s1">call: CallLogEntry</span><span class="s2">) {</span>
+            <span class="s0">val </span><span class="s1">menu </span><span class="s2">= </span><span class="s1">popup</span><span class="s2">.</span><span class="s1">menu</span>
+            <span class="s1">menu</span><span class="s2">.</span><span class="s1">findItem</span><span class="s2">(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">action_block</span><span class="s2">)</span><span class="s1">?</span><span class="s2">.</span><span class="s1">let </span><span class="s2">{ </span><span class="s1">blockItem </span><span class="s2">-&gt;</span>
+                <span class="s3">// Mettre à jour le texte du menu &quot;Bloquer&quot; / &quot;Débloquer&quot;</span>
+                <span class="s1">blockItem</span><span class="s2">.</span><span class="s1">title </span><span class="s2">= </span><span class="s0">if </span><span class="s2">(</span><span class="s1">call</span><span class="s2">.</span><span class="s1">isBlocked</span><span class="s2">) {</span>
+                    <span class="s1">context</span><span class="s2">.</span><span class="s1">getString</span><span class="s2">(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">string</span><span class="s2">.</span><span class="s1">unblock_number</span><span class="s2">) </span><span class="s3">// Créez cette ressource string</span>
+                <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+                    <span class="s1">context</span><span class="s2">.</span><span class="s1">getString</span><span class="s2">(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">string</span><span class="s2">.</span><span class="s1">block_number</span><span class="s2">) </span><span class="s3">// Créez cette ressource string</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+            <span class="s1">menu</span><span class="s2">.</span><span class="s1">findItem</span><span class="s2">(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">action_add_contact</span><span class="s2">)</span><span class="s1">?</span><span class="s2">.</span><span class="s1">let </span><span class="s2">{ </span><span class="s1">addContactItem </span><span class="s2">-&gt;</span>
+                <span class="s3">// Afficher l'option &quot;Ajouter aux contacts&quot; seulement si pas déjà un contact</span>
+                <span class="s1">addContactItem</span><span class="s2">.</span><span class="s1">isVisible </span><span class="s2">= </span><span class="s1">call</span><span class="s2">.</span><span class="s1">contactName </span><span class="s2">== </span><span class="s0">null </span><span class="s2">|| </span><span class="s1">call</span><span class="s2">.</span><span class="s1">contactName </span><span class="s2">== </span><span class="s1">call</span><span class="s2">.</span><span class="s1">number</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+
+        <span class="s1">private </span><span class="s0">fun </span><span class="s1">handleMenuItemClick</span><span class="s2">(</span><span class="s1">itemId: Int</span><span class="s2">, </span><span class="s1">call: CallLogEntry</span><span class="s2">)</span><span class="s1">: Boolean </span><span class="s2">{</span>
+            <span class="s0">return when </span><span class="s2">(</span><span class="s1">itemId</span><span class="s2">) {</span>
+                <span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">action_call_back </span><span class="s2">-&gt; {</span>
+                    <span class="s1">onCallClick</span><span class="s2">(</span><span class="s1">call</span><span class="s2">); </span><span class="s0">true</span>
+                <span class="s2">}</span>
+                <span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">action_send_message </span><span class="s2">-&gt; {</span>
+                    <span class="s1">onSendMessage</span><span class="s2">(</span><span class="s1">call</span><span class="s2">); </span><span class="s0">true</span>
+                <span class="s2">}</span>
+                <span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">action_add_contact </span><span class="s2">-&gt; {</span>
+                    <span class="s1">onAddToContacts</span><span class="s2">(</span><span class="s1">call</span><span class="s2">); </span><span class="s0">true</span>
+                <span class="s2">}</span>
+                <span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">action_block </span><span class="s2">-&gt; {</span>
+                    <span class="s3">// NE PAS APPELER toggleBlockNumber(call) DIRECTEMENT ICI</span>
+                    <span class="s3">// Appeler le callback pour que l'activité gère la logique</span>
+                    <span class="s1">onBlockToggle</span><span class="s2">(</span><span class="s1">call</span><span class="s2">); </span><span class="s0">true</span>
+                <span class="s2">}</span>
+                <span class="s0">else </span><span class="s2">-&gt; </span><span class="s0">false</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+        <span class="s3">// &gt;&gt;&gt; SUPPRIMER LA FONCTION toggleBlockNumber D'ICI &lt;&lt;&lt;</span>
+        <span class="s3">// La logique est déplacée dans CallLogActivity pour utiliser CallLogManager</span>
+        <span class="s3">/* 
+        private fun toggleBlockNumber(call: CallLogEntry) { 
+            // ... cette logique sera déplacée ... 
+        } 
+        */</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">class </span><span class="s1">CallLogDiffCallback</span><span class="s2">(</span>
+        <span class="s1">private </span><span class="s0">val </span><span class="s1">oldList: List</span><span class="s2">&lt;</span><span class="s1">CallLogEntry</span><span class="s2">&gt;,</span>
+        <span class="s1">private </span><span class="s0">val </span><span class="s1">newList: List</span><span class="s2">&lt;</span><span class="s1">CallLogEntry</span><span class="s2">&gt;</span>
+    <span class="s2">) </span><span class="s1">: DiffUtil</span><span class="s2">.</span><span class="s1">Callback</span><span class="s2">() {</span>
+        <span class="s1">override </span><span class="s0">fun </span><span class="s1">getOldListSize</span><span class="s2">()</span><span class="s1">: Int </span><span class="s2">= </span><span class="s1">oldList</span><span class="s2">.</span><span class="s1">size</span>
+        <span class="s1">override </span><span class="s0">fun </span><span class="s1">getNewListSize</span><span class="s2">()</span><span class="s1">: Int </span><span class="s2">= </span><span class="s1">newList</span><span class="s2">.</span><span class="s1">size</span>
+        <span class="s1">override </span><span class="s0">fun </span><span class="s1">areItemsTheSame</span><span class="s2">(</span><span class="s1">oldItemPosition: Int</span><span class="s2">, </span><span class="s1">newItemPosition: Int</span><span class="s2">)</span><span class="s1">: Boolean </span><span class="s2">{</span>
+            <span class="s0">return </span><span class="s1">oldList</span><span class="s2">[</span><span class="s1">oldItemPosition</span><span class="s2">].</span><span class="s1">id </span><span class="s2">== </span><span class="s1">newList</span><span class="s2">[</span><span class="s1">newItemPosition</span><span class="s2">].</span><span class="s1">id</span>
+        <span class="s2">}</span>
+        <span class="s1">override </span><span class="s0">fun </span><span class="s1">areContentsTheSame</span><span class="s2">(</span><span class="s1">oldItemPosition: Int</span><span class="s2">, </span><span class="s1">newItemPosition: Int</span><span class="s2">)</span><span class="s1">: Boolean </span><span class="s2">{</span>
+            <span class="s0">val </span><span class="s1">oldItem </span><span class="s2">= </span><span class="s1">oldList</span><span class="s2">[</span><span class="s1">oldItemPosition</span><span class="s2">]</span>
+            <span class="s0">val </span><span class="s1">newItem </span><span class="s2">= </span><span class="s1">newList</span><span class="s2">[</span><span class="s1">newItemPosition</span><span class="s2">]</span>
+            <span class="s0">return </span><span class="s1">oldItem</span><span class="s2">.</span><span class="s1">number </span><span class="s2">== </span><span class="s1">newItem</span><span class="s2">.</span><span class="s1">number </span><span class="s2">&amp;&amp;</span>
+                    <span class="s1">oldItem</span><span class="s2">.</span><span class="s1">contactName </span><span class="s2">== </span><span class="s1">newItem</span><span class="s2">.</span><span class="s1">contactName </span><span class="s2">&amp;&amp;</span>
+                    <span class="s1">oldItem</span><span class="s2">.</span><span class="s1">type </span><span class="s2">== </span><span class="s1">newItem</span><span class="s2">.</span><span class="s1">type </span><span class="s2">&amp;&amp;</span>
+                    <span class="s1">oldItem</span><span class="s2">.</span><span class="s1">date </span><span class="s2">== </span><span class="s1">newItem</span><span class="s2">.</span><span class="s1">date </span><span class="s2">&amp;&amp;</span>
+                    <span class="s1">oldItem</span><span class="s2">.</span><span class="s1">duration </span><span class="s2">== </span><span class="s1">newItem</span><span class="s2">.</span><span class="s1">duration </span><span class="s2">&amp;&amp;</span>
+                    <span class="s1">oldItem</span><span class="s2">.</span><span class="s1">isBlocked </span><span class="s2">== </span><span class="s1">newItem</span><span class="s2">.</span><span class="s1">isBlocked </span><span class="s3">// TRÈS IMPORTANT : Inclure isBlocked</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+<span class="s2">}</span></pre>
+</body>
+</html>

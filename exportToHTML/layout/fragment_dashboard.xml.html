@@ -1,0 +1,889 @@
+<html>
+<head>
+<title>fragment_dashboard.xml</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #d5b778;}
+.s1 { color: #bcbec4;}
+.s2 { color: #6aab73;}
+.s3 { color: #bcbec4;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+fragment_dashboard.xml</font>
+</center></td></tr></table>
+<pre><span class="s0">&lt;?</span><span class="s1">xml version</span><span class="s2">=&quot;1.0&quot; </span><span class="s1">encoding</span><span class="s2">=&quot;utf-8&quot;</span><span class="s0">?&gt;</span>
+<span class="s0">&lt;ScrollView </span><span class="s1">xmlns:android</span><span class="s2">=&quot;http://schemas.android.com/apk/res/android&quot;</span>
+    <span class="s1">xmlns:app</span><span class="s2">=&quot;http://schemas.android.com/apk/res-auto&quot;</span>
+    <span class="s1">android:layout_width</span><span class="s2">=&quot;match_parent&quot;</span>
+    <span class="s1">android:layout_height</span><span class="s2">=&quot;match_parent&quot;</span>
+    <span class="s1">android:fillViewport</span><span class="s2">=&quot;true&quot;</span>
+    <span class="s1">android:paddingBottom</span><span class="s2">=&quot;56dp&quot;</span><span class="s0">&gt;</span>
+
+    <span class="s0">&lt;LinearLayout</span>
+        <span class="s1">android:layout_width</span><span class="s2">=&quot;match_parent&quot;</span>
+        <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+        <span class="s1">android:orientation</span><span class="s2">=&quot;vertical&quot;</span>
+        <span class="s1">android:padding</span><span class="s2">=&quot;20dp&quot;</span><span class="s0">&gt;</span>
+
+        <span class="s0">&lt;com.google.android.material.card.MaterialCardView</span>
+            <span class="s1">android:id</span><span class="s2">=&quot;@+id/cardStatsDashboard&quot;</span>
+            <span class="s1">android:layout_width</span><span class="s2">=&quot;match_parent&quot;</span>
+            <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+            <span class="s1">android:layout_marginBottom</span><span class="s2">=&quot;20dp&quot;</span>
+            <span class="s1">app:cardBackgroundColor</span><span class="s2">=&quot;@color/card_background&quot;</span>
+            <span class="s1">app:cardCornerRadius</span><span class="s2">=&quot;16dp&quot;</span>
+            <span class="s1">app:cardElevation</span><span class="s2">=&quot;8dp&quot;</span>
+            <span class="s1">app:strokeColor</span><span class="s2">=&quot;@color/card_stroke&quot;</span>
+            <span class="s1">app:strokeWidth</span><span class="s2">=&quot;1dp&quot;</span><span class="s0">&gt;</span>
+
+            <span class="s0">&lt;LinearLayout</span>
+                <span class="s1">android:layout_width</span><span class="s2">=&quot;match_parent&quot;</span>
+                <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                <span class="s1">android:orientation</span><span class="s2">=&quot;vertical&quot;</span>
+                <span class="s1">android:padding</span><span class="s2">=&quot;20dp&quot;</span><span class="s0">&gt;</span>
+
+                <span class="s0">&lt;TextView</span>
+                    <span class="s1">android:layout_width</span><span class="s2">=&quot;wrap_content&quot;</span>
+                    <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                    <span class="s1">android:text</span><span class="s2">=&quot;📊 Statistiques de Protection&quot;</span>
+                    <span class="s1">android:textColor</span><span class="s2">=&quot;@android:color/white&quot;</span>
+                    <span class="s1">android:textSize</span><span class="s2">=&quot;18sp&quot;</span>
+                    <span class="s1">android:textStyle</span><span class="s2">=&quot;bold&quot;</span>
+                    <span class="s1">android:layout_marginBottom</span><span class="s2">=&quot;16dp&quot; </span><span class="s0">/&gt;</span>
+
+                <span class="s0">&lt;LinearLayout</span>
+                    <span class="s1">android:layout_width</span><span class="s2">=&quot;match_parent&quot;</span>
+                    <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                    <span class="s1">android:orientation</span><span class="s2">=&quot;horizontal&quot;</span>
+                    <span class="s1">android:weightSum</span><span class="s2">=&quot;3&quot;</span><span class="s0">&gt;</span>
+
+                    <span class="s0">&lt;LinearLayout</span>
+                        <span class="s1">android:layout_width</span><span class="s2">=&quot;0dp&quot;</span>
+                        <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                        <span class="s1">android:layout_weight</span><span class="s2">=&quot;1&quot;</span>
+                        <span class="s1">android:orientation</span><span class="s2">=&quot;vertical&quot;</span>
+                        <span class="s1">android:gravity</span><span class="s2">=&quot;center&quot;</span><span class="s0">&gt;</span>
+
+                        <span class="s0">&lt;com.mikhaellopez.circularprogressbar.CircularProgressBar</span>
+                            <span class="s1">android:id</span><span class="s2">=&quot;@+id/progressCritical&quot;</span>
+                            <span class="s1">android:layout_width</span><span class="s2">=&quot;80dp&quot;</span>
+                            <span class="s1">android:layout_height</span><span class="s2">=&quot;80dp&quot;</span>
+                            <span class="s1">app:cpb_background_progressbar_color</span><span class="s2">=&quot;#33FF5252&quot;</span>
+                            <span class="s1">app:cpb_background_progressbar_width</span><span class="s2">=&quot;8dp&quot;</span>
+                            <span class="s1">app:cpb_progress_direction</span><span class="s2">=&quot;to_right&quot;</span>
+                            <span class="s1">app:cpb_progressbar_color</span><span class="s2">=&quot;#FF5252&quot;</span>
+                            <span class="s1">app:cpb_progressbar_width</span><span class="s2">=&quot;8dp&quot;</span>
+                            <span class="s1">app:cpb_round_border</span><span class="s2">=&quot;true&quot; </span><span class="s0">/&gt;</span>
+
+                        <span class="s0">&lt;TextView</span>
+                            <span class="s1">android:id</span><span class="s2">=&quot;@+id/textCritical&quot;</span>
+                            <span class="s1">android:layout_width</span><span class="s2">=&quot;wrap_content&quot;</span>
+                            <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                            <span class="s1">android:text</span><span class="s2">=&quot;0&quot;</span>
+                            <span class="s1">android:textColor</span><span class="s2">=&quot;#FF5252&quot;</span>
+                            <span class="s1">android:textSize</span><span class="s2">=&quot;16sp&quot;</span>
+                            <span class="s1">android:textStyle</span><span class="s2">=&quot;bold&quot;</span>
+                            <span class="s1">android:layout_marginTop</span><span class="s2">=&quot;8dp&quot; </span><span class="s0">/&gt;</span>
+
+                        <span class="s0">&lt;TextView</span>
+                            <span class="s1">android:layout_width</span><span class="s2">=&quot;wrap_content&quot;</span>
+                            <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                            <span class="s1">android:text</span><span class="s2">=&quot;Critiques&quot;</span>
+                            <span class="s1">android:textColor</span><span class="s2">=&quot;@color/text_secondary&quot;</span>
+                            <span class="s1">android:textSize</span><span class="s2">=&quot;12sp&quot; </span><span class="s0">/&gt;</span>
+                    <span class="s0">&lt;/LinearLayout&gt;</span>
+
+                    <span class="s0">&lt;LinearLayout</span>
+                        <span class="s1">android:layout_width</span><span class="s2">=&quot;0dp&quot;</span>
+                        <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                        <span class="s1">android:layout_weight</span><span class="s2">=&quot;1&quot;</span>
+                        <span class="s1">android:orientation</span><span class="s2">=&quot;vertical&quot;</span>
+                        <span class="s1">android:gravity</span><span class="s2">=&quot;center&quot;</span><span class="s0">&gt;</span>
+
+                        <span class="s0">&lt;com.mikhaellopez.circularprogressbar.CircularProgressBar</span>
+                            <span class="s1">android:id</span><span class="s2">=&quot;@+id/progressHigh&quot;</span>
+                            <span class="s1">android:layout_width</span><span class="s2">=&quot;80dp&quot;</span>
+                            <span class="s1">android:layout_height</span><span class="s2">=&quot;80dp&quot;</span>
+                            <span class="s1">app:cpb_background_progressbar_color</span><span class="s2">=&quot;#33FF9800&quot;</span>
+                            <span class="s1">app:cpb_background_progressbar_width</span><span class="s2">=&quot;8dp&quot;</span>
+                            <span class="s1">app:cpb_progress_direction</span><span class="s2">=&quot;to_right&quot;</span>
+                            <span class="s1">app:cpb_progressbar_color</span><span class="s2">=&quot;#FF9800&quot;</span>
+                            <span class="s1">app:cpb_progressbar_width</span><span class="s2">=&quot;8dp&quot;</span>
+                            <span class="s1">app:cpb_round_border</span><span class="s2">=&quot;true&quot; </span><span class="s0">/&gt;</span>
+
+                        <span class="s0">&lt;TextView</span>
+                            <span class="s1">android:id</span><span class="s2">=&quot;@+id/textHigh&quot;</span>
+                            <span class="s1">android:layout_width</span><span class="s2">=&quot;wrap_content&quot;</span>
+                            <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                            <span class="s1">android:text</span><span class="s2">=&quot;0&quot;</span>
+                            <span class="s1">android:textColor</span><span class="s2">=&quot;#FF9800&quot;</span>
+                            <span class="s1">android:textSize</span><span class="s2">=&quot;16sp&quot;</span>
+                            <span class="s1">android:textStyle</span><span class="s2">=&quot;bold&quot;</span>
+                            <span class="s1">android:layout_marginTop</span><span class="s2">=&quot;8dp&quot; </span><span class="s0">/&gt;</span>
+
+                        <span class="s0">&lt;TextView</span>
+                            <span class="s1">android:layout_width</span><span class="s2">=&quot;wrap_content&quot;</span>
+                            <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                            <span class="s1">android:text</span><span class="s2">=&quot;Élevés&quot;</span>
+                            <span class="s1">android:textColor</span><span class="s2">=&quot;@color/text_secondary&quot;</span>
+                            <span class="s1">android:textSize</span><span class="s2">=&quot;12sp&quot; </span><span class="s0">/&gt;</span>
+                    <span class="s0">&lt;/LinearLayout&gt;</span>
+
+                    <span class="s0">&lt;LinearLayout</span>
+                        <span class="s1">android:layout_width</span><span class="s2">=&quot;0dp&quot;</span>
+                        <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                        <span class="s1">android:layout_weight</span><span class="s2">=&quot;1&quot;</span>
+                        <span class="s1">android:orientation</span><span class="s2">=&quot;vertical&quot;</span>
+                        <span class="s1">android:gravity</span><span class="s2">=&quot;center&quot;</span><span class="s0">&gt;</span>
+
+                        <span class="s0">&lt;com.mikhaellopez.circularprogressbar.CircularProgressBar</span>
+                            <span class="s1">android:id</span><span class="s2">=&quot;@+id/progressMedium&quot;</span>
+                            <span class="s1">android:layout_width</span><span class="s2">=&quot;80dp&quot;</span>
+                            <span class="s1">android:layout_height</span><span class="s2">=&quot;80dp&quot;</span>
+                            <span class="s1">app:cpb_background_progressbar_color</span><span class="s2">=&quot;#33FFC107&quot;</span>
+                            <span class="s1">app:cpb_background_progressbar_width</span><span class="s2">=&quot;8dp&quot;</span>
+                            <span class="s1">app:cpb_progress_direction</span><span class="s2">=&quot;to_right&quot;</span>
+                            <span class="s1">app:cpb_progressbar_color</span><span class="s2">=&quot;#FFC107&quot;</span>
+                            <span class="s1">app:cpb_progressbar_width</span><span class="s2">=&quot;8dp&quot;</span>
+                            <span class="s1">app:cpb_round_border</span><span class="s2">=&quot;true&quot; </span><span class="s0">/&gt;</span>
+
+                        <span class="s0">&lt;TextView</span>
+                            <span class="s1">android:id</span><span class="s2">=&quot;@+id/textMedium&quot;</span>
+                            <span class="s1">android:layout_width</span><span class="s2">=&quot;wrap_content&quot;</span>
+                            <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                            <span class="s1">android:text</span><span class="s2">=&quot;0&quot;</span>
+                            <span class="s1">android:textColor</span><span class="s2">=&quot;#FFC107&quot;</span>
+                            <span class="s1">android:textSize</span><span class="s2">=&quot;16sp&quot;</span>
+                            <span class="s1">android:textStyle</span><span class="s2">=&quot;bold&quot;</span>
+                            <span class="s1">android:layout_marginTop</span><span class="s2">=&quot;8dp&quot; </span><span class="s0">/&gt;</span>
+
+                        <span class="s0">&lt;TextView</span>
+                            <span class="s1">android:layout_width</span><span class="s2">=&quot;wrap_content&quot;</span>
+                            <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                            <span class="s1">android:text</span><span class="s2">=&quot;Modérés&quot;</span>
+                            <span class="s1">android:textColor</span><span class="s2">=&quot;@color/text_secondary&quot;</span>
+                            <span class="s1">android:textSize</span><span class="s2">=&quot;12sp&quot; </span><span class="s0">/&gt;</span>
+                    <span class="s0">&lt;/LinearLayout&gt;</span>
+                <span class="s0">&lt;/LinearLayout&gt;</span>
+
+                <span class="s0">&lt;TextView</span>
+                    <span class="s1">android:id</span><span class="s2">=&quot;@+id/statsText&quot;</span>
+                    <span class="s1">android:layout_width</span><span class="s2">=&quot;match_parent&quot;</span>
+                    <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                    <span class="s1">android:layout_marginTop</span><span class="s2">=&quot;16dp&quot;</span>
+                    <span class="s1">android:background</span><span class="s2">=&quot;@drawable/stats_background&quot;</span>
+                    <span class="s1">android:padding</span><span class="s2">=&quot;12dp&quot;</span>
+                    <span class="s1">android:text</span><span class="s2">=&quot;Chargement des statistiques...&quot;</span>
+                    <span class="s1">android:textColor</span><span class="s2">=&quot;@android:color/white&quot;</span>
+                    <span class="s1">android:textSize</span><span class="s2">=&quot;12sp&quot;</span>
+                    <span class="s1">android:gravity</span><span class="s2">=&quot;center&quot; </span><span class="s0">/&gt;</span>
+            <span class="s0">&lt;/LinearLayout&gt;</span>
+        <span class="s0">&lt;/com.google.android.material.card.MaterialCardView&gt;</span>
+
+        <span class="s0">&lt;com.google.android.material.card.MaterialCardView</span>
+            <span class="s1">android:id</span><span class="s2">=&quot;@+id/cardPerformanceWidget&quot;</span>
+            <span class="s1">android:layout_width</span><span class="s2">=&quot;match_parent&quot;</span>
+            <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+            <span class="s1">android:layout_marginBottom</span><span class="s2">=&quot;20dp&quot;</span>
+            <span class="s1">app:cardBackgroundColor</span><span class="s2">=&quot;@color/card_background&quot;</span>
+            <span class="s1">app:cardCornerRadius</span><span class="s2">=&quot;16dp&quot;</span>
+            <span class="s1">app:cardElevation</span><span class="s2">=&quot;8dp&quot;</span>
+            <span class="s1">app:strokeColor</span><span class="s2">=&quot;@color/card_stroke&quot;</span>
+            <span class="s1">app:strokeWidth</span><span class="s2">=&quot;1dp&quot;</span><span class="s0">&gt;</span>
+
+            <span class="s0">&lt;LinearLayout</span>
+                <span class="s1">android:layout_width</span><span class="s2">=&quot;match_parent&quot;</span>
+                <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                <span class="s1">android:orientation</span><span class="s2">=&quot;vertical&quot;</span>
+                <span class="s1">android:padding</span><span class="s2">=&quot;20dp&quot;</span><span class="s0">&gt;</span>
+
+                <span class="s0">&lt;LinearLayout</span>
+                    <span class="s1">android:layout_width</span><span class="s2">=&quot;match_parent&quot;</span>
+                    <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                    <span class="s1">android:orientation</span><span class="s2">=&quot;horizontal&quot;</span>
+                    <span class="s1">android:gravity</span><span class="s2">=&quot;center_vertical&quot;</span>
+                    <span class="s1">android:layout_marginBottom</span><span class="s2">=&quot;16dp&quot;</span><span class="s0">&gt;</span>
+
+                    <span class="s0">&lt;TextView</span>
+                        <span class="s1">android:layout_width</span><span class="s2">=&quot;0dp&quot;</span>
+                        <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                        <span class="s1">android:layout_weight</span><span class="s2">=&quot;1&quot;</span>
+                        <span class="s1">android:text</span><span class="s2">=&quot;⚡ Performance IA&quot;</span>
+                        <span class="s1">android:textColor</span><span class="s2">=&quot;@android:color/white&quot;</span>
+                        <span class="s1">android:textSize</span><span class="s2">=&quot;16sp&quot;</span>
+                        <span class="s1">android:textStyle</span><span class="s2">=&quot;bold&quot; </span><span class="s0">/&gt;</span>
+
+                    <span class="s0">&lt;LinearLayout</span>
+                        <span class="s1">android:layout_width</span><span class="s2">=&quot;wrap_content&quot;</span>
+                        <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                        <span class="s1">android:orientation</span><span class="s2">=&quot;horizontal&quot;</span>
+                        <span class="s1">android:gravity</span><span class="s2">=&quot;center_vertical&quot;</span><span class="s0">&gt;</span>
+
+                        <span class="s0">&lt;View</span>
+                            <span class="s1">android:id</span><span class="s2">=&quot;@+id/statusIndicator&quot;</span>
+                            <span class="s1">android:layout_width</span><span class="s2">=&quot;8dp&quot;</span>
+                            <span class="s1">android:layout_height</span><span class="s2">=&quot;8dp&quot;</span>
+                            <span class="s1">android:layout_marginEnd</span><span class="s2">=&quot;6dp&quot;</span>
+                            <span class="s1">android:background</span><span class="s2">=&quot;@drawable/status_indicator_active&quot; </span><span class="s0">/&gt;</span>
+
+                        <span class="s0">&lt;TextView</span>
+                            <span class="s1">android:id</span><span class="s2">=&quot;@+id/statusText&quot;</span>
+                            <span class="s1">android:layout_width</span><span class="s2">=&quot;wrap_content&quot;</span>
+                            <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                            <span class="s1">android:text</span><span class="s2">=&quot;ACTIF&quot;</span>
+                            <span class="s1">android:textColor</span><span class="s2">=&quot;#4CAF50&quot;</span>
+                            <span class="s1">android:textSize</span><span class="s2">=&quot;12sp&quot;</span>
+                            <span class="s1">android:textStyle</span><span class="s2">=&quot;bold&quot; </span><span class="s0">/&gt;</span>
+                    <span class="s0">&lt;/LinearLayout&gt;</span>
+                <span class="s0">&lt;/LinearLayout&gt;</span>
+
+                <span class="s0">&lt;LinearLayout</span>
+                    <span class="s1">android:layout_width</span><span class="s2">=&quot;match_parent&quot;</span>
+                    <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                    <span class="s1">android:orientation</span><span class="s2">=&quot;horizontal&quot;</span>
+                    <span class="s1">android:weightSum</span><span class="s2">=&quot;3&quot;</span><span class="s0">&gt;</span>
+
+                    <span class="s0">&lt;LinearLayout</span>
+                        <span class="s1">android:layout_width</span><span class="s2">=&quot;0dp&quot;</span>
+                        <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                        <span class="s1">android:layout_weight</span><span class="s2">=&quot;1&quot;</span>
+                        <span class="s1">android:orientation</span><span class="s2">=&quot;vertical&quot;</span>
+                        <span class="s1">android:gravity</span><span class="s2">=&quot;center&quot;</span>
+                        <span class="s1">android:padding</span><span class="s2">=&quot;12dp&quot;</span><span class="s0">&gt;</span>
+
+                        <span class="s0">&lt;TextView</span>
+                            <span class="s1">android:id</span><span class="s2">=&quot;@+id/detectionsPerHour&quot;</span>
+                            <span class="s1">android:layout_width</span><span class="s2">=&quot;wrap_content&quot;</span>
+                            <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                            <span class="s1">android:text</span><span class="s2">=&quot;0&quot;</span>
+                            <span class="s1">android:textColor</span><span class="s2">=&quot;#2196F3&quot;</span>
+                            <span class="s1">android:textSize</span><span class="s2">=&quot;24sp&quot;</span>
+                            <span class="s1">android:textStyle</span><span class="s2">=&quot;bold&quot; </span><span class="s0">/&gt;</span>
+
+                        <span class="s0">&lt;TextView</span>
+                            <span class="s1">android:layout_width</span><span class="s2">=&quot;wrap_content&quot;</span>
+                            <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                            <span class="s1">android:text</span><span class="s2">=&quot;détections/h&quot;</span>
+                            <span class="s1">android:textColor</span><span class="s2">=&quot;@color/text_secondary&quot;</span>
+                            <span class="s1">android:textSize</span><span class="s2">=&quot;11sp&quot;</span>
+                            <span class="s1">android:textAlignment</span><span class="s2">=&quot;center&quot; </span><span class="s0">/&gt;</span>
+                    <span class="s0">&lt;/LinearLayout&gt;</span>
+
+                    <span class="s0">&lt;LinearLayout</span>
+                        <span class="s1">android:layout_width</span><span class="s2">=&quot;0dp&quot;</span>
+                        <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                        <span class="s1">android:layout_weight</span><span class="s2">=&quot;1&quot;</span>
+                        <span class="s1">android:orientation</span><span class="s2">=&quot;vertical&quot;</span>
+                        <span class="s1">android:gravity</span><span class="s2">=&quot;center&quot;</span>
+                        <span class="s1">android:padding</span><span class="s2">=&quot;12dp&quot;</span><span class="s0">&gt;</span>
+
+                        <span class="s0">&lt;FrameLayout</span>
+                            <span class="s1">android:layout_width</span><span class="s2">=&quot;60dp&quot;</span>
+                            <span class="s1">android:layout_height</span><span class="s2">=&quot;60dp&quot;</span><span class="s0">&gt;</span>
+
+                            <span class="s0">&lt;com.mikhaellopez.circularprogressbar.CircularProgressBar</span>
+                                <span class="s1">android:id</span><span class="s2">=&quot;@+id/accuracyGauge&quot;</span>
+                                <span class="s1">android:layout_width</span><span class="s2">=&quot;60dp&quot;</span>
+                                <span class="s1">android:layout_height</span><span class="s2">=&quot;60dp&quot;</span>
+                                <span class="s1">app:cpb_background_progressbar_color</span><span class="s2">=&quot;#33FFFFFF&quot;</span>
+                                <span class="s1">app:cpb_background_progressbar_width</span><span class="s2">=&quot;4dp&quot;</span>
+                                <span class="s1">app:cpb_progress_direction</span><span class="s2">=&quot;to_right&quot;</span>
+                                <span class="s1">app:cpb_progressbar_color</span><span class="s2">=&quot;#4CAF50&quot;</span>
+                                <span class="s1">app:cpb_progressbar_width</span><span class="s2">=&quot;4dp&quot;</span>
+                                <span class="s1">app:cpb_round_border</span><span class="s2">=&quot;true&quot; </span><span class="s0">/&gt;</span>
+
+                            <span class="s0">&lt;TextView</span>
+                                <span class="s1">android:id</span><span class="s2">=&quot;@+id/accuracyText&quot;</span>
+                                <span class="s1">android:layout_width</span><span class="s2">=&quot;wrap_content&quot;</span>
+                                <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                                <span class="s1">android:layout_gravity</span><span class="s2">=&quot;center&quot;</span>
+                                <span class="s1">android:text</span><span class="s2">=&quot;95%&quot;</span>
+                                <span class="s1">android:textColor</span><span class="s2">=&quot;#4CAF50&quot;</span>
+                                <span class="s1">android:textSize</span><span class="s2">=&quot;14sp&quot;</span>
+                                <span class="s1">android:textStyle</span><span class="s2">=&quot;bold&quot; </span><span class="s0">/&gt;</span>
+                        <span class="s0">&lt;/FrameLayout&gt;</span>
+
+                        <span class="s0">&lt;TextView</span>
+                            <span class="s1">android:layout_width</span><span class="s2">=&quot;wrap_content&quot;</span>
+                            <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                            <span class="s1">android:text</span><span class="s2">=&quot;précision&quot;</span>
+                            <span class="s1">android:textColor</span><span class="s2">=&quot;@color/text_secondary&quot;</span>
+                            <span class="s1">android:textSize</span><span class="s2">=&quot;11sp&quot;</span>
+                            <span class="s1">android:layout_marginTop</span><span class="s2">=&quot;4dp&quot; </span><span class="s0">/&gt;</span>
+                    <span class="s0">&lt;/LinearLayout&gt;</span>
+
+                    <span class="s0">&lt;LinearLayout</span>
+                        <span class="s1">android:layout_width</span><span class="s2">=&quot;0dp&quot;</span>
+                        <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                        <span class="s1">android:layout_weight</span><span class="s2">=&quot;1&quot;</span>
+                        <span class="s1">android:orientation</span><span class="s2">=&quot;vertical&quot;</span>
+                        <span class="s1">android:gravity</span><span class="s2">=&quot;center&quot;</span>
+                        <span class="s1">android:padding</span><span class="s2">=&quot;12dp&quot;</span><span class="s0">&gt;</span>
+
+                        <span class="s0">&lt;TextView</span>
+                            <span class="s1">android:id</span><span class="s2">=&quot;@+id/responseTime&quot;</span>
+                            <span class="s1">android:layout_width</span><span class="s2">=&quot;wrap_content&quot;</span>
+                            <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                            <span class="s1">android:text</span><span class="s2">=&quot;0.3s&quot;</span>
+                            <span class="s1">android:textColor</span><span class="s2">=&quot;#FF9800&quot;</span>
+                            <span class="s1">android:textSize</span><span class="s2">=&quot;20sp&quot;</span>
+                            <span class="s1">android:textStyle</span><span class="s2">=&quot;bold&quot; </span><span class="s0">/&gt;</span>
+
+                        <span class="s0">&lt;TextView</span>
+                            <span class="s1">android:layout_width</span><span class="s2">=&quot;wrap_content&quot;</span>
+                            <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                            <span class="s1">android:text</span><span class="s2">=&quot;temps analyse&quot;</span>
+                            <span class="s1">android:textColor</span><span class="s2">=&quot;@color/text_secondary&quot;</span>
+                            <span class="s1">android:textSize</span><span class="s2">=&quot;11sp&quot;</span>
+                            <span class="s1">android:textAlignment</span><span class="s2">=&quot;center&quot; </span><span class="s0">/&gt;</span>
+                    <span class="s0">&lt;/LinearLayout&gt;</span>
+                <span class="s0">&lt;/LinearLayout&gt;</span>
+
+                <span class="s0">&lt;LinearLayout</span>
+                    <span class="s1">android:layout_width</span><span class="s2">=&quot;match_parent&quot;</span>
+                    <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                    <span class="s1">android:orientation</span><span class="s2">=&quot;vertical&quot;</span>
+                    <span class="s1">android:layout_marginTop</span><span class="s2">=&quot;16dp&quot;</span><span class="s0">&gt;</span>
+
+                    <span class="s0">&lt;LinearLayout</span>
+                        <span class="s1">android:layout_width</span><span class="s2">=&quot;match_parent&quot;</span>
+                        <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                        <span class="s1">android:orientation</span><span class="s2">=&quot;horizontal&quot;</span>
+                        <span class="s1">android:gravity</span><span class="s2">=&quot;center_vertical&quot;</span>
+                        <span class="s1">android:layout_marginBottom</span><span class="s2">=&quot;8dp&quot;</span><span class="s0">&gt;</span>
+
+                        <span class="s0">&lt;TextView</span>
+                            <span class="s1">android:layout_width</span><span class="s2">=&quot;0dp&quot;</span>
+                            <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                            <span class="s1">android:layout_weight</span><span class="s2">=&quot;1&quot;</span>
+                            <span class="s1">android:text</span><span class="s2">=&quot;Activité dernière heure&quot;</span>
+                            <span class="s1">android:textColor</span><span class="s2">=&quot;@color/text_secondary&quot;</span>
+                            <span class="s1">android:textSize</span><span class="s2">=&quot;12sp&quot; </span><span class="s0">/&gt;</span>
+
+                        <span class="s0">&lt;TextView</span>
+                            <span class="s1">android:id</span><span class="s2">=&quot;@+id/activityLevel&quot;</span>
+                            <span class="s1">android:layout_width</span><span class="s2">=&quot;wrap_content&quot;</span>
+                            <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                            <span class="s1">android:text</span><span class="s2">=&quot;Normale&quot;</span>
+                            <span class="s1">android:textColor</span><span class="s2">=&quot;#4CAF50&quot;</span>
+                            <span class="s1">android:textSize</span><span class="s2">=&quot;12sp&quot;</span>
+                            <span class="s1">android:textStyle</span><span class="s2">=&quot;bold&quot; </span><span class="s0">/&gt;</span>
+                    <span class="s0">&lt;/LinearLayout&gt;</span>
+
+                    <span class="s0">&lt;com.google.android.material.progressindicator.LinearProgressIndicator</span>
+                        <span class="s1">android:id</span><span class="s2">=&quot;@+id/activityProgress&quot;</span>
+                        <span class="s1">android:layout_width</span><span class="s2">=&quot;match_parent&quot;</span>
+                        <span class="s1">android:layout_height</span><span class="s2">=&quot;6dp&quot;</span>
+                        <span class="s1">app:indicatorColor</span><span class="s2">=&quot;#4CAF50&quot;</span>
+                        <span class="s1">app:trackColor</span><span class="s2">=&quot;#33FFFFFF&quot;</span>
+                        <span class="s1">app:trackCornerRadius</span><span class="s2">=&quot;3dp&quot;</span>
+                        <span class="s1">android:progress</span><span class="s2">=&quot;65&quot; </span><span class="s0">/&gt;</span>
+                <span class="s0">&lt;/LinearLayout&gt;</span>
+            <span class="s0">&lt;/LinearLayout&gt;</span>
+        <span class="s0">&lt;/com.google.android.material.card.MaterialCardView&gt;</span>
+
+        <span class="s0">&lt;com.google.android.material.card.MaterialCardView</span>
+            <span class="s1">android:id</span><span class="s2">=&quot;@+id/cardNotificationWidget&quot;</span>
+            <span class="s1">android:layout_width</span><span class="s2">=&quot;match_parent&quot;</span>
+            <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+            <span class="s1">android:layout_marginBottom</span><span class="s2">=&quot;20dp&quot;</span>
+            <span class="s1">app:cardBackgroundColor</span><span class="s2">=&quot;@color/card_background&quot;</span>
+            <span class="s1">app:cardCornerRadius</span><span class="s2">=&quot;16dp&quot;</span>
+            <span class="s1">app:cardElevation</span><span class="s2">=&quot;8dp&quot;</span>
+            <span class="s1">app:strokeColor</span><span class="s2">=&quot;@color/card_stroke&quot;</span>
+            <span class="s1">app:strokeWidth</span><span class="s2">=&quot;1dp&quot;</span><span class="s0">&gt;</span>
+
+            <span class="s0">&lt;LinearLayout</span>
+                <span class="s1">android:layout_width</span><span class="s2">=&quot;match_parent&quot;</span>
+                <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                <span class="s1">android:orientation</span><span class="s2">=&quot;vertical&quot;</span>
+                <span class="s1">android:padding</span><span class="s2">=&quot;20dp&quot;</span><span class="s0">&gt;</span>
+
+                <span class="s0">&lt;LinearLayout</span>
+                    <span class="s1">android:layout_width</span><span class="s2">=&quot;match_parent&quot;</span>
+                    <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                    <span class="s1">android:orientation</span><span class="s2">=&quot;horizontal&quot;</span>
+                    <span class="s1">android:gravity</span><span class="s2">=&quot;center_vertical&quot;</span>
+                    <span class="s1">android:layout_marginBottom</span><span class="s2">=&quot;16dp&quot;</span><span class="s0">&gt;</span>
+
+                    <span class="s0">&lt;TextView</span>
+                        <span class="s1">android:layout_width</span><span class="s2">=&quot;0dp&quot;</span>
+                        <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                        <span class="s1">android:layout_weight</span><span class="s2">=&quot;1&quot;</span>
+                        <span class="s1">android:text</span><span class="s2">=&quot;🔔 Alertes Récentes&quot;</span>
+                        <span class="s1">android:textColor</span><span class="s2">=&quot;@android:color/white&quot;</span>
+                        <span class="s1">android:textSize</span><span class="s2">=&quot;16sp&quot;</span>
+                        <span class="s1">android:textStyle</span><span class="s2">=&quot;bold&quot; </span><span class="s0">/&gt;</span>
+
+                    <span class="s0">&lt;FrameLayout</span>
+                        <span class="s1">android:layout_width</span><span class="s2">=&quot;wrap_content&quot;</span>
+                        <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span><span class="s0">&gt;</span>
+
+                        <span class="s0">&lt;TextView</span>
+                            <span class="s1">android:id</span><span class="s2">=&quot;@+id/alertBadge&quot;</span>
+                            <span class="s1">android:layout_width</span><span class="s2">=&quot;24dp&quot;</span>
+                            <span class="s1">android:layout_height</span><span class="s2">=&quot;24dp&quot;</span>
+                            <span class="s1">android:text</span><span class="s2">=&quot;3&quot;</span>
+                            <span class="s1">android:textColor</span><span class="s2">=&quot;@android:color/white&quot;</span>
+                            <span class="s1">android:textSize</span><span class="s2">=&quot;12sp&quot;</span>
+                            <span class="s1">android:textStyle</span><span class="s2">=&quot;bold&quot;</span>
+                            <span class="s1">android:gravity</span><span class="s2">=&quot;center&quot;</span>
+                            <span class="s1">android:background</span><span class="s2">=&quot;@drawable/alert_badge_background&quot; </span><span class="s0">/&gt;</span>
+                    <span class="s0">&lt;/FrameLayout&gt;</span>
+                <span class="s0">&lt;/LinearLayout&gt;</span>
+
+                <span class="s0">&lt;LinearLayout</span>
+                    <span class="s1">android:layout_width</span><span class="s2">=&quot;match_parent&quot;</span>
+                    <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                    <span class="s1">android:orientation</span><span class="s2">=&quot;vertical&quot;</span><span class="s0">&gt;</span>
+
+                    <span class="s0">&lt;LinearLayout</span>
+                        <span class="s1">android:id</span><span class="s2">=&quot;@+id/alertCritical&quot;</span>
+                        <span class="s1">android:layout_width</span><span class="s2">=&quot;match_parent&quot;</span>
+                        <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                        <span class="s1">android:orientation</span><span class="s2">=&quot;horizontal&quot;</span>
+                        <span class="s1">android:padding</span><span class="s2">=&quot;12dp&quot;</span>
+                        <span class="s1">android:layout_marginBottom</span><span class="s2">=&quot;8dp&quot;</span>
+                        <span class="s1">android:background</span><span class="s2">=&quot;@drawable/alert_critical_background&quot;</span>
+                        <span class="s1">android:clickable</span><span class="s2">=&quot;true&quot;</span>
+                        <span class="s1">android:focusable</span><span class="s2">=&quot;true&quot;</span>
+                        <span class="s1">android:foreground</span><span class="s2">=&quot;?android:attr/selectableItemBackground&quot;</span><span class="s0">&gt;</span>
+
+                        <span class="s0">&lt;View</span>
+                            <span class="s1">android:layout_width</span><span class="s2">=&quot;4dp&quot;</span>
+                            <span class="s1">android:layout_height</span><span class="s2">=&quot;match_parent&quot;</span>
+                            <span class="s1">android:background</span><span class="s2">=&quot;#FF5252&quot;</span>
+                            <span class="s1">android:layout_marginEnd</span><span class="s2">=&quot;12dp&quot; </span><span class="s0">/&gt;</span>
+
+                        <span class="s0">&lt;LinearLayout</span>
+                            <span class="s1">android:layout_width</span><span class="s2">=&quot;0dp&quot;</span>
+                            <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                            <span class="s1">android:layout_weight</span><span class="s2">=&quot;1&quot;</span>
+                            <span class="s1">android:orientation</span><span class="s2">=&quot;vertical&quot;</span><span class="s0">&gt;</span>
+
+                            <span class="s0">&lt;TextView</span>
+                                <span class="s1">android:layout_width</span><span class="s2">=&quot;wrap_content&quot;</span>
+                                <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                                <span class="s1">android:text</span><span class="s2">=&quot;SMS très suspect détecté&quot;</span>
+                                <span class="s1">android:textColor</span><span class="s2">=&quot;@android:color/white&quot;</span>
+                                <span class="s1">android:textSize</span><span class="s2">=&quot;14sp&quot;</span>
+                                <span class="s1">android:textStyle</span><span class="s2">=&quot;bold&quot; </span><span class="s0">/&gt;</span>
+
+                            <span class="s0">&lt;TextView</span>
+                                <span class="s1">android:layout_width</span><span class="s2">=&quot;wrap_content&quot;</span>
+                                <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                                <span class="s1">android:text</span><span class="s2">=&quot;Score: 95% • 08991234** • Il y a 2 min&quot;</span>
+                                <span class="s1">android:textColor</span><span class="s2">=&quot;@color/text_secondary&quot;</span>
+                                <span class="s1">android:textSize</span><span class="s2">=&quot;12sp&quot;</span>
+                                <span class="s1">android:layout_marginTop</span><span class="s2">=&quot;2dp&quot; </span><span class="s0">/&gt;</span>
+                        <span class="s0">&lt;/LinearLayout&gt;</span>
+
+                        <span class="s0">&lt;TextView</span>
+                            <span class="s1">android:layout_width</span><span class="s2">=&quot;wrap_content&quot;</span>
+                            <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                            <span class="s1">android:text</span><span class="s2">=&quot;⚠️&quot;</span>
+                            <span class="s1">android:textSize</span><span class="s2">=&quot;20sp&quot;</span>
+                            <span class="s1">android:layout_gravity</span><span class="s2">=&quot;center_vertical&quot; </span><span class="s0">/&gt;</span>
+                    <span class="s0">&lt;/LinearLayout&gt;</span>
+
+                    <span class="s0">&lt;LinearLayout</span>
+                        <span class="s1">android:id</span><span class="s2">=&quot;@+id/alertMedium&quot;</span>
+                        <span class="s1">android:layout_width</span><span class="s2">=&quot;match_parent&quot;</span>
+                        <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                        <span class="s1">android:orientation</span><span class="s2">=&quot;horizontal&quot;</span>
+                        <span class="s1">android:padding</span><span class="s2">=&quot;12dp&quot;</span>
+                        <span class="s1">android:layout_marginBottom</span><span class="s2">=&quot;8dp&quot;</span>
+                        <span class="s1">android:background</span><span class="s2">=&quot;@drawable/alert_medium_background&quot;</span>
+                        <span class="s1">android:clickable</span><span class="s2">=&quot;true&quot;</span>
+                        <span class="s1">android:focusable</span><span class="s2">=&quot;true&quot;</span>
+                        <span class="s1">android:foreground</span><span class="s2">=&quot;?android:attr/selectableItemBackground&quot;</span><span class="s0">&gt;</span>
+
+                        <span class="s0">&lt;View</span>
+                            <span class="s1">android:layout_width</span><span class="s2">=&quot;4dp&quot;</span>
+                            <span class="s1">android:layout_height</span><span class="s2">=&quot;match_parent&quot;</span>
+                            <span class="s1">android:background</span><span class="s2">=&quot;#FF9800&quot;</span>
+                            <span class="s1">android:layout_marginEnd</span><span class="s2">=&quot;12dp&quot; </span><span class="s0">/&gt;</span>
+
+                        <span class="s0">&lt;LinearLayout</span>
+                            <span class="s1">android:layout_width</span><span class="s2">=&quot;0dp&quot;</span>
+                            <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                            <span class="s1">android:layout_weight</span><span class="s2">=&quot;1&quot;</span>
+                            <span class="s1">android:orientation</span><span class="s2">=&quot;vertical&quot;</span><span class="s0">&gt;</span>
+
+                            <span class="s0">&lt;TextView</span>
+                                <span class="s1">android:layout_width</span><span class="s2">=&quot;wrap_content&quot;</span>
+                                <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                                <span class="s1">android:text</span><span class="s2">=&quot;Appel numéro surtaxé bloqué&quot;</span>
+                                <span class="s1">android:textColor</span><span class="s2">=&quot;@android:color/white&quot;</span>
+                                <span class="s1">android:textSize</span><span class="s2">=&quot;14sp&quot;</span>
+                                <span class="s1">android:textStyle</span><span class="s2">=&quot;bold&quot; </span><span class="s0">/&gt;</span>
+
+                            <span class="s0">&lt;TextView</span>
+                                <span class="s1">android:layout_width</span><span class="s2">=&quot;wrap_content&quot;</span>
+                                <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                                <span class="s1">android:text</span><span class="s2">=&quot;0899** • Il y a 15 min&quot;</span>
+                                <span class="s1">android:textColor</span><span class="s2">=&quot;@color/text_secondary&quot;</span>
+                                <span class="s1">android:textSize</span><span class="s2">=&quot;12sp&quot;</span>
+                                <span class="s1">android:layout_marginTop</span><span class="s2">=&quot;2dp&quot; </span><span class="s0">/&gt;</span>
+                        <span class="s0">&lt;/LinearLayout&gt;</span>
+
+                        <span class="s0">&lt;TextView</span>
+                            <span class="s1">android:layout_width</span><span class="s2">=&quot;wrap_content&quot;</span>
+                            <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                            <span class="s1">android:text</span><span class="s2">=&quot;📵&quot;</span>
+                            <span class="s1">android:textSize</span><span class="s2">=&quot;20sp&quot;</span>
+                            <span class="s1">android:layout_gravity</span><span class="s2">=&quot;center_vertical&quot; </span><span class="s0">/&gt;</span>
+                    <span class="s0">&lt;/LinearLayout&gt;</span>
+
+                    <span class="s0">&lt;LinearLayout</span>
+                        <span class="s1">android:id</span><span class="s2">=&quot;@+id/viewAllAlerts&quot;</span>
+                        <span class="s1">android:layout_width</span><span class="s2">=&quot;match_parent&quot;</span>
+                        <span class="s1">android:layout_height</span><span class="s2">=&quot;40dp&quot;</span>
+                        <span class="s1">android:orientation</span><span class="s2">=&quot;horizontal&quot;</span>
+                        <span class="s1">android:gravity</span><span class="s2">=&quot;center&quot;</span>
+                        <span class="s1">android:layout_marginTop</span><span class="s2">=&quot;8dp&quot;</span>
+                        <span class="s1">android:background</span><span class="s2">=&quot;@drawable/view_all_background&quot;</span>
+                        <span class="s1">android:clickable</span><span class="s2">=&quot;true&quot;</span>
+                        <span class="s1">android:focusable</span><span class="s2">=&quot;true&quot;</span>
+                        <span class="s1">android:foreground</span><span class="s2">=&quot;?android:attr/selectableItemBackground&quot;</span><span class="s0">&gt;</span>
+
+                        <span class="s0">&lt;TextView</span>
+                            <span class="s1">android:layout_width</span><span class="s2">=&quot;wrap_content&quot;</span>
+                            <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                            <span class="s1">android:text</span><span class="s2">=&quot;Voir toutes les alertes&quot;</span>
+                            <span class="s1">android:textColor</span><span class="s2">=&quot;#2196F3&quot;</span>
+                            <span class="s1">android:textSize</span><span class="s2">=&quot;14sp&quot;</span>
+                            <span class="s1">android:textStyle</span><span class="s2">=&quot;bold&quot; </span><span class="s0">/&gt;</span>
+
+                        <span class="s0">&lt;TextView</span>
+                            <span class="s1">android:layout_width</span><span class="s2">=&quot;wrap_content&quot;</span>
+                            <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                            <span class="s1">android:text</span><span class="s2">=&quot; →&quot;</span>
+                            <span class="s1">android:textColor</span><span class="s2">=&quot;#2196F3&quot;</span>
+                            <span class="s1">android:textSize</span><span class="s2">=&quot;14sp&quot;</span>
+                            <span class="s1">android:layout_marginStart</span><span class="s2">=&quot;4dp&quot; </span><span class="s0">/&gt;</span>
+                    <span class="s0">&lt;/LinearLayout&gt;</span>
+                <span class="s0">&lt;/LinearLayout&gt;</span>
+            <span class="s0">&lt;/LinearLayout&gt;</span>
+        <span class="s0">&lt;/com.google.android.material.card.MaterialCardView&gt;</span>
+
+        <span class="s0">&lt;GridLayout</span>
+            <span class="s1">android:layout_width</span><span class="s2">=&quot;match_parent&quot;</span>
+            <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+            <span class="s1">android:columnCount</span><span class="s2">=&quot;2&quot;</span>
+            <span class="s1">android:useDefaultMargins</span><span class="s2">=&quot;true&quot;</span><span class="s0">&gt;</span>
+
+            <span class="s0">&lt;com.google.android.material.card.MaterialCardView</span>
+                <span class="s1">android:id</span><span class="s2">=&quot;@+id/cardConfiguration&quot;</span>
+                <span class="s1">android:layout_width</span><span class="s2">=&quot;0dp&quot;</span>
+                <span class="s1">android:layout_height</span><span class="s2">=&quot;140dp&quot;</span>
+                <span class="s1">android:layout_columnWeight</span><span class="s2">=&quot;1&quot;</span>
+                <span class="s1">android:layout_margin</span><span class="s2">=&quot;8dp&quot;</span>
+                <span class="s1">app:cardBackgroundColor</span><span class="s2">=&quot;@color/card_background&quot;</span>
+                <span class="s1">app:cardCornerRadius</span><span class="s2">=&quot;20dp&quot;</span>
+                <span class="s1">app:cardElevation</span><span class="s2">=&quot;4dp&quot;</span>
+                <span class="s1">app:strokeColor</span><span class="s2">=&quot;@color/card_stroke&quot;</span>
+                <span class="s1">app:strokeWidth</span><span class="s2">=&quot;1dp&quot;</span>
+                <span class="s1">android:clickable</span><span class="s2">=&quot;true&quot;</span>
+                <span class="s1">android:focusable</span><span class="s2">=&quot;true&quot;</span>
+                <span class="s1">android:foreground</span><span class="s2">=&quot;?android:attr/selectableItemBackground&quot;</span><span class="s0">&gt;</span>
+
+                <span class="s0">&lt;LinearLayout</span>
+                    <span class="s1">android:layout_width</span><span class="s2">=&quot;match_parent&quot;</span>
+                    <span class="s1">android:layout_height</span><span class="s2">=&quot;match_parent&quot;</span>
+                    <span class="s1">android:orientation</span><span class="s2">=&quot;vertical&quot;</span>
+                    <span class="s1">android:gravity</span><span class="s2">=&quot;center&quot;</span>
+                    <span class="s1">android:padding</span><span class="s2">=&quot;16dp&quot;</span><span class="s0">&gt;</span>
+
+                    <span class="s0">&lt;TextView</span>
+                        <span class="s1">android:layout_width</span><span class="s2">=&quot;50dp&quot;</span>
+                        <span class="s1">android:layout_height</span><span class="s2">=&quot;50dp&quot;</span>
+                        <span class="s1">android:text</span><span class="s2">=&quot;⚙️&quot;</span>
+                        <span class="s1">android:textSize</span><span class="s2">=&quot;28sp&quot;</span>
+                        <span class="s1">android:gravity</span><span class="s2">=&quot;center&quot;</span>
+                        <span class="s1">android:background</span><span class="s2">=&quot;@drawable/icon_background_animated&quot;</span>
+                        <span class="s1">android:layout_marginBottom</span><span class="s2">=&quot;12dp&quot; </span><span class="s0">/&gt;</span>
+
+                    <span class="s0">&lt;TextView</span>
+                        <span class="s1">android:layout_width</span><span class="s2">=&quot;wrap_content&quot;</span>
+                        <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                        <span class="s1">android:text</span><span class="s2">=&quot;Configuration&quot;</span>
+                        <span class="s1">android:textColor</span><span class="s2">=&quot;@android:color/white&quot;</span>
+                        <span class="s1">android:textSize</span><span class="s2">=&quot;14sp&quot;</span>
+                        <span class="s1">android:textStyle</span><span class="s2">=&quot;bold&quot;</span>
+                        <span class="s1">android:textAlignment</span><span class="s2">=&quot;center&quot; </span><span class="s0">/&gt;</span>
+
+                    <span class="s0">&lt;TextView</span>
+                        <span class="s1">android:layout_width</span><span class="s2">=&quot;wrap_content&quot;</span>
+                        <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                        <span class="s1">android:text</span><span class="s2">=&quot;Paramètres généraux&quot;</span>
+                        <span class="s1">android:textColor</span><span class="s2">=&quot;@color/text_secondary&quot;</span>
+                        <span class="s1">android:textSize</span><span class="s2">=&quot;11sp&quot;</span>
+                        <span class="s1">android:textAlignment</span><span class="s2">=&quot;center&quot;</span>
+                        <span class="s1">android:layout_marginTop</span><span class="s2">=&quot;4dp&quot; </span><span class="s0">/&gt;</span>
+                <span class="s0">&lt;/LinearLayout&gt;</span>
+            <span class="s0">&lt;/com.google.android.material.card.MaterialCardView&gt;</span>
+
+            <span class="s0">&lt;com.google.android.material.card.MaterialCardView</span>
+                <span class="s1">android:id</span><span class="s2">=&quot;@+id/cardSmsSettings&quot;</span>
+                <span class="s1">android:layout_width</span><span class="s2">=&quot;0dp&quot;</span>
+                <span class="s1">android:layout_height</span><span class="s2">=&quot;140dp&quot;</span>
+                <span class="s1">android:layout_columnWeight</span><span class="s2">=&quot;1&quot;</span>
+                <span class="s1">android:layout_margin</span><span class="s2">=&quot;8dp&quot;</span>
+                <span class="s1">app:cardBackgroundColor</span><span class="s2">=&quot;@color/card_background&quot;</span>
+                <span class="s1">app:cardCornerRadius</span><span class="s2">=&quot;20dp&quot;</span>
+                <span class="s1">app:cardElevation</span><span class="s2">=&quot;4dp&quot;</span>
+                <span class="s1">app:strokeColor</span><span class="s2">=&quot;@color/card_stroke&quot;</span>
+                <span class="s1">app:strokeWidth</span><span class="s2">=&quot;1dp&quot;</span>
+                <span class="s1">android:clickable</span><span class="s2">=&quot;true&quot;</span>
+                <span class="s1">android:focusable</span><span class="s2">=&quot;true&quot;</span>
+                <span class="s1">android:foreground</span><span class="s2">=&quot;?android:attr/selectableItemBackground&quot;</span><span class="s0">&gt;</span>
+
+                <span class="s0">&lt;LinearLayout</span>
+                    <span class="s1">android:layout_width</span><span class="s2">=&quot;match_parent&quot;</span>
+                    <span class="s1">android:layout_height</span><span class="s2">=&quot;match_parent&quot;</span>
+                    <span class="s1">android:orientation</span><span class="s2">=&quot;vertical&quot;</span>
+                    <span class="s1">android:gravity</span><span class="s2">=&quot;center&quot;</span>
+                    <span class="s1">android:padding</span><span class="s2">=&quot;16dp&quot;</span><span class="s0">&gt;</span>
+
+                    <span class="s0">&lt;TextView</span>
+                        <span class="s1">android:layout_width</span><span class="s2">=&quot;50dp&quot;</span>
+                        <span class="s1">android:layout_height</span><span class="s2">=&quot;50dp&quot;</span>
+                        <span class="s1">android:text</span><span class="s2">=&quot;💬&quot;</span>
+                        <span class="s1">android:textSize</span><span class="s2">=&quot;28sp&quot;</span>
+                        <span class="s1">android:gravity</span><span class="s2">=&quot;center&quot;</span>
+                        <span class="s1">android:background</span><span class="s2">=&quot;@drawable/icon_background_animated&quot;</span>
+                        <span class="s1">android:layout_marginBottom</span><span class="s2">=&quot;12dp&quot; </span><span class="s0">/&gt;</span>
+
+                    <span class="s0">&lt;TextView</span>
+                        <span class="s1">android:layout_width</span><span class="s2">=&quot;wrap_content&quot;</span>
+                        <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                        <span class="s1">android:text</span><span class="s2">=&quot;SMS Intelligent&quot;</span>
+                        <span class="s1">android:textColor</span><span class="s2">=&quot;@android:color/white&quot;</span>
+                        <span class="s1">android:textSize</span><span class="s2">=&quot;14sp&quot;</span>
+                        <span class="s1">android:textStyle</span><span class="s2">=&quot;bold&quot;</span>
+                        <span class="s1">android:textAlignment</span><span class="s2">=&quot;center&quot; </span><span class="s0">/&gt;</span>
+
+                    <span class="s0">&lt;TextView</span>
+                        <span class="s1">android:layout_width</span><span class="s2">=&quot;wrap_content&quot;</span>
+                        <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                        <span class="s1">android:text</span><span class="s2">=&quot;Gérer les filtres SMS&quot;</span>
+                        <span class="s1">android:textColor</span><span class="s2">=&quot;@color/text_secondary&quot;</span>
+                        <span class="s1">android:textSize</span><span class="s2">=&quot;11sp&quot;</span>
+                        <span class="s1">android:textAlignment</span><span class="s2">=&quot;center&quot;</span>
+                        <span class="s1">android:layout_marginTop</span><span class="s2">=&quot;4dp&quot; </span><span class="s0">/&gt;</span>
+                <span class="s0">&lt;/LinearLayout&gt;</span>
+            <span class="s0">&lt;/com.google.android.material.card.MaterialCardView&gt;</span>
+
+            <span class="s0">&lt;com.google.android.material.card.MaterialCardView</span>
+                <span class="s1">android:id</span><span class="s2">=&quot;@+id/cardBlockedList&quot;</span>
+                <span class="s1">android:layout_width</span><span class="s2">=&quot;0dp&quot;</span>
+                <span class="s1">android:layout_height</span><span class="s2">=&quot;140dp&quot;</span>
+                <span class="s1">android:layout_columnWeight</span><span class="s2">=&quot;1&quot;</span>
+                <span class="s1">android:layout_margin</span><span class="s2">=&quot;8dp&quot;</span>
+                <span class="s1">app:cardBackgroundColor</span><span class="s2">=&quot;@color/card_background&quot;</span>
+                <span class="s1">app:cardCornerRadius</span><span class="s2">=&quot;20dp&quot;</span>
+                <span class="s1">app:cardElevation</span><span class="s2">=&quot;4dp&quot;</span>
+                <span class="s1">app:strokeColor</span><span class="s2">=&quot;@color/card_stroke&quot;</span>
+                <span class="s1">app:strokeWidth</span><span class="s2">=&quot;1dp&quot;</span>
+                <span class="s1">android:clickable</span><span class="s2">=&quot;true&quot;</span>
+                <span class="s1">android:focusable</span><span class="s2">=&quot;true&quot;</span>
+                <span class="s1">android:foreground</span><span class="s2">=&quot;?android:attr/selectableItemBackground&quot;</span><span class="s0">&gt;</span>
+
+                <span class="s0">&lt;LinearLayout</span>
+                    <span class="s1">android:layout_width</span><span class="s2">=&quot;match_parent&quot;</span>
+                    <span class="s1">android:layout_height</span><span class="s2">=&quot;match_parent&quot;</span>
+                    <span class="s1">android:orientation</span><span class="s2">=&quot;vertical&quot;</span>
+                    <span class="s1">android:gravity</span><span class="s2">=&quot;center&quot;</span>
+                    <span class="s1">android:padding</span><span class="s2">=&quot;16dp&quot;</span><span class="s0">&gt;</span>
+
+                    <span class="s0">&lt;TextView</span>
+                        <span class="s1">android:layout_width</span><span class="s2">=&quot;50dp&quot;</span>
+                        <span class="s1">android:layout_height</span><span class="s2">=&quot;50dp&quot;</span>
+                        <span class="s1">android:text</span><span class="s2">=&quot;📵&quot;</span>
+                        <span class="s1">android:textSize</span><span class="s2">=&quot;28sp&quot;</span>
+                        <span class="s1">android:gravity</span><span class="s2">=&quot;center&quot;</span>
+                        <span class="s1">android:background</span><span class="s2">=&quot;@drawable/icon_background_animated&quot;</span>
+                        <span class="s1">android:layout_marginBottom</span><span class="s2">=&quot;12dp&quot; </span><span class="s0">/&gt;</span>
+
+                    <span class="s0">&lt;TextView</span>
+                        <span class="s1">android:layout_width</span><span class="s2">=&quot;wrap_content&quot;</span>
+                        <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                        <span class="s1">android:text</span><span class="s2">=&quot;Liste Bloquée&quot;</span>
+                        <span class="s1">android:textColor</span><span class="s2">=&quot;@android:color/white&quot;</span>
+                        <span class="s1">android:textSize</span><span class="s2">=&quot;14sp&quot;</span>
+                        <span class="s1">android:textStyle</span><span class="s2">=&quot;bold&quot;</span>
+                        <span class="s1">android:textAlignment</span><span class="s2">=&quot;center&quot; </span><span class="s0">/&gt;</span>
+
+                    <span class="s0">&lt;TextView</span>
+                        <span class="s1">android:layout_width</span><span class="s2">=&quot;wrap_content&quot;</span>
+                        <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                        <span class="s1">android:text</span><span class="s2">=&quot;Gérer vos numéros bloqués&quot;</span>
+                        <span class="s1">android:textColor</span><span class="s2">=&quot;@color/text_secondary&quot;</span>
+                        <span class="s1">android:textSize</span><span class="s2">=&quot;11sp&quot;</span>
+                        <span class="s1">android:textAlignment</span><span class="s2">=&quot;center&quot;</span>
+                        <span class="s1">android:layout_marginTop</span><span class="s2">=&quot;4dp&quot; </span><span class="s0">/&gt;</span>
+                <span class="s0">&lt;/LinearLayout&gt;</span>
+            <span class="s0">&lt;/com.google.android.material.card.MaterialCardView&gt;</span>
+
+            <span class="s0">&lt;com.google.android.material.card.MaterialCardView</span>
+                <span class="s1">android:id</span><span class="s2">=&quot;@+id/cardCallJournal&quot;</span>
+                <span class="s1">android:layout_width</span><span class="s2">=&quot;0dp&quot;</span>
+                <span class="s1">android:layout_height</span><span class="s2">=&quot;140dp&quot;</span>
+                <span class="s1">android:layout_columnWeight</span><span class="s2">=&quot;1&quot;</span>
+                <span class="s1">android:layout_margin</span><span class="s2">=&quot;8dp&quot;</span>
+                <span class="s1">app:cardBackgroundColor</span><span class="s2">=&quot;@color/card_background&quot;</span>
+                <span class="s1">app:cardCornerRadius</span><span class="s2">=&quot;20dp&quot;</span>
+                <span class="s1">app:cardElevation</span><span class="s2">=&quot;4dp&quot;</span>
+                <span class="s1">app:strokeColor</span><span class="s2">=&quot;@color/card_stroke&quot;</span>
+                <span class="s1">app:strokeWidth</span><span class="s2">=&quot;1dp&quot;</span>
+                <span class="s1">android:clickable</span><span class="s2">=&quot;true&quot;</span>
+                <span class="s1">android:focusable</span><span class="s2">=&quot;true&quot;</span>
+                <span class="s1">android:foreground</span><span class="s2">=&quot;?android:attr/selectableItemBackground&quot;</span><span class="s0">&gt;</span>
+
+                <span class="s0">&lt;LinearLayout</span>
+                    <span class="s1">android:layout_width</span><span class="s2">=&quot;match_parent&quot;</span>
+                    <span class="s1">android:layout_height</span><span class="s2">=&quot;match_parent&quot;</span>
+                    <span class="s1">android:orientation</span><span class="s2">=&quot;vertical&quot;</span>
+                    <span class="s1">android:gravity</span><span class="s2">=&quot;center&quot;</span>
+                    <span class="s1">android:padding</span><span class="s2">=&quot;16dp&quot;</span><span class="s0">&gt;</span>
+
+                    <span class="s0">&lt;TextView</span>
+                        <span class="s1">android:layout_width</span><span class="s2">=&quot;50dp&quot;</span>
+                        <span class="s1">android:layout_height</span><span class="s2">=&quot;50dp&quot;</span>
+                        <span class="s1">android:text</span><span class="s2">=&quot;📞&quot;</span>
+                        <span class="s1">android:textSize</span><span class="s2">=&quot;28sp&quot;</span>
+                        <span class="s1">android:gravity</span><span class="s2">=&quot;center&quot;</span>
+                        <span class="s1">android:background</span><span class="s2">=&quot;@drawable/icon_background_animated&quot;</span>
+                        <span class="s1">android:layout_marginBottom</span><span class="s2">=&quot;12dp&quot; </span><span class="s0">/&gt;</span>
+
+                    <span class="s0">&lt;TextView</span>
+                        <span class="s1">android:layout_width</span><span class="s2">=&quot;wrap_content&quot;</span>
+                        <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                        <span class="s1">android:text</span><span class="s2">=&quot;Journal d'appels&quot;</span>
+                        <span class="s1">android:textColor</span><span class="s2">=&quot;@android:color/white&quot;</span>
+                        <span class="s1">android:textSize</span><span class="s2">=&quot;14sp&quot;</span>
+                        <span class="s1">android:textStyle</span><span class="s2">=&quot;bold&quot;</span>
+                        <span class="s1">android:textAlignment</span><span class="s2">=&quot;center&quot; </span><span class="s0">/&gt;</span>
+
+                    <span class="s0">&lt;TextView</span>
+                        <span class="s1">android:layout_width</span><span class="s2">=&quot;wrap_content&quot;</span>
+                        <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                        <span class="s1">android:text</span><span class="s2">=&quot;Historique des appels filtrés&quot;</span>
+                        <span class="s1">android:textColor</span><span class="s2">=&quot;@color/text_secondary&quot;</span>
+                        <span class="s1">android:textSize</span><span class="s2">=&quot;11sp&quot;</span>
+                        <span class="s1">android:textAlignment</span><span class="s2">=&quot;center&quot;</span>
+                        <span class="s1">android:layout_marginTop</span><span class="s2">=&quot;4dp&quot; </span><span class="s0">/&gt;</span>
+                <span class="s0">&lt;/LinearLayout&gt;</span>
+            <span class="s0">&lt;/com.google.android.material.card.MaterialCardView&gt;</span>
+
+            <span class="s0">&lt;com.google.android.material.card.MaterialCardView</span>
+                <span class="s1">android:id</span><span class="s2">=&quot;@+id/cardAiDetection&quot;</span>
+                <span class="s1">android:layout_width</span><span class="s2">=&quot;0dp&quot;</span>
+                <span class="s1">android:layout_height</span><span class="s2">=&quot;140dp&quot;</span>
+                <span class="s1">android:layout_columnWeight</span><span class="s2">=&quot;1&quot;</span>
+                <span class="s1">android:layout_margin</span><span class="s2">=&quot;8dp&quot;</span>
+                <span class="s1">app:cardBackgroundColor</span><span class="s2">=&quot;@color/card_background&quot;</span>
+                <span class="s1">app:cardCornerRadius</span><span class="s2">=&quot;20dp&quot;</span>
+                <span class="s1">app:cardElevation</span><span class="s2">=&quot;4dp&quot;</span>
+                <span class="s1">app:strokeColor</span><span class="s2">=&quot;@color/card_stroke&quot;</span>
+                <span class="s1">app:strokeWidth</span><span class="s2">=&quot;1dp&quot;</span>
+                <span class="s1">android:clickable</span><span class="s2">=&quot;true&quot;</span>
+                <span class="s1">android:focusable</span><span class="s2">=&quot;true&quot;</span>
+                <span class="s1">android:foreground</span><span class="s2">=&quot;?android:attr/selectableItemBackground&quot;</span><span class="s0">&gt;</span>
+
+                <span class="s0">&lt;LinearLayout</span>
+                    <span class="s1">android:layout_width</span><span class="s2">=&quot;match_parent&quot;</span>
+                    <span class="s1">android:layout_height</span><span class="s2">=&quot;match_parent&quot;</span>
+                    <span class="s1">android:orientation</span><span class="s2">=&quot;vertical&quot;</span>
+                    <span class="s1">android:gravity</span><span class="s2">=&quot;center&quot;</span>
+                    <span class="s1">android:padding</span><span class="s2">=&quot;16dp&quot;</span><span class="s0">&gt;</span>
+
+                    <span class="s0">&lt;TextView</span>
+                        <span class="s1">android:layout_width</span><span class="s2">=&quot;50dp&quot;</span>
+                        <span class="s1">android:layout_height</span><span class="s2">=&quot;50dp&quot;</span>
+                        <span class="s1">android:text</span><span class="s2">=&quot;🤖&quot;</span>
+                        <span class="s1">android:textSize</span><span class="s2">=&quot;28sp&quot;</span>
+                        <span class="s1">android:gravity</span><span class="s2">=&quot;center&quot;</span>
+                        <span class="s1">android:background</span><span class="s2">=&quot;@drawable/icon_background_animated&quot;</span>
+                        <span class="s1">android:layout_marginBottom</span><span class="s2">=&quot;12dp&quot; </span><span class="s0">/&gt;</span>
+
+                    <span class="s0">&lt;TextView</span>
+                        <span class="s1">android:layout_width</span><span class="s2">=&quot;wrap_content&quot;</span>
+                        <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                        <span class="s1">android:text</span><span class="s2">=&quot;Détection IA&quot;</span>
+                        <span class="s1">android:textColor</span><span class="s2">=&quot;@android:color/white&quot;</span>
+                        <span class="s1">android:textSize</span><span class="s2">=&quot;14sp&quot;</span>
+                        <span class="s1">android:textStyle</span><span class="s2">=&quot;bold&quot;</span>
+                        <span class="s1">android:textAlignment</span><span class="s2">=&quot;center&quot; </span><span class="s0">/&gt;</span>
+
+                    <span class="s0">&lt;TextView</span>
+                        <span class="s1">android:layout_width</span><span class="s2">=&quot;wrap_content&quot;</span>
+                        <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                        <span class="s1">android:text</span><span class="s2">=&quot;Tester le moteur de détection&quot;</span>
+                        <span class="s1">android:textColor</span><span class="s2">=&quot;@color/text_secondary&quot;</span>
+                        <span class="s1">android:textSize</span><span class="s2">=&quot;11sp&quot;</span>
+                        <span class="s1">android:textAlignment</span><span class="s2">=&quot;center&quot;</span>
+                        <span class="s1">android:layout_marginTop</span><span class="s2">=&quot;4dp&quot; </span><span class="s0">/&gt;</span>
+                <span class="s0">&lt;/LinearLayout&gt;</span>
+            <span class="s0">&lt;/com.google.android.material.card.MaterialCardView&gt;</span>
+
+            <span class="s0">&lt;com.google.android.material.card.MaterialCardView</span>
+                <span class="s1">android:id</span><span class="s2">=&quot;@+id/cardProtectionTips&quot;</span>
+                <span class="s1">android:layout_width</span><span class="s2">=&quot;0dp&quot;</span>
+                <span class="s1">android:layout_height</span><span class="s2">=&quot;140dp&quot;</span>
+                <span class="s1">android:layout_columnWeight</span><span class="s2">=&quot;1&quot;</span>
+                <span class="s1">android:layout_margin</span><span class="s2">=&quot;8dp&quot;</span>
+                <span class="s1">app:cardBackgroundColor</span><span class="s2">=&quot;@color/card_background&quot;</span>
+                <span class="s1">app:cardCornerRadius</span><span class="s2">=&quot;20dp&quot;</span>
+                <span class="s1">app:cardElevation</span><span class="s2">=&quot;4dp&quot;</span>
+                <span class="s1">app:strokeColor</span><span class="s2">=&quot;@color/card_stroke&quot;</span>
+                <span class="s1">app:strokeWidth</span><span class="s2">=&quot;1dp&quot;</span>
+                <span class="s1">android:clickable</span><span class="s2">=&quot;true&quot;</span>
+                <span class="s1">android:focusable</span><span class="s2">=&quot;true&quot;</span>
+                <span class="s1">android:foreground</span><span class="s2">=&quot;?android:attr/selectableItemBackground&quot;</span><span class="s0">&gt;</span>
+
+                <span class="s0">&lt;LinearLayout</span>
+                    <span class="s1">android:layout_width</span><span class="s2">=&quot;match_parent&quot;</span>
+                    <span class="s1">android:layout_height</span><span class="s2">=&quot;match_parent&quot;</span>
+                    <span class="s1">android:orientation</span><span class="s2">=&quot;vertical&quot;</span>
+                    <span class="s1">android:gravity</span><span class="s2">=&quot;center&quot;</span>
+                    <span class="s1">android:padding</span><span class="s2">=&quot;16dp&quot;</span><span class="s0">&gt;</span>
+
+                    <span class="s0">&lt;TextView</span>
+                        <span class="s1">android:layout_width</span><span class="s2">=&quot;50dp&quot;</span>
+                        <span class="s1">android:layout_height</span><span class="s2">=&quot;50dp&quot;</span>
+                        <span class="s1">android:text</span><span class="s2">=&quot;💡&quot;</span>
+                        <span class="s1">android:textSize</span><span class="s2">=&quot;28sp&quot;</span>
+                        <span class="s1">android:gravity</span><span class="s2">=&quot;center&quot;</span>
+                        <span class="s1">android:background</span><span class="s2">=&quot;@drawable/icon_background_animated&quot;</span>
+                        <span class="s1">android:layout_marginBottom</span><span class="s2">=&quot;12dp&quot; </span><span class="s0">/&gt;</span>
+
+                    <span class="s0">&lt;TextView</span>
+                        <span class="s1">android:layout_width</span><span class="s2">=&quot;wrap_content&quot;</span>
+                        <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                        <span class="s1">android:text</span><span class="s2">=&quot;Conseils de Protection&quot;</span>
+                        <span class="s1">android:textColor</span><span class="s2">=&quot;@android:color/white&quot;</span>
+                        <span class="s1">android:textSize</span><span class="s2">=&quot;14sp&quot;</span>
+                        <span class="s1">android:textStyle</span><span class="s2">=&quot;bold&quot;</span>
+                        <span class="s1">android:textAlignment</span><span class="s2">=&quot;center&quot; </span><span class="s0">/&gt;</span>
+
+                    <span class="s0">&lt;TextView</span>
+                        <span class="s1">android:layout_width</span><span class="s2">=&quot;wrap_content&quot;</span>
+                        <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                        <span class="s1">android:text</span><span class="s2">=&quot;Apprenez à vous protéger&quot;</span>
+                        <span class="s1">android:textColor</span><span class="s2">=&quot;@color/text_secondary&quot;</span>
+                        <span class="s1">android:textSize</span><span class="s2">=&quot;11sp&quot;</span>
+                        <span class="s1">android:textAlignment</span><span class="s2">=&quot;center&quot;</span>
+                        <span class="s1">android:layout_marginTop</span><span class="s2">=&quot;4dp&quot; </span><span class="s0">/&gt;</span>
+                <span class="s0">&lt;/LinearLayout&gt;</span>
+            <span class="s0">&lt;/com.google.android.material.card.MaterialCardView&gt;</span>
+        <span class="s0">&lt;/GridLayout&gt;</span>
+    <span class="s0">&lt;/LinearLayout&gt;</span>
+<span class="s0">&lt;/ScrollView&gt;</span></pre>
+</body>
+</html>

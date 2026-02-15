@@ -1,0 +1,94 @@
+<html>
+<head>
+<title>item_conversation.xml</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #d5b778;}
+.s1 { color: #bcbec4;}
+.s2 { color: #6aab73;}
+.s3 { color: #bcbec4;}
+.s4 { color: #7a7e85;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+item_conversation.xml</font>
+</center></td></tr></table>
+<pre><span class="s0">&lt;?</span><span class="s1">xml version</span><span class="s2">=&quot;1.0&quot; </span><span class="s1">encoding</span><span class="s2">=&quot;utf-8&quot;</span><span class="s0">?&gt;</span>
+<span class="s0">&lt;androidx.cardview.widget.CardView </span><span class="s1">xmlns:android</span><span class="s2">=&quot;http://schemas.android.com/apk/res/android&quot;</span>
+    <span class="s1">xmlns:app</span><span class="s2">=&quot;http://schemas.android.com/apk/res-auto&quot;</span>
+    <span class="s1">android:layout_width</span><span class="s2">=&quot;match_parent&quot;</span>
+    <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+    <span class="s1">android:layout_margin</span><span class="s2">=&quot;8dp&quot;</span>
+    <span class="s1">app:cardCornerRadius</span><span class="s2">=&quot;12dp&quot;</span>
+    <span class="s1">app:cardElevation</span><span class="s2">=&quot;4dp&quot;</span>
+    <span class="s1">app:cardBackgroundColor</span><span class="s2">=&quot;#2C2C2E&quot;</span>
+    <span class="s1">android:foreground</span><span class="s2">=&quot;?attr/selectableItemBackground&quot;</span><span class="s0">&gt;</span>
+
+    <span class="s0">&lt;RelativeLayout</span>
+        <span class="s1">android:layout_width</span><span class="s2">=&quot;match_parent&quot;</span>
+        <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+        <span class="s1">android:padding</span><span class="s2">=&quot;12dp&quot;</span><span class="s0">&gt;</span>
+
+        <span class="s4">&lt;!-- Numéro de téléphone --&gt;</span>
+        <span class="s0">&lt;TextView</span>
+            <span class="s1">android:id</span><span class="s2">=&quot;@+id/tvPhoneNumber&quot;</span>
+            <span class="s1">android:layout_width</span><span class="s2">=&quot;wrap_content&quot;</span>
+            <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+            <span class="s1">android:text</span><span class="s2">=&quot;+33 6 12 34 56 78&quot;</span>
+            <span class="s1">android:textColor</span><span class="s2">=&quot;#FF5722&quot;</span>
+            <span class="s1">android:textSize</span><span class="s2">=&quot;16sp&quot;</span>
+            <span class="s1">android:textStyle</span><span class="s2">=&quot;bold&quot;</span>
+            <span class="s1">android:fontFamily</span><span class="s2">=&quot;monospace&quot;</span>
+            <span class="s1">android:ellipsize</span><span class="s2">=&quot;end&quot;</span>
+            <span class="s1">android:maxLines</span><span class="s2">=&quot;1&quot; </span><span class="s0">/&gt;</span>
+
+        <span class="s0">&lt;TextView</span>
+            <span class="s1">android:id</span><span class="s2">=&quot;@+id/tvName&quot;</span>
+            <span class="s1">android:layout_width</span><span class="s2">=&quot;wrap_content&quot;</span>
+            <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+            <span class="s1">android:textSize</span><span class="s2">=&quot;16sp&quot;</span>
+            <span class="s1">android:textStyle</span><span class="s2">=&quot;bold&quot; </span><span class="s0">/&gt;</span>
+
+        <span class="s4">&lt;!-- Date du dernier SMS --&gt;</span>
+        <span class="s0">&lt;TextView</span>
+            <span class="s1">android:id</span><span class="s2">=&quot;@+id/tvDate&quot;</span>
+            <span class="s1">android:layout_width</span><span class="s2">=&quot;wrap_content&quot;</span>
+            <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+            <span class="s1">android:text</span><span class="s2">=&quot;12/08 14:55&quot;</span>
+            <span class="s1">android:textColor</span><span class="s2">=&quot;#E65100&quot;</span>
+            <span class="s1">android:textSize</span><span class="s2">=&quot;12sp&quot;</span>
+            <span class="s1">android:layout_alignParentEnd</span><span class="s2">=&quot;true&quot;</span>
+            <span class="s1">android:layout_alignTop</span><span class="s2">=&quot;@id/tvPhoneNumber&quot; </span><span class="s0">/&gt;</span>
+
+        <span class="s4">&lt;!-- Dernier message --&gt;</span>
+        <span class="s0">&lt;TextView</span>
+            <span class="s1">android:id</span><span class="s2">=&quot;@+id/tvLastMessage&quot;</span>
+            <span class="s1">android:layout_width</span><span class="s2">=&quot;wrap_content&quot;</span>
+            <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+            <span class="s1">android:layout_below</span><span class="s2">=&quot;@id/tvPhoneNumber&quot;</span>
+            <span class="s1">android:layout_toStartOf</span><span class="s2">=&quot;@id/ivBlocked&quot;</span>
+            <span class="s1">android:layout_marginTop</span><span class="s2">=&quot;4dp&quot;</span>
+            <span class="s1">android:text</span><span class="s2">=&quot;Dernier message ici&quot;</span>
+            <span class="s1">android:textColor</span><span class="s2">=&quot;#39FF14&quot;</span>
+            <span class="s1">android:textSize</span><span class="s2">=&quot;14sp&quot;</span>
+            <span class="s1">android:ellipsize</span><span class="s2">=&quot;end&quot;</span>
+            <span class="s1">android:maxLines</span><span class="s2">=&quot;2&quot; </span><span class="s0">/&gt;</span>
+
+        <span class="s4">&lt;!-- Icône bloqué/débloqué --&gt;</span>
+        <span class="s0">&lt;ImageView</span>
+            <span class="s1">android:id</span><span class="s2">=&quot;@+id/ivBlocked&quot;</span>
+            <span class="s1">android:layout_width</span><span class="s2">=&quot;28dp&quot;</span>
+            <span class="s1">android:layout_height</span><span class="s2">=&quot;28dp&quot;</span>
+            <span class="s1">android:layout_alignParentEnd</span><span class="s2">=&quot;true&quot;</span>
+            <span class="s1">android:layout_centerVertical</span><span class="s2">=&quot;true&quot;</span>
+            <span class="s1">android:src</span><span class="s2">=&quot;@drawable/ic_unblocked&quot;</span>
+            <span class="s1">android:contentDescription</span><span class="s2">=&quot;Bloqué / Débloqué&quot; </span><span class="s0">/&gt;</span>
+
+    <span class="s0">&lt;/RelativeLayout&gt;</span>
+
+<span class="s0">&lt;/androidx.cardview.widget.CardView&gt;</span></pre>
+</body>
+</html>

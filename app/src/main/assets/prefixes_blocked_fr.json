@@ -1,0 +1,377 @@
+{
+  "version": "3.0",
+  "country": "FR",
+  "last_updated": "2026-01-20",
+  "description": "Système anti-spam France - Mise à jour 2026 avec nouvelles réglementations",
+
+  "regulatory_changes_2026": {
+    "anti_spoofing": {
+      "effective_date": "2026-01-01",
+      "description": "Authentification STIR/SHAKEN obligatoire",
+      "details": "Les appels émis depuis l'étranger avec numéros 06/07 non authentifiés sont affichés comme 'numéro masqué'",
+      "affected_prefixes": ["06", "07"],
+      "operator_enforcement": true
+    },
+    "total_ban_telemarketing": {
+      "effective_date": "2026-08-11",
+      "description": "Interdiction totale du démarchage téléphonique",
+      "previous_ban": "Rénovation énergétique depuis juillet 2025",
+      "new_scope": "Extension à tous les secteurs commerciaux",
+      "exceptions": ["Sondages d'opinion", "Relations clients existantes"]
+    }
+  },
+
+  "prefix_rules": {
+    "always_block": {
+      "description": "Préfixes à bloquer automatiquement - Risque CRITIQUE",
+      "risk_level": "critical",
+      "categories": {
+        "surtaxes_tres_elevees": {
+          "prefixes": ["089"],
+          "sub_ranges": ["0890", "0891", "0892", "0893", "0894", "0895", "0896", "0897", "0898", "0899"],
+          "cost": "Jusqu'à 3€/appel + 0,80€/min",
+          "reason": "Arnaque ping call, phishing bancaire",
+          "blocking_priority": 1
+        },
+        "surtaxes_elevees": {
+          "prefixes": ["081", "082"],
+          "sub_ranges": ["0810", "0811", "0812", "0813", "0814", "0815", "0816", "0817", "0818", "0819", "0820", "0821", "0822", "0823", "0825", "0826", "0827"],
+          "cost": "Jusqu'à 0,80€/min",
+          "reason": "Services surtaxés, démarchage abusif",
+          "blocking_priority": 2
+        },
+        "ancien_format_surtaxe": {
+          "prefixes": ["080"],
+          "sub_ranges": ["0803", "0804", "0805", "0806", "0807", "0808", "0809"],
+          "cost": "Variable selon terminaison",
+          "reason": "Anciens numéros SVA - Risque confusion",
+          "blocking_priority": 3
+        }
+      }
+    },
+
+    "monitor_closely": {
+      "description": "Préfixes à surveiller - Risque MOYEN à ÉLEVÉ",
+      "risk_level": "high",
+      "categories": {
+        "numeros_verts_suspects": {
+          "prefixes": ["0800", "0801", "0802"],
+          "cost": "Gratuit normalement",
+          "reason": "Parfois utilisés pour spam légitime ou phishing",
+          "action": "Analyser contenu et fréquence d'appels",
+          "whitelist_exceptions": true
+        },
+        "services_speciaux": {
+          "prefixes": ["118"],
+          "sub_ranges": ["118000", "118218", "118218", "118612", "118712"],
+          "cost": "Variable, souvent élevé",
+          "reason": "Renseignements téléphoniques surtaxés",
+          "action": "Avertir utilisateur du coût"
+        },
+        "numeros_polyvalents_verifies": {
+          "description": "Nouveauté 2026 - Numéros réservés au démarchage vérifié",
+          "prefixes": ["0162", "0163", "0270", "0271", "0377", "0378", "0424", "0425", "0568", "0569", "0948", "0949"],
+          "cost": "Prix d'un appel local",
+          "reason": "Démarchage commercial identifiable",
+          "action": "Laisser utilisateur choisir de bloquer",
+          "legitimate_use": true
+        }
+      }
+    },
+
+    "never_block": {
+      "description": "Numéros d'urgence et services vitaux - NE JAMAIS BLOQUER",
+      "risk_level": "none",
+      "permanent_whitelist": true,
+      "categories": {
+        "urgences": {
+          "numbers": ["15", "17", "18", "112", "114", "115", "116000", "119", "191", "196", "197"],
+          "descriptions": {
+            "15": "SAMU",
+            "17": "Police/Gendarmerie",
+            "18": "Pompiers",
+            "112": "Numéro d'urgence européen",
+            "114": "Urgences SMS (sourds/malentendants)",
+            "115": "SAMU Social",
+            "116000": "Enfants disparus",
+            "119": "Enfance en danger",
+            "191": "Urgence aéronautique",
+            "196": "Urgence maritime",
+            "197": "Alerte attentat"
+          }
+        },
+        "services_publics": {
+          "prefixes": ["39"],
+          "numbers": ["3900", "3901", "3939", "3949", "3975"],
+          "descriptions": {
+            "3900": "Allô Service Public",
+            "3939": "Allô Service Public (nouveau)",
+            "3975": "Non au harcèlement"
+          }
+        }
+      }
+    }
+  },
+
+  "known_spam_patterns": {
+    "description": "Patterns de spam identifiés en 2026",
+    "ping_calls": {
+      "pattern": "Appel < 3 secondes + rappel impossible",
+      "typical_prefixes": ["089", "081"],
+      "cost_trap": "Rappel vers numéro surtaxé",
+      "blocking_action": "Bloquer immédiatement"
+    },
+    "phishing_bancaire": {
+      "pattern": "SMS + appel se faisant passer pour banque",
+      "spoofed_numbers": ["06", "07"],
+      "keywords": ["sécurité", "fraude détectée", "virement suspect", "carte bloquée"],
+      "blocking_action": "Bloquer + signaler au 33700"
+    },
+    "faux_services_publics": {
+      "pattern": "Usurpation identité CAF, impôts, CPAM",
+      "typical_prefixes": ["01", "02", "03", "04", "05"],
+      "keywords": ["remboursement", "trop-perçu", "régularisation urgente"],
+      "blocking_action": "Bloquer + vérifier via site officiel"
+    },
+    "demarchage_energie": {
+      "pattern": "Démarchage rénovation énergétique (INTERDIT depuis 2025)",
+      "keywords": ["isolation 1€", "pompe à chaleur gratuite", "CEE", "MaPrimeRénov"],
+      "blocking_action": "Bloquer automatiquement (illégal)"
+    }
+  },
+
+  "operator_specific_data": {
+    "description": "Données par opérateur - Mise à jour 2026",
+    "arcep_reserved": {
+      "operator_name": "ARCEP",
+      "description": "Numéros réservés par l'ARCEP pour tests et régulation",
+      "patterns": [
+        "33162######", "33163######", "33270######", "33271######",
+        "33377######", "33378######", "33424######", "33425######",
+        "33568######", "33569######", "33948######", "33949######",
+        "339475#####", "339476#####", "339477#####", "339478#####", "339479#####"
+      ],
+      "risk_level": "low",
+      "reason": "Numéros techniques non commerciaux"
+    },
+    "mvno_telecom": {
+      "operators": [
+        {"name": "BICS", "risk": "medium", "patterns": ["3315920####", "3318721####"]},
+        {"name": "BJT Partners", "risk": "medium", "patterns": ["3315928####", "3315929####", "3317650####"]},
+        {"name": "Destiny France Partenaires", "risk": "medium", "patterns": ["3318474####", "3318475####"]},
+        {"name": "Manifone", "risk": "medium", "patterns": ["3318656####", "3318764####"]},
+        {"name": "Onoff telecom", "risk": "low", "patterns": ["33189620###", "33189621###"]},
+        {"name": "Ubicentrex", "risk": "low", "patterns": ["3318831####", "3318986####"]},
+        {"name": "DVS Connect", "risk": "medium", "patterns": ["33186706###", "33188440###"]},
+        {"name": "Oxilog France", "risk": "medium", "patterns": ["3318900####", "3318978####"]},
+        {"name": "ZE telecom", "risk": "medium", "patterns": ["3318926####"]},
+        {"name": "Lineconnects", "risk": "medium", "patterns": ["33189379###"]},
+        {"name": "Comunik CRM", "risk": "high", "patterns": ["3318949####"], "reason": "Souvent utilisé pour démarchage"},
+        {"name": "Plug and tel", "risk": "medium", "patterns": ["3318960####"]},
+        {"name": "Kav El International", "risk": "medium", "patterns": ["33263070###", "33263071###"]},
+        {"name": "Spartel services", "risk": "medium", "patterns": ["33974960###", "33974961###"]}
+      ],
+      "general_note": "Les MVNO peuvent être utilisés légitimement ou pour du spam - Analyser le comportement"
+    }
+  },
+
+  "whitelist_exceptions": {
+    "description": "Numéros légitimes à ne jamais bloquer même si pattern suspect",
+    "trusted_organizations": {
+      "hopitaux": {
+        "description": "Hôpitaux et services médicaux",
+        "patterns": ["01########", "02########", "03########", "04########", "05########"],
+        "verification": "Vérifier via annuaire hospitalier",
+        "priority": "critical"
+      },
+      "services_publics": {
+        "description": "Mairies, préfectures, services administratifs",
+        "specific_numbers": [
+          "0800730243",
+          "0800111777",
+          "0811111237"
+        ],
+        "priority": "high"
+      },
+      "banques_legitimes": {
+        "description": "Numéros officiels des banques (attention au spoofing)",
+        "verification_required": true,
+        "note": "Toujours vérifier sur le site officiel de la banque",
+        "examples": {
+          "BNP_Paribas": "0142981234",
+          "Credit_Agricole": "0892970666",
+          "Societe_Generale": "0142131315",
+          "LCL": "0892681111",
+          "note": "Ces numéros peuvent être spoofés - Vérifier avant de rappeler"
+        }
+      },
+      "transports": {
+        "description": "SNCF, RATP, compagnies aériennes",
+        "patterns": ["3635", "3634", "3658"],
+        "priority": "medium"
+      }
+    }
+  },
+
+  "detection_algorithms": {
+    "description": "Algorithmes de détection intelligente - 2026",
+    "spoofing_detection": {
+      "international_origin": {
+        "rule": "Si numéro 06/07 ET origine internationale ET pas authentifié STIR/SHAKEN",
+        "action": "Bloquer automatiquement (spoofing confirmé)",
+        "confidence": "95%"
+      },
+      "prefix_mismatch": {
+        "rule": "Si ID appelant affiche 01 mais routage depuis 089",
+        "action": "Bloquer automatiquement (manipulation)",
+        "confidence": "98%"
+      }
+    },
+    "behavioral_analysis": {
+      "rapid_calls": {
+        "rule": "Plus de 3 appels du même numéro en 5 minutes",
+        "action": "Marquer comme suspect + notifier utilisateur",
+        "confidence": "70%"
+      },
+      "ping_pattern": {
+        "rule": "Appel < 3 secondes + raccrochage immédiat + numéro 089",
+        "action": "Bloquer automatiquement + signaler",
+        "confidence": "99%"
+      },
+      "silent_calls": {
+        "rule": "Appel décroche mais aucun son pendant 5+ secondes",
+        "action": "Marquer suspect (robot ou centre d'appel saturé)",
+        "confidence": "60%"
+      }
+    },
+    "time_based_risk": {
+      "high_risk_hours": {
+        "ranges": ["00:00-07:00", "21:00-23:59"],
+        "multiplier": 1.5,
+        "reason": "Les arnaqueurs ciblent ces heures pour pression psychologique"
+      },
+      "weekend_calls": {
+        "days": ["Samedi", "Dimanche"],
+        "commercial_calls": "Suspects si démarchage (illégal)",
+        "multiplier": 1.3
+      }
+    },
+    "content_analysis": {
+      "sms_keywords": {
+        "critical": ["urgence", "compte bloqué", "fraude détectée", "cliquez ici", "remboursement", "virement suspect"],
+        "high": ["offre exceptionnelle", "dernières heures", "gagnant", "félicitations"],
+        "action": "Score de risque basé sur mots-clés"
+      },
+      "url_detection": {
+        "suspicious_domains": [".tk", ".ml", ".ga", ".cf", ".gq"],
+        "shortened_urls": ["bit.ly", "tinyurl.com", "goo.gl"],
+        "action": "Analyser domaine + vérifier réputation"
+      }
+    }
+  },
+
+  "reporting_system": {
+    "official_channels": {
+      "sms_spam": {
+        "number": "33700",
+        "method": "Transférer le SMS spam au 33700",
+        "free": true,
+        "description": "Plateforme officielle de signalement"
+      },
+      "phone_spam": {
+        "website": "https://www.surmafacture.fr",
+        "description": "Signalement des numéros surtaxés suspects",
+        "managed_by": "DGCCRF"
+      },
+      "bloctel": {
+        "website": "https://www.bloctel.gouv.fr",
+        "phone": "0800222922",
+        "description": "Liste d'opposition au démarchage téléphonique",
+        "note": "Obligatoire pour les entreprises depuis 2016"
+      }
+    }
+  },
+
+  "validation_rules": {
+    "number_format": {
+      "national": "^0[1-9][0-9]{8}$",
+      "international": "^\\+33[1-9][0-9]{8}$",
+      "mobile": "^0[67][0-9]{8}$",
+      "landline": "^0[1-5][0-9]{8}$",
+      "special": "^0[89][0-9]{8}$"
+    },
+    "geographic_codes": {
+      "01": "Île-de-France",
+      "02": "Nord-Ouest",
+      "03": "Nord-Est",
+      "04": "Sud-Est",
+      "05": "Sud-Ouest",
+      "06": "Mobile",
+      "07": "Mobile",
+      "09": "VoIP/Box Internet"
+    }
+  },
+
+  "machine_learning_features": {
+    "description": "Caractéristiques pour ML anti-spam (optionnel)",
+    "features": [
+      "call_duration",
+      "time_of_day",
+      "day_of_week",
+      "caller_prefix",
+      "call_frequency",
+      "international_origin",
+      "stir_shaken_verified",
+      "reported_count",
+      "operator_reputation",
+      "content_keywords"
+    ],
+    "training_data": "Utiliser signalements 33700 + base communautaire"
+  },
+
+  "metadata": {
+    "data_sources": [
+      "ARCEP - Régulateur télécom français",
+      "DGCCRF - Répression des fraudes",
+      "33700 - Plateforme de signalement",
+      "Bloctel - Liste opposition démarchage",
+      "Community reports"
+    ],
+    "update_frequency": "weekly",
+    "compliance": "RGPD compliant",
+    "last_regulatory_check": "2026-01-20",
+    "next_review": "2026-08-11",
+    "changelog": {
+      "3.0": "Ajout réglementation 2026 (anti-spoofing + interdiction totale démarchage)",
+      "2.1": "Ajout numéros polyvalents vérifiés",
+      "2.0": "Ajout algorithmes détection comportementale",
+      "1.0": "Version initiale"
+    }
+  },
+
+  "usage_recommendations": {
+    "blocking_strategy": {
+      "level_1_automatic": "Bloquer 'always_block' + numéros spoofés confirmés",
+      "level_2_user_choice": "Proposer blocage 'monitor_closely' selon préférences",
+      "level_3_smart": "Utiliser algorithmes comportementaux pour décision",
+      "level_4_whitelist": "Toujours autoriser 'never_block' et exceptions"
+    },
+    "user_notifications": {
+      "blocked_call": "Afficher raison du blocage (surtaxé/spam/spoofing)",
+      "suspicious_call": "Avertir utilisateur avec niveau de confiance",
+      "legitimate_call": "Laisser passer sans notification"
+    },
+    "performance": {
+      "cache_operator_data": "Mettre en cache pour performance",
+      "update_check": "Vérifier mises à jour hebdomadaires",
+      "offline_mode": "Fonctionner avec dernière version en cache"
+    }
+  },
+
+  "legal_disclaimer": {
+    "notice": "Ce système est un outil d'aide à la décision. L'utilisateur final reste responsable des blocages effectués.",
+    "accuracy": "Les données sont mises à jour régulièrement mais peuvent contenir des erreurs.",
+    "liability": "Aucune garantie sur le blocage à 100% du spam ou sur l'absence de faux positifs.",
+    "privacy": "Aucune donnée personnelle n'est collectée par ce système de filtrage."
+  }
+}

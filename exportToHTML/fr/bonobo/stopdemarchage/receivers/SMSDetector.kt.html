@@ -1,0 +1,496 @@
+<html>
+<head>
+<title>SMSDetector.kt</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #6aab73;}
+.s4 { color: #7a7e85;}
+.s5 { color: #2aacb8;}
+.s6 { color: #5f826b; font-style: italic;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+SMSDetector.kt</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">fr</span><span class="s2">.</span><span class="s1">bonobo</span><span class="s2">.</span><span class="s1">stopdemarchage</span>
+
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">content</span><span class="s2">.</span><span class="s1">Context</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">Log</span>
+<span class="s1">import org</span><span class="s2">.</span><span class="s1">json</span><span class="s2">.</span><span class="s1">JSONObject</span>
+<span class="s1">import org</span><span class="s2">.</span><span class="s1">json</span><span class="s2">.</span><span class="s1">JSONArray</span>
+<span class="s1">import java</span><span class="s2">.</span><span class="s1">io</span><span class="s2">.</span><span class="s1">IOException</span>
+
+<span class="s1">data </span><span class="s0">class </span><span class="s1">SpamDetectionResult</span><span class="s2">(</span>
+    <span class="s0">val </span><span class="s1">isSpam: Boolean</span><span class="s2">,</span>
+    <span class="s0">val </span><span class="s1">riskScore: Int</span><span class="s2">,</span>
+    <span class="s0">val </span><span class="s1">riskLevel: String</span><span class="s2">,</span>
+    <span class="s0">val </span><span class="s1">detectedPatterns: List</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">&gt;,</span>
+    <span class="s0">val </span><span class="s1">detectedWords: List</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">&gt;,</span>
+    <span class="s0">val </span><span class="s1">reason: String</span><span class="s2">,</span>
+    <span class="s0">val </span><span class="s1">shouldBlock: Boolean</span>
+<span class="s2">)</span>
+
+<span class="s0">class </span><span class="s1">SMSDetector</span><span class="s2">(</span><span class="s1">private </span><span class="s0">val </span><span class="s1">context: Context</span><span class="s2">) {</span>
+
+    <span class="s1">private </span><span class="s0">val </span><span class="s1">TAG </span><span class="s2">= </span><span class="s3">&quot;SMSDetector&quot;</span>
+    <span class="s1">private </span><span class="s0">var </span><span class="s1">config: JSONObject? </span><span class="s2">= </span><span class="s0">null</span>
+
+    <span class="s4">// Configuration chargée depuis le JSON</span>
+    <span class="s1">private </span><span class="s0">var </span><span class="s1">highRiskPatterns </span><span class="s2">= </span><span class="s1">mutableListOf</span><span class="s2">&lt;</span><span class="s1">Regex</span><span class="s2">&gt;()</span>
+    <span class="s1">private </span><span class="s0">var </span><span class="s1">mediumRiskPatterns </span><span class="s2">= </span><span class="s1">mutableListOf</span><span class="s2">&lt;</span><span class="s1">Regex</span><span class="s2">&gt;()</span>
+    <span class="s1">private </span><span class="s0">var </span><span class="s1">highRiskWords </span><span class="s2">= </span><span class="s1">mutableListOf</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">&gt;()</span>
+    <span class="s1">private </span><span class="s0">var </span><span class="s1">mediumRiskWords </span><span class="s2">= </span><span class="s1">mutableListOf</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">&gt;()</span>
+    <span class="s1">private </span><span class="s0">var </span><span class="s1">courierScamPatterns </span><span class="s2">= </span><span class="s1">mutableListOf</span><span class="s2">&lt;</span><span class="s1">Regex</span><span class="s2">&gt;()</span>
+    <span class="s1">private </span><span class="s0">var </span><span class="s1">suspiciousDomainPatterns </span><span class="s2">= </span><span class="s1">mutableListOf</span><span class="s2">&lt;</span><span class="s1">Regex</span><span class="s2">&gt;()</span>
+    <span class="s1">private </span><span class="s0">var </span><span class="s1">suspiciousNumberPatterns </span><span class="s2">= </span><span class="s1">mutableListOf</span><span class="s2">&lt;</span><span class="s1">Regex</span><span class="s2">&gt;()</span>
+    <span class="s1">private </span><span class="s0">var </span><span class="s1">trustedSenders </span><span class="s2">= </span><span class="s1">mutableListOf</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">&gt;()</span>
+    <span class="s1">private </span><span class="s0">var </span><span class="s1">trustedDomains </span><span class="s2">= </span><span class="s1">mutableListOf</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">&gt;()</span>
+    <span class="s1">private </span><span class="s0">var </span><span class="s1">trustedNumbers </span><span class="s2">= </span><span class="s1">mutableListOf</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">&gt;()</span>
+
+    <span class="s4">// Seuils de configuration</span>
+    <span class="s1">private </span><span class="s0">var </span><span class="s1">riskScoreBlock </span><span class="s2">= </span><span class="s5">6</span>
+    <span class="s1">private </span><span class="s0">var </span><span class="s1">riskScoreWarn </span><span class="s2">= </span><span class="s5">4</span>
+    <span class="s1">private </span><span class="s0">var </span><span class="s1">riskScoreContact </span><span class="s2">= </span><span class="s5">8</span>
+
+    <span class="s1">init </span><span class="s2">{</span>
+        <span class="s1">loadConfiguration</span><span class="s2">()</span>
+    <span class="s2">}</span>
+
+    <span class="s6">/**</span>
+     <span class="s6">* Charge la configuration depuis le fichier JSON</span>
+     <span class="s6">*/</span>
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">loadConfiguration</span><span class="s2">() {</span>
+        <span class="s0">try </span><span class="s2">{</span>
+            <span class="s0">val </span><span class="s1">jsonString </span><span class="s2">= </span><span class="s1">context</span><span class="s2">.</span><span class="s1">assets</span><span class="s2">.</span><span class="s1">open</span><span class="s2">(</span><span class="s3">&quot;spam_detection_config.json&quot;</span><span class="s2">).</span><span class="s1">bufferedReader</span><span class="s2">().</span><span class="s1">use </span><span class="s2">{ </span><span class="s1">it</span><span class="s2">.</span><span class="s1">readText</span><span class="s2">() }</span>
+            <span class="s1">config </span><span class="s2">= </span><span class="s1">JSONObject</span><span class="s2">(</span><span class="s1">jsonString</span><span class="s2">).</span><span class="s1">getJSONObject</span><span class="s2">(</span><span class="s3">&quot;spam_detection&quot;</span><span class="s2">)</span>
+
+            <span class="s1">loadPatterns</span><span class="s2">()</span>
+            <span class="s1">loadWeightedWords</span><span class="s2">()</span>
+            <span class="s1">loadThresholds</span><span class="s2">()</span>
+            <span class="s1">loadWhitelist</span><span class="s2">()</span>
+            <span class="s1">loadSuspiciousCharacteristics</span><span class="s2">()</span>
+
+            <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Configuration chargée avec succès&quot;</span><span class="s2">)</span>
+        <span class="s2">} </span><span class="s1">catch </span><span class="s2">(</span><span class="s1">e: IOException</span><span class="s2">) {</span>
+            <span class="s1">Log</span><span class="s2">.</span><span class="s1">e</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Erreur lors du chargement de la configuration&quot;</span><span class="s2">, </span><span class="s1">e</span><span class="s2">)</span>
+            <span class="s1">loadDefaultConfiguration</span><span class="s2">()</span>
+        <span class="s2">} </span><span class="s1">catch </span><span class="s2">(</span><span class="s1">e: Exception</span><span class="s2">) {</span>
+            <span class="s1">Log</span><span class="s2">.</span><span class="s1">e</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Erreur lors du parsing JSON&quot;</span><span class="s2">, </span><span class="s1">e</span><span class="s2">)</span>
+            <span class="s1">loadDefaultConfiguration</span><span class="s2">()</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">loadPatterns</span><span class="s2">() {</span>
+        <span class="s1">config?</span><span class="s2">.</span><span class="s1">let </span><span class="s2">{ </span><span class="s1">config </span><span class="s2">-&gt;</span>
+            <span class="s0">val </span><span class="s1">patterns </span><span class="s2">= </span><span class="s1">config</span><span class="s2">.</span><span class="s1">getJSONObject</span><span class="s2">(</span><span class="s3">&quot;patterns&quot;</span><span class="s2">)</span>
+
+            <span class="s4">// Patterns haut risque</span>
+            <span class="s0">val </span><span class="s1">highRiskArray </span><span class="s2">= </span><span class="s1">patterns</span><span class="s2">.</span><span class="s1">getJSONArray</span><span class="s2">(</span><span class="s3">&quot;high_risk&quot;</span><span class="s2">)</span>
+            <span class="s0">for </span><span class="s2">(</span><span class="s1">i </span><span class="s0">in </span><span class="s5">0 </span><span class="s1">until highRiskArray</span><span class="s2">.</span><span class="s1">length</span><span class="s2">()) {</span>
+                <span class="s0">try </span><span class="s2">{</span>
+                    <span class="s1">highRiskPatterns</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s1">Regex</span><span class="s2">(</span><span class="s1">highRiskArray</span><span class="s2">.</span><span class="s1">getString</span><span class="s2">(</span><span class="s1">i</span><span class="s2">), </span><span class="s1">RegexOption</span><span class="s2">.</span><span class="s1">IGNORE_CASE</span><span class="s2">))</span>
+                <span class="s2">} </span><span class="s1">catch </span><span class="s2">(</span><span class="s1">e: Exception</span><span class="s2">) {</span>
+                    <span class="s1">Log</span><span class="s2">.</span><span class="s1">w</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Pattern invalide: </span><span class="s0">${</span><span class="s1">highRiskArray</span><span class="s2">.</span><span class="s1">getString</span><span class="s2">(</span><span class="s1">i</span><span class="s2">)</span><span class="s0">}</span><span class="s3">&quot;</span><span class="s2">)</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+
+            <span class="s4">// Patterns risque moyen</span>
+            <span class="s0">val </span><span class="s1">mediumRiskArray </span><span class="s2">= </span><span class="s1">patterns</span><span class="s2">.</span><span class="s1">getJSONArray</span><span class="s2">(</span><span class="s3">&quot;medium_risk&quot;</span><span class="s2">)</span>
+            <span class="s0">for </span><span class="s2">(</span><span class="s1">i </span><span class="s0">in </span><span class="s5">0 </span><span class="s1">until mediumRiskArray</span><span class="s2">.</span><span class="s1">length</span><span class="s2">()) {</span>
+                <span class="s0">try </span><span class="s2">{</span>
+                    <span class="s1">mediumRiskPatterns</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s1">Regex</span><span class="s2">(</span><span class="s1">mediumRiskArray</span><span class="s2">.</span><span class="s1">getString</span><span class="s2">(</span><span class="s1">i</span><span class="s2">), </span><span class="s1">RegexOption</span><span class="s2">.</span><span class="s1">IGNORE_CASE</span><span class="s2">))</span>
+                <span class="s2">} </span><span class="s1">catch </span><span class="s2">(</span><span class="s1">e: Exception</span><span class="s2">) {</span>
+                    <span class="s1">Log</span><span class="s2">.</span><span class="s1">w</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Pattern invalide: </span><span class="s0">${</span><span class="s1">mediumRiskArray</span><span class="s2">.</span><span class="s1">getString</span><span class="s2">(</span><span class="s1">i</span><span class="s2">)</span><span class="s0">}</span><span class="s3">&quot;</span><span class="s2">)</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">loadWeightedWords</span><span class="s2">() {</span>
+        <span class="s1">config?</span><span class="s2">.</span><span class="s1">let </span><span class="s2">{ </span><span class="s1">config </span><span class="s2">-&gt;</span>
+            <span class="s0">val </span><span class="s1">weightedWords </span><span class="s2">= </span><span class="s1">config</span><span class="s2">.</span><span class="s1">getJSONObject</span><span class="s2">(</span><span class="s3">&quot;weighted_words&quot;</span><span class="s2">)</span>
+
+            <span class="s4">// Mots haut risque</span>
+            <span class="s0">val </span><span class="s1">highRisk </span><span class="s2">= </span><span class="s1">weightedWords</span><span class="s2">.</span><span class="s1">getJSONObject</span><span class="s2">(</span><span class="s3">&quot;high_risk&quot;</span><span class="s2">)</span>
+            <span class="s0">val </span><span class="s1">highRiskArray </span><span class="s2">= </span><span class="s1">highRisk</span><span class="s2">.</span><span class="s1">getJSONArray</span><span class="s2">(</span><span class="s3">&quot;words&quot;</span><span class="s2">)</span>
+            <span class="s0">for </span><span class="s2">(</span><span class="s1">i </span><span class="s0">in </span><span class="s5">0 </span><span class="s1">until highRiskArray</span><span class="s2">.</span><span class="s1">length</span><span class="s2">()) {</span>
+                <span class="s1">highRiskWords</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s1">highRiskArray</span><span class="s2">.</span><span class="s1">getString</span><span class="s2">(</span><span class="s1">i</span><span class="s2">))</span>
+            <span class="s2">}</span>
+
+            <span class="s4">// Mots risque moyen</span>
+            <span class="s0">val </span><span class="s1">mediumRisk </span><span class="s2">= </span><span class="s1">weightedWords</span><span class="s2">.</span><span class="s1">getJSONObject</span><span class="s2">(</span><span class="s3">&quot;medium_risk&quot;</span><span class="s2">)</span>
+            <span class="s0">val </span><span class="s1">mediumRiskArray </span><span class="s2">= </span><span class="s1">mediumRisk</span><span class="s2">.</span><span class="s1">getJSONArray</span><span class="s2">(</span><span class="s3">&quot;words&quot;</span><span class="s2">)</span>
+            <span class="s0">for </span><span class="s2">(</span><span class="s1">i </span><span class="s0">in </span><span class="s5">0 </span><span class="s1">until mediumRiskArray</span><span class="s2">.</span><span class="s1">length</span><span class="s2">()) {</span>
+                <span class="s1">mediumRiskWords</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s1">mediumRiskArray</span><span class="s2">.</span><span class="s1">getString</span><span class="s2">(</span><span class="s1">i</span><span class="s2">))</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">loadThresholds</span><span class="s2">() {</span>
+        <span class="s1">config?</span><span class="s2">.</span><span class="s1">let </span><span class="s2">{ </span><span class="s1">config </span><span class="s2">-&gt;</span>
+            <span class="s0">val </span><span class="s1">thresholds </span><span class="s2">= </span><span class="s1">config</span><span class="s2">.</span><span class="s1">getJSONObject</span><span class="s2">(</span><span class="s3">&quot;thresholds&quot;</span><span class="s2">)</span>
+            <span class="s1">riskScoreBlock </span><span class="s2">= </span><span class="s1">thresholds</span><span class="s2">.</span><span class="s1">optInt</span><span class="s2">(</span><span class="s3">&quot;risk_score_block&quot;</span><span class="s2">, </span><span class="s5">6</span><span class="s2">)</span>
+            <span class="s1">riskScoreWarn </span><span class="s2">= </span><span class="s1">thresholds</span><span class="s2">.</span><span class="s1">optInt</span><span class="s2">(</span><span class="s3">&quot;risk_score_warn&quot;</span><span class="s2">, </span><span class="s5">4</span><span class="s2">)</span>
+            <span class="s1">riskScoreContact </span><span class="s2">= </span><span class="s1">thresholds</span><span class="s2">.</span><span class="s1">optInt</span><span class="s2">(</span><span class="s3">&quot;risk_score_contact&quot;</span><span class="s2">, </span><span class="s5">8</span><span class="s2">)</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">loadWhitelist</span><span class="s2">() {</span>
+        <span class="s1">config?</span><span class="s2">.</span><span class="s1">let </span><span class="s2">{ </span><span class="s1">config </span><span class="s2">-&gt;</span>
+            <span class="s0">val </span><span class="s1">whitelist </span><span class="s2">= </span><span class="s1">config</span><span class="s2">.</span><span class="s1">getJSONObject</span><span class="s2">(</span><span class="s3">&quot;whitelist&quot;</span><span class="s2">)</span>
+
+            <span class="s4">// Expéditeurs de confiance</span>
+            <span class="s0">val </span><span class="s1">trustedSendersArray </span><span class="s2">= </span><span class="s1">whitelist</span><span class="s2">.</span><span class="s1">getJSONArray</span><span class="s2">(</span><span class="s3">&quot;trusted_senders&quot;</span><span class="s2">)</span>
+            <span class="s0">for </span><span class="s2">(</span><span class="s1">i </span><span class="s0">in </span><span class="s5">0 </span><span class="s1">until trustedSendersArray</span><span class="s2">.</span><span class="s1">length</span><span class="s2">()) {</span>
+                <span class="s1">trustedSenders</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s1">trustedSendersArray</span><span class="s2">.</span><span class="s1">getString</span><span class="s2">(</span><span class="s1">i</span><span class="s2">))</span>
+            <span class="s2">}</span>
+
+            <span class="s4">// Domaines de confiance</span>
+            <span class="s0">val </span><span class="s1">trustedDomainsArray </span><span class="s2">= </span><span class="s1">whitelist</span><span class="s2">.</span><span class="s1">getJSONArray</span><span class="s2">(</span><span class="s3">&quot;trusted_domains&quot;</span><span class="s2">)</span>
+            <span class="s0">for </span><span class="s2">(</span><span class="s1">i </span><span class="s0">in </span><span class="s5">0 </span><span class="s1">until trustedDomainsArray</span><span class="s2">.</span><span class="s1">length</span><span class="s2">()) {</span>
+                <span class="s1">trustedDomains</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s1">trustedDomainsArray</span><span class="s2">.</span><span class="s1">getString</span><span class="s2">(</span><span class="s1">i</span><span class="s2">))</span>
+            <span class="s2">}</span>
+
+            <span class="s4">// Numéros de confiance</span>
+            <span class="s0">val </span><span class="s1">trustedNumbersArray </span><span class="s2">= </span><span class="s1">whitelist</span><span class="s2">.</span><span class="s1">getJSONArray</span><span class="s2">(</span><span class="s3">&quot;trusted_numbers&quot;</span><span class="s2">)</span>
+            <span class="s0">for </span><span class="s2">(</span><span class="s1">i </span><span class="s0">in </span><span class="s5">0 </span><span class="s1">until trustedNumbersArray</span><span class="s2">.</span><span class="s1">length</span><span class="s2">()) {</span>
+                <span class="s1">trustedNumbers</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s1">trustedNumbersArray</span><span class="s2">.</span><span class="s1">getString</span><span class="s2">(</span><span class="s1">i</span><span class="s2">))</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">loadSuspiciousCharacteristics</span><span class="s2">() {</span>
+        <span class="s1">config?</span><span class="s2">.</span><span class="s1">let </span><span class="s2">{ </span><span class="s1">config </span><span class="s2">-&gt;</span>
+            <span class="s0">val </span><span class="s1">suspicious </span><span class="s2">= </span><span class="s1">config</span><span class="s2">.</span><span class="s1">getJSONObject</span><span class="s2">(</span><span class="s3">&quot;suspicious_characteristics&quot;</span><span class="s2">)</span>
+
+            <span class="s4">// Patterns de numéros suspects</span>
+            <span class="s0">val </span><span class="s1">suspiciousNumbers </span><span class="s2">= </span><span class="s1">suspicious</span><span class="s2">.</span><span class="s1">getJSONObject</span><span class="s2">(</span><span class="s3">&quot;suspicious_numbers&quot;</span><span class="s2">)</span>
+            <span class="s0">val </span><span class="s1">numberPatternsArray </span><span class="s2">= </span><span class="s1">suspiciousNumbers</span><span class="s2">.</span><span class="s1">getJSONArray</span><span class="s2">(</span><span class="s3">&quot;patterns&quot;</span><span class="s2">)</span>
+            <span class="s0">for </span><span class="s2">(</span><span class="s1">i </span><span class="s0">in </span><span class="s5">0 </span><span class="s1">until numberPatternsArray</span><span class="s2">.</span><span class="s1">length</span><span class="s2">()) {</span>
+                <span class="s0">try </span><span class="s2">{</span>
+                    <span class="s1">suspiciousNumberPatterns</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s1">Regex</span><span class="s2">(</span><span class="s1">numberPatternsArray</span><span class="s2">.</span><span class="s1">getString</span><span class="s2">(</span><span class="s1">i</span><span class="s2">)))</span>
+                <span class="s2">} </span><span class="s1">catch </span><span class="s2">(</span><span class="s1">e: Exception</span><span class="s2">) {</span>
+                    <span class="s1">Log</span><span class="s2">.</span><span class="s1">w</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Pattern numéro invalide: </span><span class="s0">${</span><span class="s1">numberPatternsArray</span><span class="s2">.</span><span class="s1">getString</span><span class="s2">(</span><span class="s1">i</span><span class="s2">)</span><span class="s0">}</span><span class="s3">&quot;</span><span class="s2">)</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+
+            <span class="s4">// Patterns de domaines suspects</span>
+            <span class="s0">val </span><span class="s1">suspiciousDomains </span><span class="s2">= </span><span class="s1">suspicious</span><span class="s2">.</span><span class="s1">getJSONObject</span><span class="s2">(</span><span class="s3">&quot;suspicious_domains&quot;</span><span class="s2">)</span>
+            <span class="s0">val </span><span class="s1">domainPatternsArray </span><span class="s2">= </span><span class="s1">suspiciousDomains</span><span class="s2">.</span><span class="s1">getJSONArray</span><span class="s2">(</span><span class="s3">&quot;patterns&quot;</span><span class="s2">)</span>
+            <span class="s0">for </span><span class="s2">(</span><span class="s1">i </span><span class="s0">in </span><span class="s5">0 </span><span class="s1">until domainPatternsArray</span><span class="s2">.</span><span class="s1">length</span><span class="s2">()) {</span>
+                <span class="s0">try </span><span class="s2">{</span>
+                    <span class="s1">suspiciousDomainPatterns</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s1">Regex</span><span class="s2">(</span><span class="s1">domainPatternsArray</span><span class="s2">.</span><span class="s1">getString</span><span class="s2">(</span><span class="s1">i</span><span class="s2">), </span><span class="s1">RegexOption</span><span class="s2">.</span><span class="s1">IGNORE_CASE</span><span class="s2">))</span>
+                <span class="s2">} </span><span class="s1">catch </span><span class="s2">(</span><span class="s1">e: Exception</span><span class="s2">) {</span>
+                    <span class="s1">Log</span><span class="s2">.</span><span class="s1">w</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Pattern domaine invalide: </span><span class="s0">${</span><span class="s1">domainPatternsArray</span><span class="s2">.</span><span class="s1">getString</span><span class="s2">(</span><span class="s1">i</span><span class="s2">)</span><span class="s0">}</span><span class="s3">&quot;</span><span class="s2">)</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+
+            <span class="s4">// Patterns spécifiques aux arnaques coursier</span>
+            <span class="s0">val </span><span class="s1">courierScam </span><span class="s2">= </span><span class="s1">suspicious</span><span class="s2">.</span><span class="s1">getJSONObject</span><span class="s2">(</span><span class="s3">&quot;courier_scam_patterns&quot;</span><span class="s2">)</span>
+            <span class="s0">val </span><span class="s1">courierPatternsArray </span><span class="s2">= </span><span class="s1">courierScam</span><span class="s2">.</span><span class="s1">getJSONArray</span><span class="s2">(</span><span class="s3">&quot;patterns&quot;</span><span class="s2">)</span>
+            <span class="s0">for </span><span class="s2">(</span><span class="s1">i </span><span class="s0">in </span><span class="s5">0 </span><span class="s1">until courierPatternsArray</span><span class="s2">.</span><span class="s1">length</span><span class="s2">()) {</span>
+                <span class="s0">try </span><span class="s2">{</span>
+                    <span class="s1">courierScamPatterns</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s1">Regex</span><span class="s2">(</span><span class="s1">courierPatternsArray</span><span class="s2">.</span><span class="s1">getString</span><span class="s2">(</span><span class="s1">i</span><span class="s2">), </span><span class="s1">RegexOption</span><span class="s2">.</span><span class="s1">IGNORE_CASE</span><span class="s2">))</span>
+                <span class="s2">} </span><span class="s1">catch </span><span class="s2">(</span><span class="s1">e: Exception</span><span class="s2">) {</span>
+                    <span class="s1">Log</span><span class="s2">.</span><span class="s1">w</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Pattern coursier invalide: </span><span class="s0">${</span><span class="s1">courierPatternsArray</span><span class="s2">.</span><span class="s1">getString</span><span class="s2">(</span><span class="s1">i</span><span class="s2">)</span><span class="s0">}</span><span class="s3">&quot;</span><span class="s2">)</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">loadDefaultConfiguration</span><span class="s2">() {</span>
+        <span class="s1">Log</span><span class="s2">.</span><span class="s1">w</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Chargement de la configuration par défaut&quot;</span><span class="s2">)</span>
+
+        <span class="s4">// Configuration minimale de secours</span>
+        <span class="s1">highRiskPatterns</span><span class="s2">.</span><span class="s1">addAll</span><span class="s2">(</span><span class="s1">listOf</span><span class="s2">(</span>
+            <span class="s1">Regex</span><span class="s2">(</span><span class="s3">&quot;vous</span><span class="s0">\\</span><span class="s3">s+avez</span><span class="s0">\\</span><span class="s3">s+gagn[eé]&quot;</span><span class="s2">, </span><span class="s1">RegexOption</span><span class="s2">.</span><span class="s1">IGNORE_CASE</span><span class="s2">),</span>
+            <span class="s1">Regex</span><span class="s2">(</span><span class="s3">&quot;compte</span><span class="s0">\\</span><span class="s3">s+(suspendu|bloqu[eé])&quot;</span><span class="s2">, </span><span class="s1">RegexOption</span><span class="s2">.</span><span class="s1">IGNORE_CASE</span><span class="s2">),</span>
+            <span class="s1">Regex</span><span class="s2">(</span><span class="s3">&quot;cliquez</span><span class="s0">\\</span><span class="s3">s+(ici|sur</span><span class="s0">\\</span><span class="s3">s+le</span><span class="s0">\\</span><span class="s3">s+lien)&quot;</span><span class="s2">, </span><span class="s1">RegexOption</span><span class="s2">.</span><span class="s1">IGNORE_CASE</span><span class="s2">),</span>
+            <span class="s1">Regex</span><span class="s2">(</span><span class="s3">&quot;urgent.*action</span><span class="s0">\\</span><span class="s3">s+requise&quot;</span><span class="s2">, </span><span class="s1">RegexOption</span><span class="s2">.</span><span class="s1">IGNORE_CASE</span><span class="s2">)</span>
+        <span class="s2">))</span>
+
+        <span class="s1">highRiskWords</span><span class="s2">.</span><span class="s1">addAll</span><span class="s2">(</span><span class="s1">listOf</span><span class="s2">(</span><span class="s3">&quot;compte suspendu&quot;</span><span class="s2">, </span><span class="s3">&quot;cliquez ici&quot;</span><span class="s2">, </span><span class="s3">&quot;vous avez gagne&quot;</span><span class="s2">))</span>
+        <span class="s1">mediumRiskWords</span><span class="s2">.</span><span class="s1">addAll</span><span class="s2">(</span><span class="s1">listOf</span><span class="s2">(</span><span class="s3">&quot;gratuit&quot;</span><span class="s2">, </span><span class="s3">&quot;promotion&quot;</span><span class="s2">, </span><span class="s3">&quot;telecharger&quot;</span><span class="s2">))</span>
+        <span class="s1">trustedNumbers</span><span class="s2">.</span><span class="s1">addAll</span><span class="s2">(</span><span class="s1">listOf</span><span class="s2">(</span><span class="s3">&quot;36180&quot;</span><span class="s2">, </span><span class="s3">&quot;36179&quot;</span><span class="s2">, </span><span class="s3">&quot;36173&quot;</span><span class="s2">))</span>
+
+        <span class="s1">riskScoreBlock </span><span class="s2">= </span><span class="s5">6</span>
+        <span class="s1">riskScoreWarn </span><span class="s2">= </span><span class="s5">4</span>
+    <span class="s2">}</span>
+
+    <span class="s6">/**</span>
+     <span class="s6">* Normalise le texte selon la configuration</span>
+     <span class="s6">*/</span>
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">normalizeText</span><span class="s2">(</span><span class="s1">text: String</span><span class="s2">)</span><span class="s1">: String </span><span class="s2">{</span>
+        <span class="s0">var </span><span class="s1">normalized </span><span class="s2">= </span><span class="s1">text</span><span class="s2">.</span><span class="s1">lowercase</span><span class="s2">()</span>
+
+        <span class="s1">config?</span><span class="s2">.</span><span class="s1">let </span><span class="s2">{ </span><span class="s1">config </span><span class="s2">-&gt;</span>
+            <span class="s0">val </span><span class="s1">normalization </span><span class="s2">= </span><span class="s1">config</span><span class="s2">.</span><span class="s1">getJSONObject</span><span class="s2">(</span><span class="s3">&quot;normalization&quot;</span><span class="s2">)</span>
+
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">normalization</span><span class="s2">.</span><span class="s1">optBoolean</span><span class="s2">(</span><span class="s3">&quot;remove_accents&quot;</span><span class="s2">, </span><span class="s0">true</span><span class="s2">)) {</span>
+                <span class="s1">normalized </span><span class="s2">= </span><span class="s1">normalized</span>
+                    <span class="s2">.</span><span class="s1">replace</span><span class="s2">(</span><span class="s3">&quot;[àâäáãå]&quot;</span><span class="s2">.</span><span class="s1">toRegex</span><span class="s2">(), </span><span class="s3">&quot;a&quot;</span><span class="s2">)</span>
+                    <span class="s2">.</span><span class="s1">replace</span><span class="s2">(</span><span class="s3">&quot;[éèêë]&quot;</span><span class="s2">.</span><span class="s1">toRegex</span><span class="s2">(), </span><span class="s3">&quot;e&quot;</span><span class="s2">)</span>
+                    <span class="s2">.</span><span class="s1">replace</span><span class="s2">(</span><span class="s3">&quot;[îïìí]&quot;</span><span class="s2">.</span><span class="s1">toRegex</span><span class="s2">(), </span><span class="s3">&quot;i&quot;</span><span class="s2">)</span>
+                    <span class="s2">.</span><span class="s1">replace</span><span class="s2">(</span><span class="s3">&quot;[ôöòóõ]&quot;</span><span class="s2">.</span><span class="s1">toRegex</span><span class="s2">(), </span><span class="s3">&quot;o&quot;</span><span class="s2">)</span>
+                    <span class="s2">.</span><span class="s1">replace</span><span class="s2">(</span><span class="s3">&quot;[ùûüú]&quot;</span><span class="s2">.</span><span class="s1">toRegex</span><span class="s2">(), </span><span class="s3">&quot;u&quot;</span><span class="s2">)</span>
+                    <span class="s2">.</span><span class="s1">replace</span><span class="s2">(</span><span class="s3">&quot;ç&quot;</span><span class="s2">, </span><span class="s3">&quot;c&quot;</span><span class="s2">)</span>
+                    <span class="s2">.</span><span class="s1">replace</span><span class="s2">(</span><span class="s3">&quot;ñ&quot;</span><span class="s2">, </span><span class="s3">&quot;n&quot;</span><span class="s2">)</span>
+            <span class="s2">}</span>
+
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">normalization</span><span class="s2">.</span><span class="s1">optBoolean</span><span class="s2">(</span><span class="s3">&quot;normalize_spaces&quot;</span><span class="s2">, </span><span class="s0">true</span><span class="s2">)) {</span>
+                <span class="s1">normalized </span><span class="s2">= </span><span class="s1">normalized</span><span class="s2">.</span><span class="s1">replace</span><span class="s2">(</span><span class="s3">&quot;</span><span class="s0">\\</span><span class="s3">s+&quot;</span><span class="s2">.</span><span class="s1">toRegex</span><span class="s2">(), </span><span class="s3">&quot; &quot;</span><span class="s2">)</span>
+            <span class="s2">}</span>
+
+            <span class="s4">// Substitution de caractères Unicode suspects (utilisés dans les arnaques)</span>
+            <span class="s1">normalized </span><span class="s2">= </span><span class="s1">normalized</span>
+                <span class="s2">.</span><span class="s1">replace</span><span class="s2">(</span><span class="s3">&quot;а&quot;</span><span class="s2">, </span><span class="s3">&quot;a&quot;</span><span class="s2">) </span><span class="s4">// Cyrillic a</span>
+                <span class="s2">.</span><span class="s1">replace</span><span class="s2">(</span><span class="s3">&quot;е&quot;</span><span class="s2">, </span><span class="s3">&quot;e&quot;</span><span class="s2">) </span><span class="s4">// Cyrillic e</span>
+                <span class="s2">.</span><span class="s1">replace</span><span class="s2">(</span><span class="s3">&quot;о&quot;</span><span class="s2">, </span><span class="s3">&quot;o&quot;</span><span class="s2">) </span><span class="s4">// Cyrillic o</span>
+                <span class="s2">.</span><span class="s1">replace</span><span class="s2">(</span><span class="s3">&quot;р&quot;</span><span class="s2">, </span><span class="s3">&quot;p&quot;</span><span class="s2">) </span><span class="s4">// Cyrillic p</span>
+                <span class="s2">.</span><span class="s1">replace</span><span class="s2">(</span><span class="s3">&quot;с&quot;</span><span class="s2">, </span><span class="s3">&quot;c&quot;</span><span class="s2">) </span><span class="s4">// Cyrillic c</span>
+                <span class="s2">.</span><span class="s1">replace</span><span class="s2">(</span><span class="s3">&quot;у&quot;</span><span class="s2">, </span><span class="s3">&quot;y&quot;</span><span class="s2">) </span><span class="s4">// Cyrillic y</span>
+                <span class="s2">.</span><span class="s1">replace</span><span class="s2">(</span><span class="s3">&quot;х&quot;</span><span class="s2">, </span><span class="s3">&quot;x&quot;</span><span class="s2">) </span><span class="s4">// Cyrillic x</span>
+        <span class="s2">}</span>
+
+        <span class="s0">return </span><span class="s1">normalized</span><span class="s2">.</span><span class="s1">trim</span><span class="s2">()</span>
+    <span class="s2">}</span>
+
+    <span class="s6">/**</span>
+     <span class="s6">* Vérifie si l'expéditeur est de confiance</span>
+     <span class="s6">*/</span>
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">isFromTrustedSender</span><span class="s2">(</span><span class="s1">phoneNumber: String</span><span class="s2">, </span><span class="s1">message: String</span><span class="s2">)</span><span class="s1">: Boolean </span><span class="s2">{</span>
+        <span class="s4">// Vérification des numéros de confiance</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">trustedNumbers</span><span class="s2">.</span><span class="s1">any </span><span class="s2">{ </span><span class="s1">phoneNumber</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s1">it</span><span class="s2">) }) {</span>
+            <span class="s0">return true</span>
+        <span class="s2">}</span>
+
+        <span class="s4">// Vérification des expéditeurs de confiance dans le message</span>
+        <span class="s0">val </span><span class="s1">normalizedMessage </span><span class="s2">= </span><span class="s1">normalizeText</span><span class="s2">(</span><span class="s1">message</span><span class="s2">)</span>
+        <span class="s0">return </span><span class="s1">trustedSenders</span><span class="s2">.</span><span class="s1">any </span><span class="s2">{ </span><span class="s1">sender </span><span class="s2">-&gt;</span>
+            <span class="s1">normalizedMessage</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s1">normalizeText</span><span class="s2">(</span><span class="s1">sender</span><span class="s2">))</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s6">/**</span>
+     <span class="s6">* Vérifie les patterns à haut risque et risque moyen</span>
+     <span class="s6">*/</span>
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">checkPatterns</span><span class="s2">(</span><span class="s1">message: String</span><span class="s2">)</span><span class="s1">: Pair</span><span class="s2">&lt;</span><span class="s1">List</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">&gt;, </span><span class="s1">Int</span><span class="s2">&gt; {</span>
+        <span class="s0">val </span><span class="s1">normalizedMessage </span><span class="s2">= </span><span class="s1">normalizeText</span><span class="s2">(</span><span class="s1">message</span><span class="s2">)</span>
+        <span class="s0">val </span><span class="s1">detectedPatterns </span><span class="s2">= </span><span class="s1">mutableListOf</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">&gt;()</span>
+        <span class="s0">var </span><span class="s1">patternScore </span><span class="s2">= </span><span class="s5">0</span>
+
+        <span class="s4">// Patterns haut risque (score +4)</span>
+        <span class="s0">for </span><span class="s2">(</span><span class="s1">pattern </span><span class="s0">in </span><span class="s1">highRiskPatterns</span><span class="s2">) {</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">pattern</span><span class="s2">.</span><span class="s1">containsMatchIn</span><span class="s2">(</span><span class="s1">normalizedMessage</span><span class="s2">)) {</span>
+                <span class="s1">detectedPatterns</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s3">&quot;HIGH_RISK: </span><span class="s0">${</span><span class="s1">pattern</span><span class="s2">.</span><span class="s1">pattern</span><span class="s2">.</span><span class="s1">take</span><span class="s2">(</span><span class="s5">30</span><span class="s2">)</span><span class="s0">}</span><span class="s3">&quot;</span><span class="s2">)</span>
+                <span class="s1">patternScore </span><span class="s2">+= </span><span class="s5">4</span>
+                <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Pattern haut risque détecté: </span><span class="s0">${</span><span class="s1">pattern</span><span class="s2">.</span><span class="s1">pattern</span><span class="s0">}</span><span class="s3">&quot;</span><span class="s2">)</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+
+        <span class="s4">// Patterns risque moyen (score +2)</span>
+        <span class="s0">for </span><span class="s2">(</span><span class="s1">pattern </span><span class="s0">in </span><span class="s1">mediumRiskPatterns</span><span class="s2">) {</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">pattern</span><span class="s2">.</span><span class="s1">containsMatchIn</span><span class="s2">(</span><span class="s1">normalizedMessage</span><span class="s2">)) {</span>
+                <span class="s1">detectedPatterns</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s3">&quot;MEDIUM_RISK: </span><span class="s0">${</span><span class="s1">pattern</span><span class="s2">.</span><span class="s1">pattern</span><span class="s2">.</span><span class="s1">take</span><span class="s2">(</span><span class="s5">30</span><span class="s2">)</span><span class="s0">}</span><span class="s3">&quot;</span><span class="s2">)</span>
+                <span class="s1">patternScore </span><span class="s2">+= </span><span class="s5">2</span>
+                <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Pattern risque moyen détecté: </span><span class="s0">${</span><span class="s1">pattern</span><span class="s2">.</span><span class="s1">pattern</span><span class="s0">}</span><span class="s3">&quot;</span><span class="s2">)</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+
+        <span class="s4">// Patterns spécifiques coursier (score +5 car très actuels)</span>
+        <span class="s0">for </span><span class="s2">(</span><span class="s1">pattern </span><span class="s0">in </span><span class="s1">courierScamPatterns</span><span class="s2">) {</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">pattern</span><span class="s2">.</span><span class="s1">containsMatchIn</span><span class="s2">(</span><span class="s1">normalizedMessage</span><span class="s2">)) {</span>
+                <span class="s1">detectedPatterns</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s3">&quot;COURIER_SCAM: </span><span class="s0">${</span><span class="s1">pattern</span><span class="s2">.</span><span class="s1">pattern</span><span class="s2">.</span><span class="s1">take</span><span class="s2">(</span><span class="s5">30</span><span class="s2">)</span><span class="s0">}</span><span class="s3">&quot;</span><span class="s2">)</span>
+                <span class="s1">patternScore </span><span class="s2">+= </span><span class="s5">5</span>
+                <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Pattern arnaque coursier détecté: </span><span class="s0">${</span><span class="s1">pattern</span><span class="s2">.</span><span class="s1">pattern</span><span class="s0">}</span><span class="s3">&quot;</span><span class="s2">)</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+
+        <span class="s0">return </span><span class="s1">Pair</span><span class="s2">(</span><span class="s1">detectedPatterns</span><span class="s2">, </span><span class="s1">patternScore</span><span class="s2">)</span>
+    <span class="s2">}</span>
+
+    <span class="s6">/**</span>
+     <span class="s6">* Calcule le score basé sur les mots détectés</span>
+     <span class="s6">*/</span>
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">calculateWordScore</span><span class="s2">(</span><span class="s1">message: String</span><span class="s2">)</span><span class="s1">: Pair</span><span class="s2">&lt;</span><span class="s1">List</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">&gt;, </span><span class="s1">Int</span><span class="s2">&gt; {</span>
+        <span class="s0">val </span><span class="s1">normalizedMessage </span><span class="s2">= </span><span class="s1">normalizeText</span><span class="s2">(</span><span class="s1">message</span><span class="s2">)</span>
+        <span class="s0">val </span><span class="s1">detectedWords </span><span class="s2">= </span><span class="s1">mutableListOf</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">&gt;()</span>
+        <span class="s0">var </span><span class="s1">wordScore </span><span class="s2">= </span><span class="s5">0</span>
+
+        <span class="s4">// Mots haut risque (+4 points selon JSON)</span>
+        <span class="s0">for </span><span class="s2">(</span><span class="s1">word </span><span class="s0">in </span><span class="s1">highRiskWords</span><span class="s2">) {</span>
+            <span class="s0">val </span><span class="s1">normalizedWord </span><span class="s2">= </span><span class="s1">normalizeText</span><span class="s2">(</span><span class="s1">word</span><span class="s2">)</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">normalizedMessage</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s1">normalizedWord</span><span class="s2">)) {</span>
+                <span class="s1">detectedWords</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s3">&quot;</span><span class="s0">$</span><span class="s1">word </span><span class="s3">(+4)&quot;</span><span class="s2">)</span>
+                <span class="s1">wordScore </span><span class="s2">+= </span><span class="s5">4</span>
+                <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Mot haut risque détecté: </span><span class="s0">$</span><span class="s1">word</span><span class="s3">&quot;</span><span class="s2">)</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+
+        <span class="s4">// Mots risque moyen (+2 points selon JSON)</span>
+        <span class="s0">for </span><span class="s2">(</span><span class="s1">word </span><span class="s0">in </span><span class="s1">mediumRiskWords</span><span class="s2">) {</span>
+            <span class="s0">val </span><span class="s1">normalizedWord </span><span class="s2">= </span><span class="s1">normalizeText</span><span class="s2">(</span><span class="s1">word</span><span class="s2">)</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">normalizedMessage</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s1">normalizedWord</span><span class="s2">)) {</span>
+                <span class="s1">detectedWords</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s3">&quot;</span><span class="s0">$</span><span class="s1">word </span><span class="s3">(+2)&quot;</span><span class="s2">)</span>
+                <span class="s1">wordScore </span><span class="s2">+= </span><span class="s5">2</span>
+                <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Mot risque moyen détecté: </span><span class="s0">$</span><span class="s1">word</span><span class="s3">&quot;</span><span class="s2">)</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+
+        <span class="s0">return </span><span class="s1">Pair</span><span class="s2">(</span><span class="s1">detectedWords</span><span class="s2">, </span><span class="s1">wordScore</span><span class="s2">)</span>
+    <span class="s2">}</span>
+
+    <span class="s6">/**</span>
+     <span class="s6">* Vérifie les caractéristiques suspectes</span>
+     <span class="s6">*/</span>
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">checkSuspiciousCharacteristics</span><span class="s2">(</span><span class="s1">message: String</span><span class="s2">, </span><span class="s1">phoneNumber: String</span><span class="s2">)</span><span class="s1">: Pair</span><span class="s2">&lt;</span><span class="s1">Boolean</span><span class="s2">, </span><span class="s1">String?</span><span class="s2">&gt; {</span>
+        <span class="s0">val </span><span class="s1">normalizedMessage </span><span class="s2">= </span><span class="s1">normalizeText</span><span class="s2">(</span><span class="s1">message</span><span class="s2">)</span>
+
+        <span class="s1">config?</span><span class="s2">.</span><span class="s1">let </span><span class="s2">{ </span><span class="s1">config </span><span class="s2">-&gt;</span>
+            <span class="s0">val </span><span class="s1">suspicious </span><span class="s2">= </span><span class="s1">config</span><span class="s2">.</span><span class="s1">getJSONObject</span><span class="s2">(</span><span class="s3">&quot;suspicious_characteristics&quot;</span><span class="s2">)</span>
+
+            <span class="s4">// SMS court avec lien</span>
+            <span class="s0">val </span><span class="s1">shortWithLink </span><span class="s2">= </span><span class="s1">suspicious</span><span class="s2">.</span><span class="s1">getJSONObject</span><span class="s2">(</span><span class="s3">&quot;short_with_link&quot;</span><span class="s2">)</span>
+            <span class="s0">val </span><span class="s1">maxLength </span><span class="s2">= </span><span class="s1">shortWithLink</span><span class="s2">.</span><span class="s1">getInt</span><span class="s2">(</span><span class="s3">&quot;max_length&quot;</span><span class="s2">)</span>
+            <span class="s0">val </span><span class="s1">containsArray </span><span class="s2">= </span><span class="s1">shortWithLink</span><span class="s2">.</span><span class="s1">getJSONArray</span><span class="s2">(</span><span class="s3">&quot;contains&quot;</span><span class="s2">)</span>
+
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">message</span><span class="s2">.</span><span class="s1">length </span><span class="s2">&lt; </span><span class="s1">maxLength</span><span class="s2">) {</span>
+                <span class="s0">for </span><span class="s2">(</span><span class="s1">i </span><span class="s0">in </span><span class="s5">0 </span><span class="s1">until containsArray</span><span class="s2">.</span><span class="s1">length</span><span class="s2">()) {</span>
+                    <span class="s0">val </span><span class="s1">linkPattern </span><span class="s2">= </span><span class="s1">containsArray</span><span class="s2">.</span><span class="s1">getString</span><span class="s2">(</span><span class="s1">i</span><span class="s2">)</span>
+                    <span class="s0">if </span><span class="s2">(</span><span class="s1">normalizedMessage</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s1">linkPattern</span><span class="s2">)) {</span>
+                        <span class="s0">return </span><span class="s1">Pair</span><span class="s2">(</span><span class="s0">true</span><span class="s2">, </span><span class="s3">&quot;SMS court avec lien suspect (</span><span class="s0">$</span><span class="s1">linkPattern</span><span class="s3">)&quot;</span><span class="s2">)</span>
+                    <span class="s2">}</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+
+            <span class="s4">// Trop de majuscules</span>
+            <span class="s0">val </span><span class="s1">excessiveCaps </span><span class="s2">= </span><span class="s1">suspicious</span><span class="s2">.</span><span class="s1">getJSONObject</span><span class="s2">(</span><span class="s3">&quot;excessive_caps&quot;</span><span class="s2">)</span>
+            <span class="s0">val </span><span class="s1">capsThreshold </span><span class="s2">= </span><span class="s1">excessiveCaps</span><span class="s2">.</span><span class="s1">getDouble</span><span class="s2">(</span><span class="s3">&quot;threshold&quot;</span><span class="s2">)</span>
+            <span class="s0">val </span><span class="s1">upperCaseCount </span><span class="s2">= </span><span class="s1">message</span><span class="s2">.</span><span class="s1">count </span><span class="s2">{ </span><span class="s1">it</span><span class="s2">.</span><span class="s1">isUpperCase</span><span class="s2">() }</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">message</span><span class="s2">.</span><span class="s1">length </span><span class="s2">&gt; </span><span class="s5">10 </span><span class="s2">&amp;&amp; </span><span class="s1">upperCaseCount </span><span class="s2">&gt; </span><span class="s1">message</span><span class="s2">.</span><span class="s1">length </span><span class="s2">* </span><span class="s1">capsThreshold</span><span class="s2">) {</span>
+                <span class="s0">return </span><span class="s1">Pair</span><span class="s2">(</span><span class="s0">true</span><span class="s2">, </span><span class="s3">&quot;Trop de majuscules (</span><span class="s0">${</span><span class="s1">upperCaseCount</span><span class="s0">}</span><span class="s3">/</span><span class="s0">${</span><span class="s1">message</span><span class="s2">.</span><span class="s1">length</span><span class="s0">}</span><span class="s3">)&quot;</span><span class="s2">)</span>
+            <span class="s2">}</span>
+
+            <span class="s4">// Trop de points d'exclamation</span>
+            <span class="s0">val </span><span class="s1">excessiveExclamation </span><span class="s2">= </span><span class="s1">suspicious</span><span class="s2">.</span><span class="s1">getJSONObject</span><span class="s2">(</span><span class="s3">&quot;excessive_exclamation&quot;</span><span class="s2">)</span>
+            <span class="s0">val </span><span class="s1">exclamationThreshold </span><span class="s2">= </span><span class="s1">excessiveExclamation</span><span class="s2">.</span><span class="s1">getInt</span><span class="s2">(</span><span class="s3">&quot;threshold&quot;</span><span class="s2">)</span>
+            <span class="s0">val </span><span class="s1">exclamationCount </span><span class="s2">= </span><span class="s1">message</span><span class="s2">.</span><span class="s1">count </span><span class="s2">{ </span><span class="s1">it </span><span class="s2">== </span><span class="s3">'!' </span><span class="s2">}</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">exclamationCount </span><span class="s2">&gt;= </span><span class="s1">exclamationThreshold</span><span class="s2">) {</span>
+                <span class="s0">return </span><span class="s1">Pair</span><span class="s2">(</span><span class="s0">true</span><span class="s2">, </span><span class="s3">&quot;Trop de points d'exclamation (</span><span class="s0">$</span><span class="s1">exclamationCount</span><span class="s3">)&quot;</span><span class="s2">)</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+
+        <span class="s4">// Numéros suspects dans le message</span>
+        <span class="s0">for </span><span class="s2">(</span><span class="s1">pattern </span><span class="s0">in </span><span class="s1">suspiciousNumberPatterns</span><span class="s2">) {</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">pattern</span><span class="s2">.</span><span class="s1">containsMatchIn</span><span class="s2">(</span><span class="s1">message</span><span class="s2">)) {</span>
+                <span class="s0">return </span><span class="s1">Pair</span><span class="s2">(</span><span class="s0">true</span><span class="s2">, </span><span class="s3">&quot;Numéro suspect dans le message&quot;</span><span class="s2">)</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+
+        <span class="s4">// Domaines suspects</span>
+        <span class="s0">for </span><span class="s2">(</span><span class="s1">pattern </span><span class="s0">in </span><span class="s1">suspiciousDomainPatterns</span><span class="s2">) {</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">pattern</span><span class="s2">.</span><span class="s1">containsMatchIn</span><span class="s2">(</span><span class="s1">normalizedMessage</span><span class="s2">)) {</span>
+                <span class="s0">return </span><span class="s1">Pair</span><span class="s2">(</span><span class="s0">true</span><span class="s2">, </span><span class="s3">&quot;Domaine suspect détecté&quot;</span><span class="s2">)</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+
+        <span class="s0">return </span><span class="s1">Pair</span><span class="s2">(</span><span class="s0">false</span><span class="s2">, </span><span class="s0">null</span><span class="s2">)</span>
+    <span class="s2">}</span>
+
+    <span class="s6">/**</span>
+     <span class="s6">* Analyse principale du SMS</span>
+     <span class="s6">*/</span>
+    <span class="s0">fun </span><span class="s1">analyzeSMS</span><span class="s2">(</span><span class="s1">phoneNumber: String</span><span class="s2">, </span><span class="s1">message: String</span><span class="s2">)</span><span class="s1">: SpamDetectionResult </span><span class="s2">{</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">message</span><span class="s2">.</span><span class="s1">isBlank</span><span class="s2">()) {</span>
+            <span class="s0">return </span><span class="s1">SpamDetectionResult</span><span class="s2">(</span><span class="s0">false</span><span class="s2">, </span><span class="s5">0</span><span class="s2">, </span><span class="s3">&quot;LOW&quot;</span><span class="s2">, </span><span class="s1">emptyList</span><span class="s2">(), </span><span class="s1">emptyList</span><span class="s2">(), </span><span class="s3">&quot;Message vide&quot;</span><span class="s2">, </span><span class="s0">false</span><span class="s2">)</span>
+        <span class="s2">}</span>
+
+        <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Analyse du message de </span><span class="s0">$</span><span class="s1">phoneNumber</span><span class="s3">: </span><span class="s0">${</span><span class="s1">message</span><span class="s2">.</span><span class="s1">take</span><span class="s2">(</span><span class="s5">50</span><span class="s2">)</span><span class="s0">}</span><span class="s3">...&quot;</span><span class="s2">)</span>
+
+        <span class="s4">// Vérification de la liste blanche</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">isFromTrustedSender</span><span class="s2">(</span><span class="s1">phoneNumber</span><span class="s2">, </span><span class="s1">message</span><span class="s2">)) {</span>
+            <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Expéditeur de confiance détecté&quot;</span><span class="s2">)</span>
+            <span class="s0">return </span><span class="s1">SpamDetectionResult</span><span class="s2">(</span><span class="s0">false</span><span class="s2">, </span><span class="s5">0</span><span class="s2">, </span><span class="s3">&quot;LOW&quot;</span><span class="s2">, </span><span class="s1">emptyList</span><span class="s2">(), </span><span class="s1">emptyList</span><span class="s2">(), </span><span class="s3">&quot;Expéditeur de confiance&quot;</span><span class="s2">, </span><span class="s0">false</span><span class="s2">)</span>
+        <span class="s2">}</span>
+
+        <span class="s4">// Vérification des patterns</span>
+        <span class="s0">val </span><span class="s2">(</span><span class="s1">detectedPatterns</span><span class="s2">, </span><span class="s1">patternScore</span><span class="s2">) = </span><span class="s1">checkPatterns</span><span class="s2">(</span><span class="s1">message</span><span class="s2">)</span>
+
+        <span class="s4">// Calcul du score des mots</span>
+        <span class="s0">val </span><span class="s2">(</span><span class="s1">detectedWords</span><span class="s2">, </span><span class="s1">wordScore</span><span class="s2">) = </span><span class="s1">calculateWordScore</span><span class="s2">(</span><span class="s1">message</span><span class="s2">)</span>
+
+        <span class="s4">// Score total</span>
+        <span class="s0">val </span><span class="s1">totalScore </span><span class="s2">= </span><span class="s1">patternScore </span><span class="s2">+ </span><span class="s1">wordScore</span>
+
+        <span class="s4">// Vérification des caractéristiques suspectes</span>
+        <span class="s0">val </span><span class="s2">(</span><span class="s1">hasSuspiciousChar</span><span class="s2">, </span><span class="s1">suspiciousReason</span><span class="s2">) = </span><span class="s1">checkSuspiciousCharacteristics</span><span class="s2">(</span><span class="s1">message</span><span class="s2">, </span><span class="s1">phoneNumber</span><span class="s2">)</span>
+
+        <span class="s4">// Détermination du niveau de risque</span>
+        <span class="s0">val </span><span class="s1">riskLevel </span><span class="s2">= </span><span class="s0">when </span><span class="s2">{</span>
+            <span class="s1">totalScore </span><span class="s2">&gt;= </span><span class="s1">riskScoreBlock </span><span class="s2">|| </span><span class="s1">hasSuspiciousChar </span><span class="s2">-&gt; </span><span class="s3">&quot;CRITICAL&quot;</span>
+            <span class="s1">totalScore </span><span class="s2">&gt;= </span><span class="s1">riskScoreWarn </span><span class="s2">-&gt; </span><span class="s3">&quot;MEDIUM&quot;</span>
+            <span class="s0">else </span><span class="s2">-&gt; </span><span class="s3">&quot;LOW&quot;</span>
+        <span class="s2">}</span>
+
+        <span class="s0">val </span><span class="s1">isSpam </span><span class="s2">= </span><span class="s1">totalScore </span><span class="s2">&gt;= </span><span class="s1">riskScoreBlock </span><span class="s2">|| </span><span class="s1">hasSuspiciousChar</span>
+        <span class="s0">val </span><span class="s1">shouldBlock </span><span class="s2">= </span><span class="s1">config?</span><span class="s2">.</span><span class="s1">getJSONObject</span><span class="s2">(</span><span class="s3">&quot;thresholds&quot;</span><span class="s2">)</span><span class="s1">?</span><span class="s2">.</span><span class="s1">optBoolean</span><span class="s2">(</span><span class="s3">&quot;pattern_match_block&quot;</span><span class="s2">, </span><span class="s0">true</span><span class="s2">) == </span><span class="s0">true </span><span class="s2">&amp;&amp; </span><span class="s1">isSpam</span>
+
+        <span class="s4">// Construction de la raison</span>
+        <span class="s0">val </span><span class="s1">reasons </span><span class="s2">= </span><span class="s1">mutableListOf</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">&gt;()</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">detectedPatterns</span><span class="s2">.</span><span class="s1">isNotEmpty</span><span class="s2">()) </span><span class="s1">reasons</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s3">&quot;Patterns: </span><span class="s0">${</span><span class="s1">detectedPatterns</span><span class="s2">.</span><span class="s1">size</span><span class="s0">}</span><span class="s3">&quot;</span><span class="s2">)</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">detectedWords</span><span class="s2">.</span><span class="s1">isNotEmpty</span><span class="s2">()) </span><span class="s1">reasons</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s3">&quot;Mots: </span><span class="s0">${</span><span class="s1">detectedWords</span><span class="s2">.</span><span class="s1">size</span><span class="s0">}</span><span class="s3">&quot;</span><span class="s2">)</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">hasSuspiciousChar</span><span class="s2">) </span><span class="s1">reasons</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s1">suspiciousReason ?: </span><span class="s3">&quot;Caractéristiques suspectes&quot;</span><span class="s2">)</span>
+
+        <span class="s0">val </span><span class="s1">finalReason </span><span class="s2">= </span><span class="s0">if </span><span class="s2">(</span><span class="s1">reasons</span><span class="s2">.</span><span class="s1">isEmpty</span><span class="s2">()) {</span>
+            <span class="s3">&quot;Message semble légitime&quot;</span>
+        <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+            <span class="s3">&quot;Score: </span><span class="s0">$</span><span class="s1">totalScore </span><span class="s3">- </span><span class="s0">${</span><span class="s1">reasons</span><span class="s2">.</span><span class="s1">joinToString</span><span class="s2">(</span><span class="s3">&quot;, &quot;</span><span class="s2">)</span><span class="s0">}</span><span class="s3">&quot;</span>
+        <span class="s2">}</span>
+
+        <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Résultat analyse: isSpam=</span><span class="s0">$</span><span class="s1">isSpam</span><span class="s3">, score=</span><span class="s0">$</span><span class="s1">totalScore</span><span class="s3">, level=</span><span class="s0">$</span><span class="s1">riskLevel</span><span class="s3">&quot;</span><span class="s2">)</span>
+
+        <span class="s0">return </span><span class="s1">SpamDetectionResult</span><span class="s2">(</span>
+            <span class="s1">isSpam </span><span class="s2">= </span><span class="s1">isSpam</span><span class="s2">,</span>
+            <span class="s1">riskScore </span><span class="s2">= </span><span class="s1">totalScore</span><span class="s2">,</span>
+            <span class="s1">riskLevel </span><span class="s2">= </span><span class="s1">riskLevel</span><span class="s2">,</span>
+            <span class="s1">detectedPatterns </span><span class="s2">= </span><span class="s1">detectedPatterns</span><span class="s2">,</span>
+            <span class="s1">detectedWords </span><span class="s2">= </span><span class="s1">detectedWords</span><span class="s2">,</span>
+            <span class="s1">reason </span><span class="s2">= </span><span class="s1">finalReason</span><span class="s2">,</span>
+            <span class="s1">shouldBlock </span><span class="s2">= </span><span class="s1">shouldBlock</span>
+        <span class="s2">)</span>
+    <span class="s2">}</span>
+
+    <span class="s6">/**</span>
+     <span class="s6">* Version simplifiée pour compatibilité</span>
+     <span class="s6">*/</span>
+    <span class="s0">fun </span><span class="s1">isSpamMessage</span><span class="s2">(</span><span class="s1">message: String</span><span class="s2">)</span><span class="s1">: Boolean </span><span class="s2">{</span>
+        <span class="s0">return </span><span class="s1">analyzeSMS</span><span class="s2">(</span><span class="s3">&quot;&quot;</span><span class="s2">, </span><span class="s1">message</span><span class="s2">).</span><span class="s1">isSpam</span>
+    <span class="s2">}</span>
+
+    <span class="s6">/**</span>
+     <span class="s6">* Méthode pour mettre à jour la configuration (pour les mises à jour auto)</span>
+     <span class="s6">*/</span>
+    <span class="s0">fun </span><span class="s1">updateConfiguration</span><span class="s2">(</span><span class="s1">newConfigJson: String</span><span class="s2">)</span><span class="s1">: Boolean </span><span class="s2">{</span>
+        <span class="s0">return try </span><span class="s2">{</span>
+            <span class="s1">config </span><span class="s2">= </span><span class="s1">JSONObject</span><span class="s2">(</span><span class="s1">newConfigJson</span><span class="s2">).</span><span class="s1">getJSONObject</span><span class="s2">(</span><span class="s3">&quot;spam_detection&quot;</span><span class="s2">)</span>
+            <span class="s1">loadPatterns</span><span class="s2">()</span>
+            <span class="s1">loadWeightedWords</span><span class="s2">()</span>
+            <span class="s1">loadThresholds</span><span class="s2">()</span>
+            <span class="s1">loadWhitelist</span><span class="s2">()</span>
+            <span class="s1">loadSuspiciousCharacteristics</span><span class="s2">()</span>
+            <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Configuration mise à jour avec succès&quot;</span><span class="s2">)</span>
+            <span class="s0">true</span>
+        <span class="s2">} </span><span class="s1">catch </span><span class="s2">(</span><span class="s1">e: Exception</span><span class="s2">) {</span>
+            <span class="s1">Log</span><span class="s2">.</span><span class="s1">e</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Erreur lors de la mise à jour de la configuration&quot;</span><span class="s2">, </span><span class="s1">e</span><span class="s2">)</span>
+            <span class="s0">false</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+<span class="s2">}</span></pre>
+</body>
+</html>

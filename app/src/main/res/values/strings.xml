@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">Stop Démarchage</string>
+    <string name="block_number">Bloquer le numéro</string>
+    <string name="unblock_number">Débloquer le numéro</string>
+
+    <!-- Strings pour les actions du menu -->
+    <string name="call_back">Rappeler</string>
+    <string name="send_message">Envoyer un message</string>
+    <string name="add_contact">Ajouter aux contacts</string>
+    <string name="show_details">Détails</string>
+    <string name="enable_whitelist">Activer la liste blanche</string>
+    <string name="background_desc"></string>
+
+    <string name="sms_spam_detected">SMS suspect détecté</string>
+    <string name="sms_history">Historique SMS</string>
+    <string name="content_description_blocked">Indicateur de conversation bloquée</string>
+
+    <string name="performance_title">Performances</string>
+    <string name="status_indicator_desc">Indicateur de statut</string>
+    <string name="status_active">Actif</string>
+    <string name="detections_per_hour">Détections/heure</string>
+    <string name="accuracy_label">Précision</string>
+    <string name="response_time_label">Temps de réponse</string>
+    <string name="activity_last_hour">Activité dernière heure</string>
+    <string name="activity_normal">Normale</string>
+
+</resources>

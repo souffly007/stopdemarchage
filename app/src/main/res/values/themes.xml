@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="Theme.StopDemarchage" parent="Theme.Material3.DayNight.NoActionBar">
+
+    <item name="colorPrimary">@color/button_background</item>
+        <item name="colorOnPrimary">@color/button_text</item>
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimary</item>
+        <item name="popupMenuStyle">@style/PopupMenuStyle</item>
+        <item name="android:popupMenuStyle">@style/PopupMenuStyle</item>
+    </style>
+
+    <style name="PopupMenuStyle" parent="Widget.AppCompat.PopupMenu">
+        <item name="android:popupBackground">@color/popup_background_color</item>
+        <item name="android:textColor">@color/popup_text_color</item>
+    </style>
+
+    <style name="ButtonStyle" parent="Widget.AppCompat.Button">
+        <item name="backgroundTint">@color/button_background</item>
+        <item name="android:textColor">@color/button_text</item>
+    </style>
+
+    <style name="BottomSheetDialogTheme" parent="Theme.MaterialComponents.Light.BottomSheetDialog">
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowSoftInputMode">adjustResize</item>
+        <item name="android:textColor">@color/popup_text_color</item>
+    </style>
+
+    <style name="TextTitleBlockedList" parent="TextAppearance.AppCompat.Body1">
+        <item name="android:textColor">@color/text_on_background_main</item>
+        <item name="android:textSize">18sp</item> <item name="android:textStyle">bold</item>
+    </style>
+
+</resources>

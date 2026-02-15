@@ -1,0 +1,61 @@
+<html>
+<head>
+<title>CMakeLists.txt</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #bcbec4;}
+.s1 { color: #7a7e85;}
+.s2 { color: #ffc66d;}
+.s3 { color: #bcbec4;}
+.s4 { color: #6aab73;}
+.s5 { color: #cf8e6d;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+CMakeLists.txt</font>
+</center></td></tr></table>
+<pre>
+<span class="s1"># For more information about using CMake with Android Studio, read the</span>
+<span class="s1"># documentation: https://d.android.com/studio/projects/add-native-code.html.</span>
+<span class="s1"># For more examples on how to use CMake, see https://github.com/android/ndk-samples.</span>
+
+<span class="s1"># Sets the minimum CMake version required for this project.</span>
+<span class="s2">cmake_minimum_required</span><span class="s3">(VERSION 3.22.1)</span>
+
+<span class="s1"># Declares the project name. The project name can be accessed via ${ PROJECT_NAME},</span>
+<span class="s1"># Since this is the top level CMakeLists.txt, the project name is also accessible</span>
+<span class="s1"># with ${CMAKE_PROJECT_NAME} (both CMake variables are in-sync within the top level</span>
+<span class="s1"># build script scope).</span>
+<span class="s2">project</span><span class="s3">(</span><span class="s4">&quot;</span><span class="s3">stopdemarchage</span><span class="s4">&quot;</span><span class="s3">)</span>
+
+<span class="s1"># Creates and names a library, sets it as either STATIC</span>
+<span class="s1"># or SHARED, and provides the relative paths to its source code.</span>
+<span class="s1"># You can define multiple libraries, and CMake builds them for you.</span>
+<span class="s1"># Gradle automatically packages shared libraries with your APK.</span>
+<span class="s1">#</span>
+<span class="s1"># In this top level CMakeLists.txt, ${CMAKE_PROJECT_NAME} is used to define</span>
+<span class="s1"># the target library name; in the sub-module's CMakeLists.txt, ${PROJECT_NAME}</span>
+<span class="s1"># is preferred for the same purpose.</span>
+<span class="s1">#</span>
+<span class="s1"># In order to load a library into your app from Java/Kotlin, you must call</span>
+<span class="s1"># System.loadLibrary() and pass the name of the library defined here;</span>
+<span class="s1"># for GameActivity/NativeActivity derived applications, the same library name must be</span>
+<span class="s1"># used in the AndroidManifest.xml file.</span>
+<span class="s2">add_library</span><span class="s3">(</span><span class="s5">${</span><span class="s3">CMAKE_PROJECT_NAME</span><span class="s5">} </span><span class="s3">SHARED</span>
+    <span class="s1"># List C/C++ source files with relative paths to this CMakeLists.txt.</span>
+    <span class="s3">stopdemarchage.cpp)</span>
+
+<span class="s1"># Specifies libraries CMake should link to your target library. You</span>
+<span class="s1"># can link libraries from various origins, such as libraries defined in this</span>
+<span class="s1"># build script, prebuilt third-party libraries, or Android system libraries.</span>
+<span class="s2">target_link_libraries</span><span class="s3">(</span><span class="s5">${</span><span class="s3">CMAKE_PROJECT_NAME</span><span class="s5">}</span>
+    <span class="s1"># List libraries link to the target library</span>
+    <span class="s3">android</span>
+    <span class="s3">log)</span>
+<span class="s2">target_link_options</span><span class="s3">(</span><span class="s5">${</span><span class="s3">CMAKE_PROJECT_NAME</span><span class="s5">} </span><span class="s3">PRIVATE </span><span class="s4">&quot;</span><span class="s3">-Wl,-z,max-page-size=16384</span><span class="s4">&quot;</span><span class="s3">)</span>
+</pre>
+</body>
+</html>

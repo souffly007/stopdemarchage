@@ -1,0 +1,209 @@
+<html>
+<head>
+<title>SmsHelper.kt</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #5f826b; font-style: italic;}
+.s4 { color: #7a7e85;}
+.s5 { color: #2aacb8;}
+.s6 { color: #6aab73;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+SmsHelper.kt</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">fr</span><span class="s2">.</span><span class="s1">bonobo</span><span class="s2">.</span><span class="s1">stopdemarchage</span><span class="s2">.</span><span class="s1">helpers</span>
+
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">content</span><span class="s2">.</span><span class="s1">Context</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">net</span><span class="s2">.</span><span class="s1">Uri</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">provider</span><span class="s2">.</span><span class="s1">ContactsContract</span>
+<span class="s1">import fr</span><span class="s2">.</span><span class="s1">bonobo</span><span class="s2">.</span><span class="s1">stopdemarchage</span><span class="s2">.</span><span class="s1">SmsSuspicionAnalyzer</span>
+<span class="s1">import fr</span><span class="s2">.</span><span class="s1">bonobo</span><span class="s2">.</span><span class="s1">stopdemarchage</span><span class="s2">.</span><span class="s1">data</span><span class="s2">.</span><span class="s1">SmsConversation</span>
+<span class="s1">import fr</span><span class="s2">.</span><span class="s1">bonobo</span><span class="s2">.</span><span class="s1">stopdemarchage</span><span class="s2">.</span><span class="s1">data</span><span class="s2">.</span><span class="s1">SmsMessage</span>
+
+
+<span class="s0">object </span><span class="s1">SmsHelper </span><span class="s2">{</span>
+
+    <span class="s3">/**</span>
+     <span class="s3">* Récupère toutes les conversations SMS groupées par numéro</span>
+     <span class="s3">*/</span>
+    <span class="s0">fun </span><span class="s1">getAllConversations</span><span class="s2">(</span><span class="s1">context: Context</span><span class="s2">, </span><span class="s1">analyzer: SmsSuspicionAnalyzer</span><span class="s2">)</span><span class="s1">: List</span><span class="s2">&lt;</span><span class="s1">SmsConversation</span><span class="s2">&gt; {</span>
+        <span class="s0">val </span><span class="s1">allMessages </span><span class="s2">= </span><span class="s1">getAllSms</span><span class="s2">(</span><span class="s1">context</span><span class="s2">, </span><span class="s1">analyzer</span><span class="s2">)</span>
+
+        <span class="s4">// Grouper les messages par numéro de téléphone</span>
+        <span class="s0">val </span><span class="s1">groupedMessages </span><span class="s2">= </span><span class="s1">allMessages</span><span class="s2">.</span><span class="s1">groupBy </span><span class="s2">{ </span><span class="s1">it</span><span class="s2">.</span><span class="s1">address </span><span class="s2">}</span>
+
+        <span class="s4">// Créer une conversation pour chaque groupe</span>
+        <span class="s0">val </span><span class="s1">conversations </span><span class="s2">= </span><span class="s1">groupedMessages</span><span class="s2">.</span><span class="s1">map </span><span class="s2">{ (</span><span class="s1">address</span><span class="s2">, </span><span class="s1">messages</span><span class="s2">) -&gt;</span>
+            <span class="s0">val </span><span class="s1">sortedMessages </span><span class="s2">= </span><span class="s1">messages</span><span class="s2">.</span><span class="s1">sortedByDescending </span><span class="s2">{ </span><span class="s1">it</span><span class="s2">.</span><span class="s1">date </span><span class="s2">}</span>
+            <span class="s0">val </span><span class="s1">lastMessage </span><span class="s2">= </span><span class="s1">sortedMessages</span><span class="s2">.</span><span class="s1">first</span><span class="s2">()</span>
+            <span class="s0">val </span><span class="s1">maxScore </span><span class="s2">= </span><span class="s1">messages</span><span class="s2">.</span><span class="s1">maxOfOrNull </span><span class="s2">{ </span><span class="s1">it</span><span class="s2">.</span><span class="s1">suspicionResult</span><span class="s2">.</span><span class="s1">score </span><span class="s2">} </span><span class="s1">?: </span><span class="s5">0</span>
+            <span class="s0">val </span><span class="s1">contactName </span><span class="s2">= </span><span class="s1">getContactName</span><span class="s2">(</span><span class="s1">context</span><span class="s2">, </span><span class="s1">address</span><span class="s2">)</span>
+
+            <span class="s1">SmsConversation</span><span class="s2">(</span>
+                <span class="s1">address </span><span class="s2">= </span><span class="s1">address</span><span class="s2">,</span>
+                <span class="s1">contactName </span><span class="s2">= </span><span class="s1">contactName</span><span class="s2">,</span>
+                <span class="s1">messages </span><span class="s2">= </span><span class="s1">sortedMessages</span><span class="s2">,</span>
+                <span class="s1">lastMessage </span><span class="s2">= </span><span class="s1">lastMessage</span><span class="s2">,</span>
+                <span class="s1">unreadCount </span><span class="s2">= </span><span class="s5">0</span><span class="s2">, </span><span class="s4">// Peut être amélioré si nécessaire</span>
+                <span class="s1">maxSuspicionScore </span><span class="s2">= </span><span class="s1">maxScore</span>
+            <span class="s2">)</span>
+        <span class="s2">}</span>
+
+        <span class="s4">// Trier par date du dernier message (plus récent en premier)</span>
+        <span class="s0">return </span><span class="s1">conversations</span><span class="s2">.</span><span class="s1">sortedByDescending </span><span class="s2">{ </span><span class="s1">it</span><span class="s2">.</span><span class="s1">lastMessage</span><span class="s2">.</span><span class="s1">date </span><span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s3">/**</span>
+     <span class="s3">* Récupère le nom d'un contact depuis son numéro</span>
+     <span class="s3">*/</span>
+    <span class="s0">fun </span><span class="s1">getContactName</span><span class="s2">(</span><span class="s1">context: Context</span><span class="s2">, </span><span class="s1">phoneNumber: String</span><span class="s2">)</span><span class="s1">: String? </span><span class="s2">{</span>
+        <span class="s0">try </span><span class="s2">{</span>
+            <span class="s0">val </span><span class="s1">uri </span><span class="s2">= </span><span class="s1">Uri</span><span class="s2">.</span><span class="s1">withAppendedPath</span><span class="s2">(</span>
+                <span class="s1">ContactsContract</span><span class="s2">.</span><span class="s1">PhoneLookup</span><span class="s2">.</span><span class="s1">CONTENT_FILTER_URI</span><span class="s2">,</span>
+                <span class="s1">Uri</span><span class="s2">.</span><span class="s1">encode</span><span class="s2">(</span><span class="s1">phoneNumber</span><span class="s2">)</span>
+            <span class="s2">)</span>
+
+            <span class="s0">val </span><span class="s1">cursor </span><span class="s2">= </span><span class="s1">context</span><span class="s2">.</span><span class="s1">contentResolver</span><span class="s2">.</span><span class="s1">query</span><span class="s2">(</span>
+                <span class="s1">uri</span><span class="s2">,</span>
+                <span class="s1">arrayOf</span><span class="s2">(</span><span class="s1">ContactsContract</span><span class="s2">.</span><span class="s1">PhoneLookup</span><span class="s2">.</span><span class="s1">DISPLAY_NAME</span><span class="s2">),</span>
+                <span class="s0">null</span><span class="s2">,</span>
+                <span class="s0">null</span><span class="s2">,</span>
+                <span class="s0">null</span>
+            <span class="s2">)</span>
+
+            <span class="s1">cursor?</span><span class="s2">.</span><span class="s1">use </span><span class="s2">{</span>
+                <span class="s0">if </span><span class="s2">(</span><span class="s1">it</span><span class="s2">.</span><span class="s1">moveToFirst</span><span class="s2">()) {</span>
+                    <span class="s0">val </span><span class="s1">nameIndex </span><span class="s2">= </span><span class="s1">it</span><span class="s2">.</span><span class="s1">getColumnIndex</span><span class="s2">(</span><span class="s1">ContactsContract</span><span class="s2">.</span><span class="s1">PhoneLookup</span><span class="s2">.</span><span class="s1">DISPLAY_NAME</span><span class="s2">)</span>
+                    <span class="s0">if </span><span class="s2">(</span><span class="s1">nameIndex </span><span class="s2">&gt;= </span><span class="s5">0</span><span class="s2">) {</span>
+                        <span class="s0">return </span><span class="s1">it</span><span class="s2">.</span><span class="s1">getString</span><span class="s2">(</span><span class="s1">nameIndex</span><span class="s2">)</span>
+                    <span class="s2">}</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+        <span class="s2">} </span><span class="s1">catch </span><span class="s2">(</span><span class="s1">e: Exception</span><span class="s2">) {</span>
+            <span class="s1">android</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">Log</span><span class="s2">.</span><span class="s1">e</span><span class="s2">(</span><span class="s6">&quot;SmsHelper&quot;</span><span class="s2">, </span><span class="s6">&quot;Erreur lors de la recherche du contact&quot;</span><span class="s2">, </span><span class="s1">e</span><span class="s2">)</span>
+        <span class="s2">}</span>
+
+        <span class="s0">return null</span>
+    <span class="s2">}</span>
+
+    <span class="s3">/**</span>
+     <span class="s3">* Récupère tous les SMS du téléphone et les analyse</span>
+     <span class="s3">*/</span>
+    <span class="s0">fun </span><span class="s1">getAllSms</span><span class="s2">(</span><span class="s1">context: Context</span><span class="s2">, </span><span class="s1">analyzer: SmsSuspicionAnalyzer</span><span class="s2">)</span><span class="s1">: List</span><span class="s2">&lt;</span><span class="s1">SmsMessage</span><span class="s2">&gt; {</span>
+        <span class="s0">val </span><span class="s1">smsList </span><span class="s2">= </span><span class="s1">mutableListOf</span><span class="s2">&lt;</span><span class="s1">SmsMessage</span><span class="s2">&gt;()</span>
+
+        <span class="s0">try </span><span class="s2">{</span>
+            <span class="s0">val </span><span class="s1">uri </span><span class="s2">= </span><span class="s1">Uri</span><span class="s2">.</span><span class="s1">parse</span><span class="s2">(</span><span class="s6">&quot;content://sms&quot;</span><span class="s2">)</span>
+            <span class="s0">val </span><span class="s1">cursor </span><span class="s2">= </span><span class="s1">context</span><span class="s2">.</span><span class="s1">contentResolver</span><span class="s2">.</span><span class="s1">query</span><span class="s2">(</span>
+                <span class="s1">uri</span><span class="s2">,</span>
+                <span class="s1">arrayOf</span><span class="s2">(</span><span class="s6">&quot;_id&quot;</span><span class="s2">, </span><span class="s6">&quot;address&quot;</span><span class="s2">, </span><span class="s6">&quot;body&quot;</span><span class="s2">, </span><span class="s6">&quot;date&quot;</span><span class="s2">, </span><span class="s6">&quot;type&quot;</span><span class="s2">),</span>
+                <span class="s0">null</span><span class="s2">,</span>
+                <span class="s0">null</span><span class="s2">,</span>
+                <span class="s6">&quot;date DESC&quot; </span><span class="s4">// Trier par date décroissante</span>
+            <span class="s2">)</span>
+
+            <span class="s1">cursor?</span><span class="s2">.</span><span class="s1">use </span><span class="s2">{</span>
+                <span class="s0">val </span><span class="s1">idIndex </span><span class="s2">= </span><span class="s1">it</span><span class="s2">.</span><span class="s1">getColumnIndex</span><span class="s2">(</span><span class="s6">&quot;_id&quot;</span><span class="s2">)</span>
+                <span class="s0">val </span><span class="s1">addressIndex </span><span class="s2">= </span><span class="s1">it</span><span class="s2">.</span><span class="s1">getColumnIndex</span><span class="s2">(</span><span class="s6">&quot;address&quot;</span><span class="s2">)</span>
+                <span class="s0">val </span><span class="s1">bodyIndex </span><span class="s2">= </span><span class="s1">it</span><span class="s2">.</span><span class="s1">getColumnIndex</span><span class="s2">(</span><span class="s6">&quot;body&quot;</span><span class="s2">)</span>
+                <span class="s0">val </span><span class="s1">dateIndex </span><span class="s2">= </span><span class="s1">it</span><span class="s2">.</span><span class="s1">getColumnIndex</span><span class="s2">(</span><span class="s6">&quot;date&quot;</span><span class="s2">)</span>
+                <span class="s0">val </span><span class="s1">typeIndex </span><span class="s2">= </span><span class="s1">it</span><span class="s2">.</span><span class="s1">getColumnIndex</span><span class="s2">(</span><span class="s6">&quot;type&quot;</span><span class="s2">)</span>
+
+                <span class="s0">while </span><span class="s2">(</span><span class="s1">it</span><span class="s2">.</span><span class="s1">moveToNext</span><span class="s2">()) {</span>
+                    <span class="s0">val </span><span class="s1">id </span><span class="s2">= </span><span class="s1">it</span><span class="s2">.</span><span class="s1">getLong</span><span class="s2">(</span><span class="s1">idIndex</span><span class="s2">)</span>
+                    <span class="s0">val </span><span class="s1">address </span><span class="s2">= </span><span class="s1">it</span><span class="s2">.</span><span class="s1">getString</span><span class="s2">(</span><span class="s1">addressIndex</span><span class="s2">) </span><span class="s1">?: </span><span class="s6">&quot;Inconnu&quot;</span>
+                    <span class="s0">val </span><span class="s1">body </span><span class="s2">= </span><span class="s1">it</span><span class="s2">.</span><span class="s1">getString</span><span class="s2">(</span><span class="s1">bodyIndex</span><span class="s2">) </span><span class="s1">?: </span><span class="s6">&quot;&quot;</span>
+                    <span class="s0">val </span><span class="s1">date </span><span class="s2">= </span><span class="s1">it</span><span class="s2">.</span><span class="s1">getLong</span><span class="s2">(</span><span class="s1">dateIndex</span><span class="s2">)</span>
+                    <span class="s0">val </span><span class="s1">type </span><span class="s2">= </span><span class="s1">it</span><span class="s2">.</span><span class="s1">getInt</span><span class="s2">(</span><span class="s1">typeIndex</span><span class="s2">)</span>
+
+                    <span class="s4">// Analyser le SMS avec l'IA</span>
+                    <span class="s0">val </span><span class="s1">suspicionResult </span><span class="s2">= </span><span class="s1">analyzer</span><span class="s2">.</span><span class="s1">analyzeSms</span><span class="s2">(</span><span class="s1">address</span><span class="s2">, </span><span class="s1">body</span><span class="s2">)</span>
+
+                    <span class="s0">val </span><span class="s1">smsMessage </span><span class="s2">= </span><span class="s1">SmsMessage</span><span class="s2">(</span>
+                        <span class="s1">id </span><span class="s2">= </span><span class="s1">id</span><span class="s2">,</span>
+                        <span class="s1">address </span><span class="s2">= </span><span class="s1">address</span><span class="s2">,</span>
+                        <span class="s1">body </span><span class="s2">= </span><span class="s1">body</span><span class="s2">,</span>
+                        <span class="s1">date </span><span class="s2">= </span><span class="s1">date</span><span class="s2">,</span>
+                        <span class="s1">type </span><span class="s2">= </span><span class="s1">type</span><span class="s2">,</span>
+                        <span class="s1">suspicionResult </span><span class="s2">= </span><span class="s1">suspicionResult</span>
+                    <span class="s2">)</span>
+
+                    <span class="s1">smsList</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s1">smsMessage</span><span class="s2">)</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+        <span class="s2">} </span><span class="s1">catch </span><span class="s2">(</span><span class="s1">e: Exception</span><span class="s2">) {</span>
+            <span class="s1">android</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">Log</span><span class="s2">.</span><span class="s1">e</span><span class="s2">(</span><span class="s6">&quot;SmsHelper&quot;</span><span class="s2">, </span><span class="s6">&quot;Erreur lors de la lecture des SMS&quot;</span><span class="s2">, </span><span class="s1">e</span><span class="s2">)</span>
+        <span class="s2">}</span>
+
+        <span class="s0">return </span><span class="s1">smsList</span>
+    <span class="s2">}</span>
+
+    <span class="s3">/**</span>
+     <span class="s3">* Récupère une conversation spécifique par numéro</span>
+     <span class="s3">*/</span>
+    <span class="s0">fun </span><span class="s1">getConversationByPhone</span><span class="s2">(</span>
+        <span class="s1">context: Context</span><span class="s2">,</span>
+        <span class="s1">phoneNumber: String</span><span class="s2">,</span>
+        <span class="s1">analyzer: SmsSuspicionAnalyzer</span>
+    <span class="s2">)</span><span class="s1">: SmsConversation? </span><span class="s2">{</span>
+        <span class="s0">val </span><span class="s1">allConversations </span><span class="s2">= </span><span class="s1">getAllConversations</span><span class="s2">(</span><span class="s1">context</span><span class="s2">, </span><span class="s1">analyzer</span><span class="s2">)</span>
+        <span class="s0">return </span><span class="s1">allConversations</span><span class="s2">.</span><span class="s1">find </span><span class="s2">{ </span><span class="s1">it</span><span class="s2">.</span><span class="s1">address </span><span class="s2">== </span><span class="s1">phoneNumber </span><span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s3">/**</span>
+     <span class="s3">* Récupère uniquement les SMS reçus</span>
+     <span class="s3">*/</span>
+    <span class="s0">fun </span><span class="s1">getReceivedSms</span><span class="s2">(</span><span class="s1">context: Context</span><span class="s2">, </span><span class="s1">analyzer: SmsSuspicionAnalyzer</span><span class="s2">)</span><span class="s1">: List</span><span class="s2">&lt;</span><span class="s1">SmsMessage</span><span class="s2">&gt; {</span>
+        <span class="s0">return </span><span class="s1">getAllSms</span><span class="s2">(</span><span class="s1">context</span><span class="s2">, </span><span class="s1">analyzer</span><span class="s2">).</span><span class="s1">filter </span><span class="s2">{ </span><span class="s1">it</span><span class="s2">.</span><span class="s1">isReceived </span><span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s3">/**</span>
+     <span class="s3">* Récupère uniquement les SMS suspects (score &gt;= 60%)</span>
+     <span class="s3">*/</span>
+    <span class="s0">fun </span><span class="s1">getSuspiciousSms</span><span class="s2">(</span><span class="s1">context: Context</span><span class="s2">, </span><span class="s1">analyzer: SmsSuspicionAnalyzer</span><span class="s2">)</span><span class="s1">: List</span><span class="s2">&lt;</span><span class="s1">SmsMessage</span><span class="s2">&gt; {</span>
+        <span class="s0">return </span><span class="s1">getAllSms</span><span class="s2">(</span><span class="s1">context</span><span class="s2">, </span><span class="s1">analyzer</span><span class="s2">).</span><span class="s1">filter </span><span class="s2">{ </span><span class="s1">it</span><span class="s2">.</span><span class="s1">suspicionResult</span><span class="s2">.</span><span class="s1">score </span><span class="s2">&gt;= </span><span class="s5">60 </span><span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s3">/**</span>
+     <span class="s3">* Récupère les SMS par numéro de téléphone</span>
+     <span class="s3">*/</span>
+    <span class="s0">fun </span><span class="s1">getSmsByPhoneNumber</span><span class="s2">(</span>
+        <span class="s1">context: Context</span><span class="s2">,</span>
+        <span class="s1">phoneNumber: String</span><span class="s2">,</span>
+        <span class="s1">analyzer: SmsSuspicionAnalyzer</span>
+    <span class="s2">)</span><span class="s1">: List</span><span class="s2">&lt;</span><span class="s1">SmsMessage</span><span class="s2">&gt; {</span>
+        <span class="s0">return </span><span class="s1">getAllSms</span><span class="s2">(</span><span class="s1">context</span><span class="s2">, </span><span class="s1">analyzer</span><span class="s2">).</span><span class="s1">filter </span><span class="s2">{ </span><span class="s1">it</span><span class="s2">.</span><span class="s1">address </span><span class="s2">== </span><span class="s1">phoneNumber </span><span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s3">/**</span>
+     <span class="s3">* Compte le nombre de SMS par niveau de risque</span>
+     <span class="s3">*/</span>
+    <span class="s0">fun </span><span class="s1">getSmsStats</span><span class="s2">(</span><span class="s1">context: Context</span><span class="s2">, </span><span class="s1">analyzer: SmsSuspicionAnalyzer</span><span class="s2">)</span><span class="s1">: SmsStats </span><span class="s2">{</span>
+        <span class="s0">val </span><span class="s1">allSms </span><span class="s2">= </span><span class="s1">getAllSms</span><span class="s2">(</span><span class="s1">context</span><span class="s2">, </span><span class="s1">analyzer</span><span class="s2">)</span>
+
+        <span class="s0">return </span><span class="s1">SmsStats</span><span class="s2">(</span>
+            <span class="s1">total </span><span class="s2">= </span><span class="s1">allSms</span><span class="s2">.</span><span class="s1">size</span><span class="s2">,</span>
+            <span class="s1">normal </span><span class="s2">= </span><span class="s1">allSms</span><span class="s2">.</span><span class="s1">count </span><span class="s2">{ </span><span class="s1">it</span><span class="s2">.</span><span class="s1">suspicionResult</span><span class="s2">.</span><span class="s1">score </span><span class="s2">&lt; </span><span class="s5">30 </span><span class="s2">},</span>
+            <span class="s1">medium </span><span class="s2">= </span><span class="s1">allSms</span><span class="s2">.</span><span class="s1">count </span><span class="s2">{ </span><span class="s1">it</span><span class="s2">.</span><span class="s1">suspicionResult</span><span class="s2">.</span><span class="s1">score </span><span class="s0">in </span><span class="s5">30</span><span class="s2">..</span><span class="s5">59 </span><span class="s2">},</span>
+            <span class="s1">high </span><span class="s2">= </span><span class="s1">allSms</span><span class="s2">.</span><span class="s1">count </span><span class="s2">{ </span><span class="s1">it</span><span class="s2">.</span><span class="s1">suspicionResult</span><span class="s2">.</span><span class="s1">score </span><span class="s0">in </span><span class="s5">60</span><span class="s2">..</span><span class="s5">79 </span><span class="s2">},</span>
+            <span class="s1">critical </span><span class="s2">= </span><span class="s1">allSms</span><span class="s2">.</span><span class="s1">count </span><span class="s2">{ </span><span class="s1">it</span><span class="s2">.</span><span class="s1">suspicionResult</span><span class="s2">.</span><span class="s1">score </span><span class="s2">&gt;= </span><span class="s5">80 </span><span class="s2">}</span>
+        <span class="s2">)</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+
+<span class="s1">data </span><span class="s0">class </span><span class="s1">SmsStats</span><span class="s2">(</span>
+    <span class="s0">val </span><span class="s1">total: Int</span><span class="s2">,</span>
+    <span class="s0">val </span><span class="s1">normal: Int</span><span class="s2">,</span>
+    <span class="s0">val </span><span class="s1">medium: Int</span><span class="s2">,</span>
+    <span class="s0">val </span><span class="s1">high: Int</span><span class="s2">,</span>
+    <span class="s0">val </span><span class="s1">critical: Int</span>
+<span class="s2">)</span></pre>
+</body>
+</html>

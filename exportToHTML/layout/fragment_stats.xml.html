@@ -1,0 +1,229 @@
+<html>
+<head>
+<title>fragment_stats.xml</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #d5b778;}
+.s1 { color: #bcbec4;}
+.s2 { color: #6aab73;}
+.s3 { color: #bcbec4;}
+.s4 { color: #7a7e85;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+fragment_stats.xml</font>
+</center></td></tr></table>
+<pre><span class="s0">&lt;?</span><span class="s1">xml version</span><span class="s2">=&quot;1.0&quot; </span><span class="s1">encoding</span><span class="s2">=&quot;utf-8&quot;</span><span class="s0">?&gt;</span>
+<span class="s0">&lt;ScrollView </span><span class="s1">xmlns:android</span><span class="s2">=&quot;http://schemas.android.com/apk/res/android&quot;</span>
+    <span class="s1">xmlns:app</span><span class="s2">=&quot;http://schemas.android.com/apk/res-auto&quot;</span>
+    <span class="s1">android:layout_width</span><span class="s2">=&quot;match_parent&quot;</span>
+    <span class="s1">android:layout_height</span><span class="s2">=&quot;match_parent&quot;</span>
+    <span class="s1">android:fillViewport</span><span class="s2">=&quot;true&quot;</span>
+    <span class="s1">android:paddingBottom</span><span class="s2">=&quot;80dp&quot;</span><span class="s0">&gt;</span>
+
+    <span class="s0">&lt;LinearLayout</span>
+        <span class="s1">android:layout_width</span><span class="s2">=&quot;match_parent&quot;</span>
+        <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+        <span class="s1">android:orientation</span><span class="s2">=&quot;vertical&quot;</span>
+        <span class="s1">android:padding</span><span class="s2">=&quot;20dp&quot;</span><span class="s0">&gt;</span>
+
+        <span class="s0">&lt;TextView</span>
+            <span class="s1">android:layout_width</span><span class="s2">=&quot;wrap_content&quot;</span>
+            <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+            <span class="s1">android:text</span><span class="s2">=&quot;📊 Statistiques Détaillées&quot;</span>
+            <span class="s1">android:textColor</span><span class="s2">=&quot;@android:color/white&quot;</span>
+            <span class="s1">android:textSize</span><span class="s2">=&quot;20sp&quot;</span>
+            <span class="s1">android:textStyle</span><span class="s2">=&quot;bold&quot;</span>
+            <span class="s1">android:layout_marginBottom</span><span class="s2">=&quot;20dp&quot; </span><span class="s0">/&gt;</span>
+
+        <span class="s4">&lt;!-- Graphique en camembert --&gt;</span>
+        <span class="s0">&lt;com.google.android.material.card.MaterialCardView</span>
+            <span class="s1">android:layout_width</span><span class="s2">=&quot;match_parent&quot;</span>
+            <span class="s1">android:layout_height</span><span class="s2">=&quot;300dp&quot;</span>
+            <span class="s1">android:layout_marginBottom</span><span class="s2">=&quot;20dp&quot;</span>
+            <span class="s1">app:cardBackgroundColor</span><span class="s2">=&quot;@color/card_background&quot;</span>
+            <span class="s1">app:cardCornerRadius</span><span class="s2">=&quot;16dp&quot;</span>
+            <span class="s1">app:cardElevation</span><span class="s2">=&quot;8dp&quot;</span>
+            <span class="s1">app:strokeColor</span><span class="s2">=&quot;@color/card_stroke&quot;</span>
+            <span class="s1">app:strokeWidth</span><span class="s2">=&quot;1dp&quot;</span><span class="s0">&gt;</span>
+
+            <span class="s0">&lt;LinearLayout</span>
+                <span class="s1">android:layout_width</span><span class="s2">=&quot;match_parent&quot;</span>
+                <span class="s1">android:layout_height</span><span class="s2">=&quot;match_parent&quot;</span>
+                <span class="s1">android:orientation</span><span class="s2">=&quot;vertical&quot;</span>
+                <span class="s1">android:padding</span><span class="s2">=&quot;16dp&quot;</span><span class="s0">&gt;</span>
+
+                <span class="s0">&lt;TextView</span>
+                    <span class="s1">android:layout_width</span><span class="s2">=&quot;wrap_content&quot;</span>
+                    <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                    <span class="s1">android:text</span><span class="s2">=&quot;🥧 Répartition des Risques&quot;</span>
+                    <span class="s1">android:textColor</span><span class="s2">=&quot;@android:color/white&quot;</span>
+                    <span class="s1">android:textSize</span><span class="s2">=&quot;16sp&quot;</span>
+                    <span class="s1">android:textStyle</span><span class="s2">=&quot;bold&quot;</span>
+                    <span class="s1">android:layout_marginBottom</span><span class="s2">=&quot;12dp&quot; </span><span class="s0">/&gt;</span>
+
+                <span class="s0">&lt;com.github.mikephil.charting.charts.PieChart</span>
+                    <span class="s1">android:id</span><span class="s2">=&quot;@+id/pieChart&quot;</span>
+                    <span class="s1">android:layout_width</span><span class="s2">=&quot;match_parent&quot;</span>
+                    <span class="s1">android:layout_height</span><span class="s2">=&quot;0dp&quot;</span>
+                    <span class="s1">android:layout_weight</span><span class="s2">=&quot;1&quot; </span><span class="s0">/&gt;</span>
+
+            <span class="s0">&lt;/LinearLayout&gt;</span>
+
+        <span class="s0">&lt;/com.google.android.material.card.MaterialCardView&gt;</span>
+
+        <span class="s4">&lt;!-- Graphique linéaire --&gt;</span>
+        <span class="s0">&lt;com.google.android.material.card.MaterialCardView</span>
+            <span class="s1">android:layout_width</span><span class="s2">=&quot;match_parent&quot;</span>
+            <span class="s1">android:layout_height</span><span class="s2">=&quot;300dp&quot;</span>
+            <span class="s1">android:layout_marginBottom</span><span class="s2">=&quot;20dp&quot;</span>
+            <span class="s1">app:cardBackgroundColor</span><span class="s2">=&quot;@color/card_background&quot;</span>
+            <span class="s1">app:cardCornerRadius</span><span class="s2">=&quot;16dp&quot;</span>
+            <span class="s1">app:cardElevation</span><span class="s2">=&quot;8dp&quot;</span>
+            <span class="s1">app:strokeColor</span><span class="s2">=&quot;@color/card_stroke&quot;</span>
+            <span class="s1">app:strokeWidth</span><span class="s2">=&quot;1dp&quot;</span><span class="s0">&gt;</span>
+
+            <span class="s0">&lt;LinearLayout</span>
+                <span class="s1">android:layout_width</span><span class="s2">=&quot;match_parent&quot;</span>
+                <span class="s1">android:layout_height</span><span class="s2">=&quot;match_parent&quot;</span>
+                <span class="s1">android:orientation</span><span class="s2">=&quot;vertical&quot;</span>
+                <span class="s1">android:padding</span><span class="s2">=&quot;16dp&quot;</span><span class="s0">&gt;</span>
+
+                <span class="s0">&lt;TextView</span>
+                    <span class="s1">android:layout_width</span><span class="s2">=&quot;wrap_content&quot;</span>
+                    <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                    <span class="s1">android:text</span><span class="s2">=&quot;📈 Évolution (7 derniers jours)&quot;</span>
+                    <span class="s1">android:textColor</span><span class="s2">=&quot;@android:color/white&quot;</span>
+                    <span class="s1">android:textSize</span><span class="s2">=&quot;16sp&quot;</span>
+                    <span class="s1">android:textStyle</span><span class="s2">=&quot;bold&quot;</span>
+                    <span class="s1">android:layout_marginBottom</span><span class="s2">=&quot;12dp&quot; </span><span class="s0">/&gt;</span>
+
+                <span class="s0">&lt;com.github.mikephil.charting.charts.LineChart</span>
+                    <span class="s1">android:id</span><span class="s2">=&quot;@+id/lineChart&quot;</span>
+                    <span class="s1">android:layout_width</span><span class="s2">=&quot;match_parent&quot;</span>
+                    <span class="s1">android:layout_height</span><span class="s2">=&quot;0dp&quot;</span>
+                    <span class="s1">android:layout_weight</span><span class="s2">=&quot;1&quot; </span><span class="s0">/&gt;</span>
+
+            <span class="s0">&lt;/LinearLayout&gt;</span>
+
+        <span class="s0">&lt;/com.google.android.material.card.MaterialCardView&gt;</span>
+
+        <span class="s4">&lt;!-- Statistiques textuelles --&gt;</span>
+        <span class="s0">&lt;com.google.android.material.card.MaterialCardView</span>
+            <span class="s1">android:layout_width</span><span class="s2">=&quot;match_parent&quot;</span>
+            <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+            <span class="s1">app:cardBackgroundColor</span><span class="s2">=&quot;@color/card_background&quot;</span>
+            <span class="s1">app:cardCornerRadius</span><span class="s2">=&quot;16dp&quot;</span>
+            <span class="s1">app:cardElevation</span><span class="s2">=&quot;8dp&quot;</span>
+            <span class="s1">app:strokeColor</span><span class="s2">=&quot;@color/card_stroke&quot;</span>
+            <span class="s1">app:strokeWidth</span><span class="s2">=&quot;1dp&quot;</span><span class="s0">&gt;</span>
+
+            <span class="s0">&lt;LinearLayout</span>
+                <span class="s1">android:layout_width</span><span class="s2">=&quot;match_parent&quot;</span>
+                <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                <span class="s1">android:orientation</span><span class="s2">=&quot;vertical&quot;</span>
+                <span class="s1">android:padding</span><span class="s2">=&quot;20dp&quot;</span><span class="s0">&gt;</span>
+
+                <span class="s0">&lt;TextView</span>
+                    <span class="s1">android:layout_width</span><span class="s2">=&quot;wrap_content&quot;</span>
+                    <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                    <span class="s1">android:text</span><span class="s2">=&quot;📋 Résumé de Protection&quot;</span>
+                    <span class="s1">android:textColor</span><span class="s2">=&quot;@android:color/white&quot;</span>
+                    <span class="s1">android:textSize</span><span class="s2">=&quot;16sp&quot;</span>
+                    <span class="s1">android:textStyle</span><span class="s2">=&quot;bold&quot;</span>
+                    <span class="s1">android:layout_marginBottom</span><span class="s2">=&quot;16dp&quot; </span><span class="s0">/&gt;</span>
+
+                <span class="s0">&lt;LinearLayout</span>
+                    <span class="s1">android:layout_width</span><span class="s2">=&quot;match_parent&quot;</span>
+                    <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                    <span class="s1">android:orientation</span><span class="s2">=&quot;horizontal&quot;</span>
+                    <span class="s1">android:layout_marginBottom</span><span class="s2">=&quot;12dp&quot;</span><span class="s0">&gt;</span>
+
+                    <span class="s0">&lt;TextView</span>
+                        <span class="s1">android:layout_width</span><span class="s2">=&quot;0dp&quot;</span>
+                        <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                        <span class="s1">android:layout_weight</span><span class="s2">=&quot;1&quot;</span>
+                        <span class="s1">android:text</span><span class="s2">=&quot;🛡️ Protection active depuis&quot;</span>
+                        <span class="s1">android:textColor</span><span class="s2">=&quot;@color/text_secondary&quot;</span>
+                        <span class="s1">android:textSize</span><span class="s2">=&quot;14sp&quot; </span><span class="s0">/&gt;</span>
+
+                    <span class="s0">&lt;TextView</span>
+                        <span class="s1">android:layout_width</span><span class="s2">=&quot;wrap_content&quot;</span>
+                        <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                        <span class="s1">android:text</span><span class="s2">=&quot;30 jours&quot;</span>
+                        <span class="s1">android:textColor</span><span class="s2">=&quot;@android:color/white&quot;</span>
+                        <span class="s1">android:textSize</span><span class="s2">=&quot;14sp&quot;</span>
+                        <span class="s1">android:textStyle</span><span class="s2">=&quot;bold&quot; </span><span class="s0">/&gt;</span>
+
+                <span class="s0">&lt;/LinearLayout&gt;</span>
+
+                <span class="s0">&lt;LinearLayout</span>
+                    <span class="s1">android:layout_width</span><span class="s2">=&quot;match_parent&quot;</span>
+                    <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                    <span class="s1">android:orientation</span><span class="s2">=&quot;horizontal&quot;</span>
+                    <span class="s1">android:layout_marginBottom</span><span class="s2">=&quot;12dp&quot;</span><span class="s0">&gt;</span>
+
+                    <span class="s0">&lt;TextView</span>
+                        <span class="s1">android:layout_width</span><span class="s2">=&quot;0dp&quot;</span>
+                        <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                        <span class="s1">android:layout_weight</span><span class="s2">=&quot;1&quot;</span>
+                        <span class="s1">android:text</span><span class="s2">=&quot;📞 Appels bloqués ce mois&quot;</span>
+                        <span class="s1">android:textColor</span><span class="s2">=&quot;@color/text_secondary&quot;</span>
+                        <span class="s1">android:textSize</span><span class="s2">=&quot;14sp&quot; </span><span class="s0">/&gt;</span>
+
+                    <span class="s0">&lt;TextView</span>
+                        <span class="s1">android:id</span><span class="s2">=&quot;@+id/textCallsBlocked&quot;</span>
+                        <span class="s1">android:layout_width</span><span class="s2">=&quot;wrap_content&quot;</span>
+                        <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                        <span class="s1">android:text</span><span class="s2">=&quot;0&quot;</span>
+                        <span class="s1">android:textColor</span><span class="s2">=&quot;@android:color/white&quot;</span>
+                        <span class="s1">android:textSize</span><span class="s2">=&quot;14sp&quot;</span>
+                        <span class="s1">android:textStyle</span><span class="s2">=&quot;bold&quot; </span><span class="s0">/&gt;</span>
+
+                <span class="s0">&lt;/LinearLayout&gt;</span>
+
+                <span class="s0">&lt;LinearLayout</span>
+                    <span class="s1">android:layout_width</span><span class="s2">=&quot;match_parent&quot;</span>
+                    <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                    <span class="s1">android:orientation</span><span class="s2">=&quot;horizontal&quot;</span><span class="s0">&gt;</span>
+
+                    <span class="s0">&lt;TextView</span>
+                        <span class="s1">android:layout_width</span><span class="s2">=&quot;0dp&quot;</span>
+                        <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                        <span class="s1">android:layout_weight</span><span class="s2">=&quot;1&quot;</span>
+                        <span class="s1">android:text</span><span class="s2">=&quot;⚡ Efficacité IA&quot;</span>
+                        <span class="s1">android:textColor</span><span class="s2">=&quot;@color/text_secondary&quot;</span>
+                        <span class="s1">android:textSize</span><span class="s2">=&quot;14sp&quot; </span><span class="s0">/&gt;</span>
+
+                    <span class="s0">&lt;TextView</span>
+                        <span class="s1">android:layout_width</span><span class="s2">=&quot;wrap_content&quot;</span>
+                        <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                        <span class="s1">android:text</span><span class="s2">=&quot;95%&quot;</span>
+                        <span class="s1">android:textColor</span><span class="s2">=&quot;#FF1744&quot;</span>
+                        <span class="s1">android:textSize</span><span class="s2">=&quot;14sp&quot;</span>
+                        <span class="s1">android:textStyle</span><span class="s2">=&quot;bold&quot; </span><span class="s0">/&gt;</span>
+
+
+                <span class="s0">&lt;/LinearLayout&gt;</span>
+
+                <span class="s0">&lt;TextView</span>
+                    <span class="s1">android:id</span><span class="s2">=&quot;@+id/text_blocking_stats&quot;  </span><span class="s1">android:layout_width</span><span class="s2">=&quot;wrap_content&quot;</span>
+                    <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                    <span class="s1">android:text</span><span class="s2">=&quot;Statistiques : appels bloqués ce mois-ci.&quot;</span>
+                    <span class="s1">android:textSize</span><span class="s2">=&quot;14sp&quot;</span>
+                    <span class="s1">android:textColor</span><span class="s2">=&quot;?attr/colorOnSurface&quot;</span>
+                    <span class="s1">android:layout_gravity</span><span class="s2">=&quot;center_horizontal&quot;</span>
+                    <span class="s1">android:padding</span><span class="s2">=&quot;8dp&quot; </span><span class="s0">/&gt;</span>
+
+            <span class="s0">&lt;/LinearLayout&gt;</span>
+
+        <span class="s0">&lt;/com.google.android.material.card.MaterialCardView&gt;</span>
+
+    <span class="s0">&lt;/LinearLayout&gt;</span>
+
+<span class="s0">&lt;/ScrollView&gt;</span></pre>
+</body>
+</html>

@@ -1,0 +1,258 @@
+<html>
+<head>
+<title>AndroidManifest.xml</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #d5b778;}
+.s1 { color: #bcbec4;}
+.s2 { color: #6aab73;}
+.s3 { color: #bcbec4;}
+.s4 { color: #7a7e85;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+AndroidManifest.xml</font>
+</center></td></tr></table>
+<pre><span class="s0">&lt;?</span><span class="s1">xml version</span><span class="s2">=&quot;1.0&quot; </span><span class="s1">encoding</span><span class="s2">=&quot;utf-8&quot;</span><span class="s0">?&gt;</span>
+<span class="s0">&lt;manifest </span><span class="s1">xmlns:android</span><span class="s2">=&quot;http://schemas.android.com/apk/res/android&quot;</span>
+    <span class="s1">xmlns:tools</span><span class="s2">=&quot;http://schemas.android.com/tools&quot;</span><span class="s0">&gt;</span>
+
+    <span class="s4">&lt;!-- Permissions essentielles --&gt;</span>
+    <span class="s0">&lt;uses-permission </span><span class="s1">android:name</span><span class="s2">=&quot;android.permission.READ_CALL_LOG&quot; </span><span class="s0">/&gt;</span>
+    <span class="s0">&lt;uses-permission </span><span class="s1">android:name</span><span class="s2">=&quot;android.permission.READ_PHONE_STATE&quot; </span><span class="s0">/&gt;</span>
+    <span class="s0">&lt;uses-permission </span><span class="s1">android:name</span><span class="s2">=&quot;android.permission.ANSWER_PHONE_CALLS&quot; </span><span class="s0">/&gt;</span>
+    <span class="s0">&lt;uses-permission </span><span class="s1">android:name</span><span class="s2">=&quot;android.permission.POST_NOTIFICATIONS&quot; </span><span class="s0">/&gt;</span>
+    <span class="s0">&lt;uses-permission </span><span class="s1">android:name</span><span class="s2">=&quot;android.permission.READ_CONTACTS&quot; </span><span class="s0">/&gt;</span>
+    <span class="s0">&lt;uses-permission </span><span class="s1">android:name</span><span class="s2">=&quot;android.permission.WRITE_CONTACTS&quot; </span><span class="s0">/&gt;</span>
+    <span class="s0">&lt;uses-permission </span><span class="s1">android:name</span><span class="s2">=&quot;android.permission.CALL_PHONE&quot; </span><span class="s0">/&gt;</span>
+    <span class="s0">&lt;uses-permission </span><span class="s1">android:name</span><span class="s2">=&quot;android.permission.RECEIVE_BOOT_COMPLETED&quot; </span><span class="s0">/&gt;</span>
+    <span class="s0">&lt;uses-permission </span><span class="s1">android:name</span><span class="s2">=&quot;android.permission.INTERNET&quot; </span><span class="s0">/&gt;</span>
+    <span class="s0">&lt;uses-permission </span><span class="s1">android:name</span><span class="s2">=&quot;android.permission.VIBRATE&quot; </span><span class="s0">/&gt;</span>
+    <span class="s0">&lt;uses-permission </span><span class="s1">android:name</span><span class="s2">=&quot;android.permission.MODIFY_AUDIO_SETTINGS&quot; </span><span class="s0">/&gt;</span>
+    <span class="s0">&lt;uses-permission </span><span class="s1">android:name</span><span class="s2">=&quot;android.permission.RECEIVE_SMS&quot; </span><span class="s0">/&gt;</span>
+    <span class="s0">&lt;uses-permission </span><span class="s1">android:name</span><span class="s2">=&quot;android.permission.READ_SMS&quot; </span><span class="s0">/&gt;</span>
+    <span class="s0">&lt;uses-permission </span><span class="s1">android:name</span><span class="s2">=&quot;android.permission.SEND_SMS&quot; </span><span class="s0">/&gt;</span>
+    <span class="s0">&lt;uses-permission </span><span class="s1">android:name</span><span class="s2">=&quot;android.permission.WRITE_SMS&quot; </span><span class="s0">/&gt;</span>
+    <span class="s0">&lt;uses-permission </span><span class="s1">android:name</span><span class="s2">=&quot;android.permission.PROCESS_OUTGOING_CALLS&quot; </span><span class="s0">/&gt;</span>
+    <span class="s4">&lt;!-- AJOUTÉ: Permissions MMS obligatoires --&gt;</span>
+    <span class="s0">&lt;uses-permission </span><span class="s1">android:name</span><span class="s2">=&quot;android.permission.RECEIVE_MMS&quot; </span><span class="s0">/&gt;</span>
+    <span class="s0">&lt;uses-permission </span><span class="s1">android:name</span><span class="s2">=&quot;android.permission.RECEIVE_WAP_PUSH&quot; </span><span class="s0">/&gt;</span>
+
+    <span class="s0">&lt;uses-feature</span>
+        <span class="s1">android:name</span><span class="s2">=&quot;android.hardware.telephony&quot;</span>
+        <span class="s1">android:required</span><span class="s2">=&quot;true&quot; </span><span class="s0">/&gt;</span>
+
+    <span class="s0">&lt;application</span>
+        <span class="s1">android:name</span><span class="s2">=&quot;.StopDemarchageApp&quot;</span>
+        <span class="s1">android:allowBackup</span><span class="s2">=&quot;true&quot;</span>
+        <span class="s1">android:icon</span><span class="s2">=&quot;@mipmap/ic_launcher&quot;</span>
+        <span class="s1">android:label</span><span class="s2">=&quot;@string/app_name&quot;</span>
+        <span class="s1">android:roundIcon</span><span class="s2">=&quot;@mipmap/ic_launcher_round&quot;</span>
+        <span class="s1">android:supportsRtl</span><span class="s2">=&quot;true&quot;</span>
+        <span class="s1">android:theme</span><span class="s2">=&quot;@style/Theme.StopDemarchage&quot;</span>
+        <span class="s1">tools:targetApi</span><span class="s2">=&quot;31&quot;</span><span class="s0">&gt;</span>
+
+        <span class="s4">&lt;!-- MainActivity - UNIQUEMENT LAUNCHER --&gt;</span>
+        <span class="s0">&lt;activity</span>
+            <span class="s1">android:name</span><span class="s2">=&quot;.MainActivity&quot;</span>
+            <span class="s1">android:exported</span><span class="s2">=&quot;true&quot;</span>
+            <span class="s1">android:launchMode</span><span class="s2">=&quot;singleTop&quot;</span><span class="s0">&gt;</span>
+            <span class="s0">&lt;intent-filter&gt;</span>
+                <span class="s0">&lt;action </span><span class="s1">android:name</span><span class="s2">=&quot;android.intent.action.MAIN&quot; </span><span class="s0">/&gt;</span>
+                <span class="s0">&lt;category </span><span class="s1">android:name</span><span class="s2">=&quot;android.intent.category.LAUNCHER&quot; </span><span class="s0">/&gt;</span>
+            <span class="s0">&lt;/intent-filter&gt;</span>
+        <span class="s0">&lt;/activity&gt;</span>
+
+        <span class="s4">&lt;!-- Activités secondaires --&gt;</span>
+        <span class="s0">&lt;activity</span>
+            <span class="s1">android:name</span><span class="s2">=&quot;.BlockedNumbersActivity&quot;</span>
+            <span class="s1">android:exported</span><span class="s2">=&quot;false&quot;</span>
+            <span class="s1">android:theme</span><span class="s2">=&quot;@style/Theme.AppCompat.Light.NoActionBar&quot; </span><span class="s0">/&gt;</span>
+
+        <span class="s4">&lt;!-- CallLogActivity - COMPOSEUR PAR DÉFAUT --&gt;</span>
+        <span class="s0">&lt;activity</span>
+            <span class="s1">android:name</span><span class="s2">=&quot;.CallLogActivity&quot;</span>
+            <span class="s1">android:exported</span><span class="s2">=&quot;true&quot;</span>
+            <span class="s1">android:theme</span><span class="s2">=&quot;@style/Theme.MaterialComponents.Light.NoActionBar&quot;</span>
+            <span class="s1">android:label</span><span class="s2">=&quot;Composeur StopDémarchage&quot;</span><span class="s0">&gt;</span>
+
+            <span class="s0">&lt;intent-filter </span><span class="s1">android:priority</span><span class="s2">=&quot;100&quot;</span><span class="s0">&gt;</span>
+                <span class="s0">&lt;action </span><span class="s1">android:name</span><span class="s2">=&quot;android.intent.action.DIAL&quot; </span><span class="s0">/&gt;</span>
+                <span class="s0">&lt;category </span><span class="s1">android:name</span><span class="s2">=&quot;android.intent.category.DEFAULT&quot; </span><span class="s0">/&gt;</span>
+                <span class="s0">&lt;data </span><span class="s1">android:scheme</span><span class="s2">=&quot;tel&quot; </span><span class="s0">/&gt;</span>
+            <span class="s0">&lt;/intent-filter&gt;</span>
+
+            <span class="s0">&lt;intent-filter </span><span class="s1">android:priority</span><span class="s2">=&quot;100&quot;</span><span class="s0">&gt;</span>
+                <span class="s0">&lt;action </span><span class="s1">android:name</span><span class="s2">=&quot;android.intent.action.DIAL&quot; </span><span class="s0">/&gt;</span>
+                <span class="s0">&lt;category </span><span class="s1">android:name</span><span class="s2">=&quot;android.intent.category.DEFAULT&quot; </span><span class="s0">/&gt;</span>
+            <span class="s0">&lt;/intent-filter&gt;</span>
+
+            <span class="s0">&lt;intent-filter </span><span class="s1">android:priority</span><span class="s2">=&quot;100&quot;</span><span class="s0">&gt;</span>
+                <span class="s0">&lt;action </span><span class="s1">android:name</span><span class="s2">=&quot;android.intent.action.CALL_BUTTON&quot; </span><span class="s0">/&gt;</span>
+                <span class="s0">&lt;category </span><span class="s1">android:name</span><span class="s2">=&quot;android.intent.category.DEFAULT&quot; </span><span class="s0">/&gt;</span>
+            <span class="s0">&lt;/intent-filter&gt;</span>
+
+            <span class="s0">&lt;intent-filter </span><span class="s1">android:priority</span><span class="s2">=&quot;100&quot;</span><span class="s0">&gt;</span>
+                <span class="s0">&lt;action </span><span class="s1">android:name</span><span class="s2">=&quot;android.intent.action.VIEW&quot; </span><span class="s0">/&gt;</span>
+                <span class="s0">&lt;category </span><span class="s1">android:name</span><span class="s2">=&quot;android.intent.category.DEFAULT&quot; </span><span class="s0">/&gt;</span>
+                <span class="s0">&lt;category </span><span class="s1">android:name</span><span class="s2">=&quot;android.intent.category.BROWSABLE&quot; </span><span class="s0">/&gt;</span>
+                <span class="s0">&lt;data </span><span class="s1">android:scheme</span><span class="s2">=&quot;tel&quot; </span><span class="s0">/&gt;</span>
+            <span class="s0">&lt;/intent-filter&gt;</span>
+        <span class="s0">&lt;/activity&gt;</span>
+
+        <span class="s4">&lt;!-- Journal SMS --&gt;</span>
+        <span class="s0">&lt;activity</span>
+            <span class="s1">android:name</span><span class="s2">=&quot;.SmsLogActivity&quot;</span>
+            <span class="s1">android:exported</span><span class="s2">=&quot;false&quot;</span>
+            <span class="s1">android:theme</span><span class="s2">=&quot;@style/Theme.AppCompat.Light.NoActionBar&quot;</span>
+            <span class="s1">android:parentActivityName</span><span class="s2">=&quot;.MainActivity&quot;</span><span class="s0">&gt;</span>
+            <span class="s0">&lt;meta-data</span>
+                <span class="s1">android:name</span><span class="s2">=&quot;android.support.PARENT_ACTIVITY&quot;</span>
+                <span class="s1">android:value</span><span class="s2">=&quot;.MainActivity&quot; </span><span class="s0">/&gt;</span>
+        <span class="s0">&lt;/activity&gt;</span>
+
+        <span class="s4">&lt;!-- ✅ NOUVEAU: Journal SMS Complet avec analyse IA --&gt;</span>
+        <span class="s0">&lt;activity</span>
+            <span class="s1">android:name</span><span class="s2">=&quot;.SmsJournalActivity&quot;</span>
+            <span class="s1">android:exported</span><span class="s2">=&quot;false&quot;</span>
+            <span class="s1">android:theme</span><span class="s2">=&quot;@style/Theme.AppCompat.DayNight.DarkActionBar&quot;</span>
+            <span class="s1">android:label</span><span class="s2">=&quot;📱 Journal SMS Complet&quot;</span>
+            <span class="s1">android:parentActivityName</span><span class="s2">=&quot;.MainActivity&quot;</span><span class="s0">&gt;</span>
+            <span class="s0">&lt;meta-data</span>
+                <span class="s1">android:name</span><span class="s2">=&quot;android.support.PARENT_ACTIVITY&quot;</span>
+                <span class="s1">android:value</span><span class="s2">=&quot;.MainActivity&quot; </span><span class="s0">/&gt;</span>
+        <span class="s0">&lt;/activity&gt;</span>
+
+        <span class="s4">&lt;!-- ✅ NOUVEAU: Détails d'une conversation SMS --&gt;</span>
+        <span class="s0">&lt;activity</span>
+            <span class="s1">android:name</span><span class="s2">=&quot;.SmsConversationDetailActivity&quot;</span>
+            <span class="s1">android:exported</span><span class="s2">=&quot;false&quot;</span>
+            <span class="s1">android:theme</span><span class="s2">=&quot;@style/Theme.AppCompat.DayNight.DarkActionBar&quot;</span>
+            <span class="s1">android:label</span><span class="s2">=&quot;Conversation&quot;</span>
+            <span class="s1">android:parentActivityName</span><span class="s2">=&quot;.SmsJournalActivity&quot;</span><span class="s0">&gt;</span>
+            <span class="s0">&lt;meta-data</span>
+                <span class="s1">android:name</span><span class="s2">=&quot;android.support.PARENT_ACTIVITY&quot;</span>
+                <span class="s1">android:value</span><span class="s2">=&quot;.SmsJournalActivity&quot; </span><span class="s0">/&gt;</span>
+        <span class="s0">&lt;/activity&gt;</span>
+
+        <span class="s4">&lt;!-- Paramètres SMS --&gt;</span>
+        <span class="s0">&lt;activity</span>
+            <span class="s1">android:name</span><span class="s2">=&quot;.SmsSettingsActivity&quot;</span>
+            <span class="s1">android:exported</span><span class="s2">=&quot;false&quot;</span>
+            <span class="s1">android:theme</span><span class="s2">=&quot;@style/Theme.AppCompat.Light.NoActionBar&quot;</span>
+            <span class="s1">android:parentActivityName</span><span class="s2">=&quot;.MainActivity&quot; </span><span class="s0">/&gt;</span>
+
+        <span class="s4">&lt;!-- Liste Blanche --&gt;</span>
+        <span class="s0">&lt;activity</span>
+            <span class="s1">android:name</span><span class="s2">=&quot;.WhiteListActivity&quot;</span>
+            <span class="s1">android:exported</span><span class="s2">=&quot;false&quot;</span>
+            <span class="s1">android:theme</span><span class="s2">=&quot;@style/Theme.AppCompat.Light.NoActionBar&quot;</span>
+            <span class="s1">android:label</span><span class="s2">=&quot;Liste Blanche&quot;</span>
+            <span class="s1">android:parentActivityName</span><span class="s2">=&quot;.MainActivity&quot;</span><span class="s0">&gt;</span>
+            <span class="s0">&lt;meta-data</span>
+                <span class="s1">android:name</span><span class="s2">=&quot;android.support.PARENT_ACTIVITY&quot;</span>
+                <span class="s1">android:value</span><span class="s2">=&quot;.MainActivity&quot; </span><span class="s0">/&gt;</span>
+        <span class="s0">&lt;/activity&gt;</span>
+
+        <span class="s4">&lt;!-- NOUVEAU: Activité de composition SMS (OBLIGATOIRE) --&gt;</span>
+        <span class="s0">&lt;activity</span>
+            <span class="s1">android:name</span><span class="s2">=&quot;.SmsComposeActivity&quot;</span>
+            <span class="s1">android:exported</span><span class="s2">=&quot;true&quot;</span>
+            <span class="s1">android:theme</span><span class="s2">=&quot;@style/Theme.AppCompat.Light.NoActionBar&quot;</span><span class="s0">&gt;</span>
+            <span class="s0">&lt;intent-filter&gt;</span>
+                <span class="s0">&lt;action </span><span class="s1">android:name</span><span class="s2">=&quot;android.intent.action.SEND&quot; </span><span class="s0">/&gt;</span>
+                <span class="s0">&lt;action </span><span class="s1">android:name</span><span class="s2">=&quot;android.intent.action.SENDTO&quot; </span><span class="s0">/&gt;</span>
+                <span class="s0">&lt;category </span><span class="s1">android:name</span><span class="s2">=&quot;android.intent.category.DEFAULT&quot; </span><span class="s0">/&gt;</span>
+                <span class="s0">&lt;category </span><span class="s1">android:name</span><span class="s2">=&quot;android.intent.category.BROWSABLE&quot; </span><span class="s0">/&gt;</span>
+                <span class="s0">&lt;data </span><span class="s1">android:scheme</span><span class="s2">=&quot;sms&quot; </span><span class="s0">/&gt;</span>
+                <span class="s0">&lt;data </span><span class="s1">android:scheme</span><span class="s2">=&quot;smsto&quot; </span><span class="s0">/&gt;</span>
+                <span class="s0">&lt;data </span><span class="s1">android:scheme</span><span class="s2">=&quot;mms&quot; </span><span class="s0">/&gt;</span>
+                <span class="s0">&lt;data </span><span class="s1">android:scheme</span><span class="s2">=&quot;mmsto&quot; </span><span class="s0">/&gt;</span>
+            <span class="s0">&lt;/intent-filter&gt;</span>
+        <span class="s0">&lt;/activity&gt;</span>
+
+        <span class="s4">&lt;!-- Receiver pour les actions SMS --&gt;</span>
+        <span class="s0">&lt;receiver</span>
+            <span class="s1">android:name</span><span class="s2">=&quot;.SmsActionReceiver&quot;</span>
+            <span class="s1">android:enabled</span><span class="s2">=&quot;true&quot;</span>
+            <span class="s1">android:exported</span><span class="s2">=&quot;false&quot;</span><span class="s0">&gt;</span>
+            <span class="s0">&lt;intent-filter&gt;</span>
+                <span class="s0">&lt;action </span><span class="s1">android:name</span><span class="s2">=&quot;BLOCK_NUMBER&quot; </span><span class="s0">/&gt;</span>
+            <span class="s0">&lt;/intent-filter&gt;</span>
+        <span class="s0">&lt;/receiver&gt;</span>
+
+        <span class="s4">&lt;!-- Service de screening d'appels --&gt;</span>
+        <span class="s0">&lt;service</span>
+            <span class="s1">android:name</span><span class="s2">=&quot;.CallScreening&quot;</span>
+            <span class="s1">android:permission</span><span class="s2">=&quot;android.permission.BIND_SCREENING_SERVICE&quot;</span>
+            <span class="s1">android:exported</span><span class="s2">=&quot;true&quot;</span>
+            <span class="s1">android:enabled</span><span class="s2">=&quot;true&quot;</span><span class="s0">&gt;</span>
+            <span class="s0">&lt;intent-filter&gt;</span>
+                <span class="s0">&lt;action </span><span class="s1">android:name</span><span class="s2">=&quot;android.telecom.CallScreeningService&quot; </span><span class="s0">/&gt;</span>
+            <span class="s0">&lt;/intent-filter&gt;</span>
+        <span class="s0">&lt;/service&gt;</span>
+
+        <span class="s4">&lt;!-- MODIFIÉ: Receiver SMS pour app SMS par défaut --&gt;</span>
+        <span class="s0">&lt;receiver</span>
+            <span class="s1">android:name</span><span class="s2">=&quot;.SmsReceiver&quot;</span>
+            <span class="s1">android:permission</span><span class="s2">=&quot;android.permission.BROADCAST_SMS&quot;</span>
+            <span class="s1">android:enabled</span><span class="s2">=&quot;true&quot;</span>
+            <span class="s1">android:exported</span><span class="s2">=&quot;true&quot;</span><span class="s0">&gt;</span>
+            <span class="s0">&lt;intent-filter&gt;</span>
+                <span class="s4">&lt;!-- ⚠️ CRITIQUE: SMS_DELIVER au lieu de SMS_RECEIVED --&gt;</span>
+                <span class="s0">&lt;action </span><span class="s1">android:name</span><span class="s2">=&quot;android.provider.Telephony.SMS_DELIVER&quot; </span><span class="s0">/&gt;</span>
+            <span class="s0">&lt;/intent-filter&gt;</span>
+        <span class="s0">&lt;/receiver&gt;</span>
+
+        <span class="s4">&lt;!-- NOUVEAU: Receiver MMS (OBLIGATOIRE pour app SMS par défaut) --&gt;</span>
+        <span class="s0">&lt;receiver</span>
+            <span class="s1">android:name</span><span class="s2">=&quot;.MmsReceiver&quot;</span>
+            <span class="s1">android:permission</span><span class="s2">=&quot;android.permission.BROADCAST_WAP_PUSH&quot;</span>
+            <span class="s1">android:enabled</span><span class="s2">=&quot;true&quot;</span>
+            <span class="s1">android:exported</span><span class="s2">=&quot;true&quot;</span><span class="s0">&gt;</span>
+            <span class="s0">&lt;intent-filter&gt;</span>
+                <span class="s0">&lt;action </span><span class="s1">android:name</span><span class="s2">=&quot;android.provider.Telephony.WAP_PUSH_DELIVER&quot; </span><span class="s0">/&gt;</span>
+                <span class="s0">&lt;data </span><span class="s1">android:mimeType</span><span class="s2">=&quot;application/vnd.wap.mms-message&quot; </span><span class="s0">/&gt;</span>
+            <span class="s0">&lt;/intent-filter&gt;</span>
+        <span class="s0">&lt;/receiver&gt;</span>
+
+        <span class="s4">&lt;!-- Service SMS --&gt;</span>
+        <span class="s0">&lt;service</span>
+            <span class="s1">android:name</span><span class="s2">=&quot;.SmsService&quot;</span>
+            <span class="s1">android:permission</span><span class="s2">=&quot;android.permission.SEND_RESPOND_VIA_MESSAGE&quot;</span>
+            <span class="s1">android:exported</span><span class="s2">=&quot;true&quot;</span><span class="s0">&gt;</span>
+            <span class="s0">&lt;intent-filter&gt;</span>
+                <span class="s0">&lt;action </span><span class="s1">android:name</span><span class="s2">=&quot;android.intent.action.RESPOND_VIA_MESSAGE&quot; </span><span class="s0">/&gt;</span>
+                <span class="s0">&lt;category </span><span class="s1">android:name</span><span class="s2">=&quot;android.intent.category.DEFAULT&quot; </span><span class="s0">/&gt;</span>
+                <span class="s0">&lt;data </span><span class="s1">android:scheme</span><span class="s2">=&quot;sms&quot; </span><span class="s0">/&gt;</span>
+                <span class="s0">&lt;data </span><span class="s1">android:scheme</span><span class="s2">=&quot;smsto&quot; </span><span class="s0">/&gt;</span>
+                <span class="s0">&lt;data </span><span class="s1">android:scheme</span><span class="s2">=&quot;mms&quot; </span><span class="s0">/&gt;</span>
+                <span class="s0">&lt;data </span><span class="s1">android:scheme</span><span class="s2">=&quot;mmsto&quot; </span><span class="s0">/&gt;</span>
+            <span class="s0">&lt;/intent-filter&gt;</span>
+        <span class="s0">&lt;/service&gt;</span>
+
+        <span class="s4">&lt;!-- Provider SMS --&gt;</span>
+        <span class="s0">&lt;provider</span>
+            <span class="s1">android:name</span><span class="s2">=&quot;.SmsProvider&quot;</span>
+            <span class="s1">android:authorities</span><span class="s2">=&quot;${applicationId}.sms&quot;</span>
+            <span class="s1">android:enabled</span><span class="s2">=&quot;true&quot;</span>
+            <span class="s1">android:exported</span><span class="s2">=&quot;false&quot; </span><span class="s0">/&gt;</span>
+
+        <span class="s0">&lt;receiver</span>
+            <span class="s1">android:name</span><span class="s2">=&quot;.receivers.PhoneCallReceiver&quot;</span>
+            <span class="s1">android:enabled</span><span class="s2">=&quot;true&quot;</span>
+            <span class="s1">android:exported</span><span class="s2">=&quot;true&quot;</span><span class="s0">&gt;</span>
+            <span class="s0">&lt;intent-filter </span><span class="s1">android:priority</span><span class="s2">=&quot;1000&quot;</span><span class="s0">&gt;</span>
+                <span class="s0">&lt;action </span><span class="s1">android:name</span><span class="s2">=&quot;android.intent.action.PHONE_STATE&quot; </span><span class="s0">/&gt;</span>
+                <span class="s0">&lt;action </span><span class="s1">android:name</span><span class="s2">=&quot;android.intent.action.NEW_OUTGOING_CALL&quot; </span><span class="s0">/&gt;</span>
+            <span class="s0">&lt;/intent-filter&gt;</span>
+        <span class="s0">&lt;/receiver&gt;</span>
+
+    <span class="s0">&lt;/application&gt;</span>
+
+<span class="s0">&lt;/manifest&gt;</span></pre>
+</body>
+</html>

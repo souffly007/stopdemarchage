@@ -1,0 +1,388 @@
+<html>
+<head>
+<title>ContactsAdapter.kt</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #7a7e85;}
+.s4 { color: #6aab73;}
+.s5 { color: #5f826b; font-style: italic;}
+.s6 { color: #2aacb8;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+ContactsAdapter.kt</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">fr</span><span class="s2">.</span><span class="s1">bonobo</span><span class="s2">.</span><span class="s1">stopdemarchage</span>
+
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">view</span><span class="s2">.</span><span class="s1">LayoutInflater</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">view</span><span class="s2">.</span><span class="s1">View</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">view</span><span class="s2">.</span><span class="s1">ViewGroup</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">widget</span><span class="s2">.</span><span class="s1">Filter</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">widget</span><span class="s2">.</span><span class="s1">Filterable</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">widget</span><span class="s2">.</span><span class="s1">ImageView</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">widget</span><span class="s2">.</span><span class="s1">TextView</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">recyclerview</span><span class="s2">.</span><span class="s1">widget</span><span class="s2">.</span><span class="s1">RecyclerView</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">recyclerview</span><span class="s2">.</span><span class="s1">widget</span><span class="s2">.</span><span class="s1">DiffUtil</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">Log</span>
+
+<span class="s0">class </span><span class="s1">ContactAdapter</span><span class="s2">(</span>
+    <span class="s1">private </span><span class="s0">var </span><span class="s1">contacts: MutableList</span><span class="s2">&lt;</span><span class="s1">Contact</span><span class="s2">&gt; = </span><span class="s1">mutableListOf</span><span class="s2">(),</span>
+    <span class="s1">private </span><span class="s0">val </span><span class="s1">onContactClick: </span><span class="s2">(</span><span class="s1">Contact</span><span class="s2">) -&gt; </span><span class="s1">Unit </span><span class="s2">= {}</span>
+<span class="s2">) </span><span class="s1">: RecyclerView</span><span class="s2">.</span><span class="s1">Adapter</span><span class="s2">&lt;</span><span class="s1">ContactAdapter</span><span class="s2">.</span><span class="s1">ContactViewHolder</span><span class="s2">&gt;(), </span><span class="s1">Filterable </span><span class="s2">{</span>
+
+    <span class="s3">// Liste complète des contacts pour le filtrage</span>
+    <span class="s1">private </span><span class="s0">var </span><span class="s1">contactsFullList: MutableList</span><span class="s2">&lt;</span><span class="s1">Contact</span><span class="s2">&gt; = </span><span class="s1">mutableListOf</span><span class="s2">()</span>
+
+    <span class="s1">private </span><span class="s0">val </span><span class="s1">TAG </span><span class="s2">= </span><span class="s4">&quot;ContactAdapter&quot;</span>
+
+    <span class="s0">class </span><span class="s1">ContactViewHolder</span><span class="s2">(</span><span class="s1">view: View</span><span class="s2">) </span><span class="s1">: RecyclerView</span><span class="s2">.</span><span class="s1">ViewHolder</span><span class="s2">(</span><span class="s1">view</span><span class="s2">) {</span>
+        <span class="s0">val </span><span class="s1">nameTextView: TextView </span><span class="s2">= </span><span class="s1">view</span><span class="s2">.</span><span class="s1">findViewById</span><span class="s2">(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">contact_name</span><span class="s2">)</span>
+        <span class="s0">val </span><span class="s1">phoneTextView: TextView </span><span class="s2">= </span><span class="s1">view</span><span class="s2">.</span><span class="s1">findViewById</span><span class="s2">(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">contact_number</span><span class="s2">)</span>
+        <span class="s0">val </span><span class="s1">contactPhoto: ImageView </span><span class="s2">= </span><span class="s1">view</span><span class="s2">.</span><span class="s1">findViewById</span><span class="s2">(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">contact_photo</span><span class="s2">)</span>
+    <span class="s2">}</span>
+
+    <span class="s1">override </span><span class="s0">fun </span><span class="s1">onCreateViewHolder</span><span class="s2">(</span><span class="s1">parent: ViewGroup</span><span class="s2">, </span><span class="s1">viewType: Int</span><span class="s2">)</span><span class="s1">: ContactViewHolder </span><span class="s2">{</span>
+        <span class="s0">val </span><span class="s1">view </span><span class="s2">= </span><span class="s1">LayoutInflater</span><span class="s2">.</span><span class="s1">from</span><span class="s2">(</span><span class="s1">parent</span><span class="s2">.</span><span class="s1">context</span><span class="s2">)</span>
+            <span class="s2">.</span><span class="s1">inflate</span><span class="s2">(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.</span><span class="s1">item_contact</span><span class="s2">, </span><span class="s1">parent</span><span class="s2">, </span><span class="s0">false</span><span class="s2">)</span>
+        <span class="s0">return </span><span class="s1">ContactViewHolder</span><span class="s2">(</span><span class="s1">view</span><span class="s2">)</span>
+    <span class="s2">}</span>
+
+    <span class="s1">override </span><span class="s0">fun </span><span class="s1">onBindViewHolder</span><span class="s2">(</span><span class="s1">holder: ContactViewHolder</span><span class="s2">, </span><span class="s1">position: Int</span><span class="s2">) {</span>
+        <span class="s0">val </span><span class="s1">contact </span><span class="s2">= </span><span class="s1">contacts</span><span class="s2">[</span><span class="s1">position</span><span class="s2">]</span>
+        <span class="s1">holder</span><span class="s2">.</span><span class="s1">nameTextView</span><span class="s2">.</span><span class="s1">text </span><span class="s2">= </span><span class="s1">contact</span><span class="s2">.</span><span class="s1">name</span>
+        <span class="s1">holder</span><span class="s2">.</span><span class="s1">phoneTextView</span><span class="s2">.</span><span class="s1">text </span><span class="s2">= </span><span class="s1">contact</span><span class="s2">.</span><span class="s1">phoneNumber</span>
+
+        <span class="s3">// Image de contact par défaut</span>
+        <span class="s1">holder</span><span class="s2">.</span><span class="s1">contactPhoto</span><span class="s2">.</span><span class="s1">setImageResource</span><span class="s2">(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">drawable</span><span class="s2">.</span><span class="s1">ic_contact_placeholder</span><span class="s2">)</span>
+
+        <span class="s1">holder</span><span class="s2">.</span><span class="s1">itemView</span><span class="s2">.</span><span class="s1">setOnClickListener </span><span class="s2">{</span>
+            <span class="s1">onContactClick</span><span class="s2">(</span><span class="s1">contact</span><span class="s2">)</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">override </span><span class="s0">fun </span><span class="s1">getItemCount</span><span class="s2">() = </span><span class="s1">contacts</span><span class="s2">.</span><span class="s1">size</span>
+
+    <span class="s5">/**</span>
+     <span class="s5">* Met à jour la liste des contacts avec détection des changements</span>
+     <span class="s5">*/</span>
+    <span class="s0">fun </span><span class="s1">updateContacts</span><span class="s2">(</span><span class="s1">newContacts: List</span><span class="s2">&lt;</span><span class="s1">Contact</span><span class="s2">&gt;) {</span>
+        <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s4">&quot;Mise à jour des contacts: </span><span class="s0">${</span><span class="s1">newContacts</span><span class="s2">.</span><span class="s1">size</span><span class="s0">} </span><span class="s4">contacts&quot;</span><span class="s2">)</span>
+
+        <span class="s3">// IMPORTANT: Sauvegarder la liste complète pour le filtrage</span>
+        <span class="s1">contactsFullList</span><span class="s2">.</span><span class="s1">clear</span><span class="s2">()</span>
+        <span class="s1">contactsFullList</span><span class="s2">.</span><span class="s1">addAll</span><span class="s2">(</span><span class="s1">newContacts</span><span class="s2">)</span>
+
+        <span class="s0">val </span><span class="s1">diffCallback </span><span class="s2">= </span><span class="s1">ContactDiffCallback</span><span class="s2">(</span><span class="s1">contacts</span><span class="s2">, </span><span class="s1">newContacts</span><span class="s2">)</span>
+        <span class="s0">val </span><span class="s1">diffResult </span><span class="s2">= </span><span class="s1">DiffUtil</span><span class="s2">.</span><span class="s1">calculateDiff</span><span class="s2">(</span><span class="s1">diffCallback</span><span class="s2">)</span>
+
+        <span class="s1">contacts</span><span class="s2">.</span><span class="s1">clear</span><span class="s2">()</span>
+        <span class="s1">contacts</span><span class="s2">.</span><span class="s1">addAll</span><span class="s2">(</span><span class="s1">newContacts</span><span class="s2">)</span>
+        <span class="s1">diffResult</span><span class="s2">.</span><span class="s1">dispatchUpdatesTo</span><span class="s2">(</span><span class="s0">this</span><span class="s2">)</span>
+
+        <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s4">&quot;Liste complète sauvegardée: </span><span class="s0">${</span><span class="s1">contactsFullList</span><span class="s2">.</span><span class="s1">size</span><span class="s0">} </span><span class="s4">contacts&quot;</span><span class="s2">)</span>
+    <span class="s2">}</span>
+
+    <span class="s3">// ============== SYSTÈME DE FILTRAGE ==============</span>
+    <span class="s1">override </span><span class="s0">fun </span><span class="s1">getFilter</span><span class="s2">()</span><span class="s1">: Filter </span><span class="s2">{</span>
+        <span class="s0">return </span><span class="s1">contactFilter</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">val </span><span class="s1">contactFilter </span><span class="s2">= </span><span class="s0">object </span><span class="s1">: Filter</span><span class="s2">() {</span>
+        <span class="s1">override </span><span class="s0">fun </span><span class="s1">performFiltering</span><span class="s2">(</span><span class="s1">constraint: CharSequence?</span><span class="s2">)</span><span class="s1">: FilterResults </span><span class="s2">{</span>
+            <span class="s0">val </span><span class="s1">query </span><span class="s2">= </span><span class="s1">constraint?</span><span class="s2">.</span><span class="s1">toString</span><span class="s2">()</span><span class="s1">?</span><span class="s2">.</span><span class="s1">lowercase</span><span class="s2">()</span><span class="s1">?</span><span class="s2">.</span><span class="s1">trim</span><span class="s2">() </span><span class="s1">?: </span><span class="s4">&quot;&quot;</span>
+            <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s4">&quot;Filtrage avec query: '</span><span class="s0">$</span><span class="s1">query</span><span class="s4">'&quot;</span><span class="s2">)</span>
+            <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s4">&quot;Liste complète disponible: </span><span class="s0">${</span><span class="s1">contactsFullList</span><span class="s2">.</span><span class="s1">size</span><span class="s0">} </span><span class="s4">contacts&quot;</span><span class="s2">)</span>
+
+            <span class="s0">val </span><span class="s1">filteredList </span><span class="s2">= </span><span class="s1">mutableListOf</span><span class="s2">&lt;</span><span class="s1">Contact</span><span class="s2">&gt;()</span>
+
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">query</span><span class="s2">.</span><span class="s1">isEmpty</span><span class="s2">()) {</span>
+                <span class="s3">// Si pas de recherche, afficher tous les contacts</span>
+                <span class="s1">filteredList</span><span class="s2">.</span><span class="s1">addAll</span><span class="s2">(</span><span class="s1">contactsFullList</span><span class="s2">)</span>
+                <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s4">&quot;Pas de filtre, affichage de tous les contacts: </span><span class="s0">${</span><span class="s1">filteredList</span><span class="s2">.</span><span class="s1">size</span><span class="s0">}</span><span class="s4">&quot;</span><span class="s2">)</span>
+            <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+                <span class="s0">for </span><span class="s2">(</span><span class="s1">contact </span><span class="s0">in </span><span class="s1">contactsFullList</span><span class="s2">) {</span>
+                    <span class="s3">// Recherche dans le nom ET le numéro (avec vérification null)</span>
+                    <span class="s0">val </span><span class="s1">contactName </span><span class="s2">= </span><span class="s1">contact</span><span class="s2">.</span><span class="s1">name?</span><span class="s2">.</span><span class="s1">lowercase</span><span class="s2">() </span><span class="s1">?: </span><span class="s4">&quot;&quot;</span>
+                    <span class="s0">val </span><span class="s1">contactPhone </span><span class="s2">= </span><span class="s1">contact</span><span class="s2">.</span><span class="s1">phoneNumber ?: </span><span class="s4">&quot;&quot;</span>
+
+                    <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s4">&quot;Test contact: '</span><span class="s0">$</span><span class="s1">contactName</span><span class="s4">' avec '</span><span class="s0">$</span><span class="s1">contactPhone</span><span class="s4">'&quot;</span><span class="s2">)</span>
+
+                    <span class="s0">if </span><span class="s2">(</span><span class="s1">contactName</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s1">query</span><span class="s2">) || </span><span class="s1">contactPhone</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s1">query</span><span class="s2">)) {</span>
+                        <span class="s1">filteredList</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s1">contact</span><span class="s2">)</span>
+                        <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s4">&quot;Contact correspond: </span><span class="s0">${</span><span class="s1">contact</span><span class="s2">.</span><span class="s1">name</span><span class="s0">}</span><span class="s4">&quot;</span><span class="s2">)</span>
+                    <span class="s2">}</span>
+                <span class="s2">}</span>
+                <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s4">&quot;Filtrage terminé: </span><span class="s0">${</span><span class="s1">filteredList</span><span class="s2">.</span><span class="s1">size</span><span class="s0">} </span><span class="s4">contacts trouvés&quot;</span><span class="s2">)</span>
+            <span class="s2">}</span>
+
+            <span class="s0">val </span><span class="s1">results </span><span class="s2">= </span><span class="s1">FilterResults</span><span class="s2">()</span>
+            <span class="s1">results</span><span class="s2">.</span><span class="s1">values </span><span class="s2">= </span><span class="s1">filteredList</span>
+            <span class="s1">results</span><span class="s2">.</span><span class="s1">count </span><span class="s2">= </span><span class="s1">filteredList</span><span class="s2">.</span><span class="s1">size</span>
+            <span class="s0">return </span><span class="s1">results</span>
+        <span class="s2">}</span>
+
+        <span class="s1">override </span><span class="s0">fun </span><span class="s1">publishResults</span><span class="s2">(</span><span class="s1">constraint: CharSequence?</span><span class="s2">, </span><span class="s1">results: FilterResults?</span><span class="s2">) {</span>
+            <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s4">&quot;Publication des résultats...&quot;</span><span class="s2">)</span>
+            <span class="s1">contacts</span><span class="s2">.</span><span class="s1">clear</span><span class="s2">()</span>
+            <span class="s1">@Suppress</span><span class="s2">(</span><span class="s4">&quot;UNCHECKED_CAST&quot;</span><span class="s2">)</span>
+            <span class="s0">val </span><span class="s1">filteredContacts </span><span class="s2">= </span><span class="s1">results?</span><span class="s2">.</span><span class="s1">values </span><span class="s0">as? </span><span class="s1">List</span><span class="s2">&lt;</span><span class="s1">Contact</span><span class="s2">&gt; </span><span class="s1">?: emptyList</span><span class="s2">()</span>
+            <span class="s1">contacts</span><span class="s2">.</span><span class="s1">addAll</span><span class="s2">(</span><span class="s1">filteredContacts</span><span class="s2">)</span>
+            <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s4">&quot;Résultats publiés: </span><span class="s0">${</span><span class="s1">contacts</span><span class="s2">.</span><span class="s1">size</span><span class="s0">} </span><span class="s4">contacts affichés&quot;</span><span class="s2">)</span>
+            <span class="s1">notifyDataSetChanged</span><span class="s2">()</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s5">/**</span>
+     <span class="s5">* Méthode publique pour filtrer facilement</span>
+     <span class="s5">*/</span>
+    <span class="s0">fun </span><span class="s1">filterContacts</span><span class="s2">(</span><span class="s1">query: String</span><span class="s2">) {</span>
+        <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s4">&quot;Demande de filtrage: '</span><span class="s0">$</span><span class="s1">query</span><span class="s4">'&quot;</span><span class="s2">)</span>
+        <span class="s1">filter</span><span class="s2">.</span><span class="s1">filter</span><span class="s2">(</span><span class="s1">query</span><span class="s2">)</span>
+    <span class="s2">}</span>
+
+    <span class="s5">/**</span>
+     <span class="s5">* Remet tous les contacts (annule le filtre)</span>
+     <span class="s5">*/</span>
+    <span class="s0">fun </span><span class="s1">clearFilter</span><span class="s2">() {</span>
+        <span class="s1">filter</span><span class="s2">.</span><span class="s1">filter</span><span class="s2">(</span><span class="s4">&quot;&quot;</span><span class="s2">)</span>
+    <span class="s2">}</span>
+
+    <span class="s5">/**</span>
+     <span class="s5">* Retourne le nombre total de contacts (avant filtrage)</span>
+     <span class="s5">*/</span>
+    <span class="s0">fun </span><span class="s1">getTotalContactsCount</span><span class="s2">()</span><span class="s1">: Int </span><span class="s2">{</span>
+        <span class="s0">return </span><span class="s1">contactsFullList</span><span class="s2">.</span><span class="s1">size</span>
+    <span class="s2">}</span>
+
+    <span class="s5">/**</span>
+     <span class="s5">* Nettoie automatiquement les doublons dans la liste</span>
+     <span class="s5">*/</span>
+    <span class="s0">fun </span><span class="s1">cleanDuplicates</span><span class="s2">()</span><span class="s1">: Int </span><span class="s2">{</span>
+        <span class="s0">val </span><span class="s1">originalSize </span><span class="s2">= </span><span class="s1">contactsFullList</span><span class="s2">.</span><span class="s1">size</span>
+        <span class="s0">val </span><span class="s1">cleanedContacts </span><span class="s2">= </span><span class="s1">ContactDeduplicator</span><span class="s2">.</span><span class="s1">cleanContacts</span><span class="s2">(</span><span class="s1">contactsFullList</span><span class="s2">)</span>
+        <span class="s1">updateContacts</span><span class="s2">(</span><span class="s1">cleanedContacts</span><span class="s2">)</span>
+        <span class="s0">return </span><span class="s1">originalSize </span><span class="s2">- </span><span class="s1">cleanedContacts</span><span class="s2">.</span><span class="s1">size</span>
+    <span class="s2">}</span>
+
+    <span class="s5">/**</span>
+     <span class="s5">* Détecte et retourne les groupes de doublons</span>
+     <span class="s5">*/</span>
+    <span class="s0">fun </span><span class="s1">findDuplicates</span><span class="s2">()</span><span class="s1">: Map</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">, </span><span class="s1">List</span><span class="s2">&lt;</span><span class="s1">Contact</span><span class="s2">&gt;&gt; {</span>
+        <span class="s0">return </span><span class="s1">ContactDeduplicator</span><span class="s2">.</span><span class="s1">findDuplicates</span><span class="s2">(</span><span class="s1">contactsFullList</span><span class="s2">)</span>
+    <span class="s2">}</span>
+
+    <span class="s5">/**</span>
+     <span class="s5">* Normalise tous les numéros de téléphone</span>
+     <span class="s5">*/</span>
+    <span class="s0">fun </span><span class="s1">normalizeAllPhones</span><span class="s2">() {</span>
+        <span class="s0">val </span><span class="s1">updatedContacts </span><span class="s2">= </span><span class="s1">contactsFullList</span><span class="s2">.</span><span class="s1">map </span><span class="s2">{ </span><span class="s1">contact </span><span class="s2">-&gt;</span>
+            <span class="s0">val </span><span class="s1">normalized </span><span class="s2">= </span><span class="s1">PhoneNormalizer</span><span class="s2">.</span><span class="s1">normalizePhoneNumber</span><span class="s2">(</span><span class="s1">contact</span><span class="s2">.</span><span class="s1">phoneNumber</span><span class="s2">)</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">normalized</span><span class="s2">.</span><span class="s1">startsWith</span><span class="s2">(</span><span class="s4">&quot;+33&quot;</span><span class="s2">)) {</span>
+                <span class="s1">contact</span><span class="s2">.</span><span class="s1">copy</span><span class="s2">(</span><span class="s1">phoneNumber </span><span class="s2">= </span><span class="s1">PhoneNormalizer</span><span class="s2">.</span><span class="s1">formatForDisplay</span><span class="s2">(</span><span class="s1">normalized</span><span class="s2">))</span>
+            <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+                <span class="s1">contact</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+        <span class="s1">updateContacts</span><span class="s2">(</span><span class="s1">updatedContacts</span><span class="s2">)</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+
+<span class="s3">// PhoneNormalizer.kt</span>
+<span class="s0">object </span><span class="s1">PhoneNormalizer </span><span class="s2">{</span>
+
+    <span class="s5">/**</span>
+     <span class="s5">* Normalise un numéro de téléphone français vers le format +33XXXXXXXXX</span>
+     <span class="s5">*/</span>
+    <span class="s0">fun </span><span class="s1">normalizePhoneNumber</span><span class="s2">(</span><span class="s1">phoneNumber: String?</span><span class="s2">)</span><span class="s1">: String </span><span class="s2">{</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">phoneNumber</span><span class="s2">.</span><span class="s1">isNullOrBlank</span><span class="s2">()) </span><span class="s0">return </span><span class="s4">&quot;&quot;</span>
+
+        <span class="s3">// Nettoyer le numéro (garder seulement les chiffres et le +)</span>
+        <span class="s0">val </span><span class="s1">cleanNumber </span><span class="s2">= </span><span class="s1">phoneNumber</span><span class="s2">.</span><span class="s1">replace</span><span class="s2">(</span><span class="s1">Regex</span><span class="s2">(</span><span class="s4">&quot;[^</span><span class="s0">\\</span><span class="s4">d+]&quot;</span><span class="s2">), </span><span class="s4">&quot;&quot;</span><span class="s2">)</span>
+
+        <span class="s0">return when </span><span class="s2">{</span>
+            <span class="s3">// Si le numéro commence par +33</span>
+            <span class="s1">cleanNumber</span><span class="s2">.</span><span class="s1">startsWith</span><span class="s2">(</span><span class="s4">&quot;+33&quot;</span><span class="s2">) -&gt; {</span>
+                <span class="s0">val </span><span class="s1">digits </span><span class="s2">= </span><span class="s1">cleanNumber</span><span class="s2">.</span><span class="s1">substring</span><span class="s2">(</span><span class="s6">3</span><span class="s2">)</span>
+                <span class="s0">if </span><span class="s2">(</span><span class="s1">digits</span><span class="s2">.</span><span class="s1">length </span><span class="s2">== </span><span class="s6">9 </span><span class="s2">&amp;&amp; </span><span class="s1">isValidFirstDigit</span><span class="s2">(</span><span class="s1">digits</span><span class="s2">.</span><span class="s1">first</span><span class="s2">())) {</span>
+                    <span class="s4">&quot;+33</span><span class="s0">$</span><span class="s1">digits</span><span class="s4">&quot;</span>
+                <span class="s2">} </span><span class="s0">else </span><span class="s1">phoneNumber</span>
+            <span class="s2">}</span>
+
+            <span class="s3">// Si le numéro commence par 0033</span>
+            <span class="s1">cleanNumber</span><span class="s2">.</span><span class="s1">startsWith</span><span class="s2">(</span><span class="s4">&quot;0033&quot;</span><span class="s2">) -&gt; {</span>
+                <span class="s0">val </span><span class="s1">digits </span><span class="s2">= </span><span class="s1">cleanNumber</span><span class="s2">.</span><span class="s1">substring</span><span class="s2">(</span><span class="s6">4</span><span class="s2">)</span>
+                <span class="s0">if </span><span class="s2">(</span><span class="s1">digits</span><span class="s2">.</span><span class="s1">length </span><span class="s2">== </span><span class="s6">9 </span><span class="s2">&amp;&amp; </span><span class="s1">isValidFirstDigit</span><span class="s2">(</span><span class="s1">digits</span><span class="s2">.</span><span class="s1">first</span><span class="s2">())) {</span>
+                    <span class="s4">&quot;+33</span><span class="s0">$</span><span class="s1">digits</span><span class="s4">&quot;</span>
+                <span class="s2">} </span><span class="s0">else </span><span class="s1">phoneNumber</span>
+            <span class="s2">}</span>
+
+            <span class="s3">// Si le numéro commence par 0 (format français local)</span>
+            <span class="s1">cleanNumber</span><span class="s2">.</span><span class="s1">startsWith</span><span class="s2">(</span><span class="s4">&quot;0&quot;</span><span class="s2">) &amp;&amp; </span><span class="s1">cleanNumber</span><span class="s2">.</span><span class="s1">length </span><span class="s2">== </span><span class="s6">10 </span><span class="s2">-&gt; {</span>
+                <span class="s0">val </span><span class="s1">digits </span><span class="s2">= </span><span class="s1">cleanNumber</span><span class="s2">.</span><span class="s1">substring</span><span class="s2">(</span><span class="s6">1</span><span class="s2">)</span>
+                <span class="s0">if </span><span class="s2">(</span><span class="s1">isValidFirstDigit</span><span class="s2">(</span><span class="s1">digits</span><span class="s2">.</span><span class="s1">first</span><span class="s2">())) {</span>
+                    <span class="s4">&quot;+33</span><span class="s0">$</span><span class="s1">digits</span><span class="s4">&quot;</span>
+                <span class="s2">} </span><span class="s0">else </span><span class="s1">phoneNumber</span>
+            <span class="s2">}</span>
+
+            <span class="s3">// Si c'est déjà 9 chiffres sans préfixe</span>
+            <span class="s1">cleanNumber</span><span class="s2">.</span><span class="s1">length </span><span class="s2">== </span><span class="s6">9 </span><span class="s2">&amp;&amp; </span><span class="s1">isValidFirstDigit</span><span class="s2">(</span><span class="s1">cleanNumber</span><span class="s2">.</span><span class="s1">first</span><span class="s2">()) -&gt; {</span>
+                <span class="s4">&quot;+33</span><span class="s0">$</span><span class="s1">cleanNumber</span><span class="s4">&quot;</span>
+            <span class="s2">}</span>
+
+            <span class="s0">else </span><span class="s2">-&gt; </span><span class="s1">phoneNumber </span><span class="s3">// Retourner tel quel si aucun format reconnu</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s5">/**</span>
+     <span class="s5">* Vérifie si le premier chiffre est valide pour un numéro français</span>
+     <span class="s5">*/</span>
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">isValidFirstDigit</span><span class="s2">(</span><span class="s1">digit: Char</span><span class="s2">)</span><span class="s1">: Boolean </span><span class="s2">{</span>
+        <span class="s0">return </span><span class="s1">digit </span><span class="s0">in </span><span class="s4">'1'</span><span class="s2">..</span><span class="s4">'9'</span>
+    <span class="s2">}</span>
+
+    <span class="s5">/**</span>
+     <span class="s5">* Formate un numéro normalisé pour l'affichage</span>
+     <span class="s5">* +33XXXXXXXXX -&gt; +33 X XX XX XX XX</span>
+     <span class="s5">*/</span>
+    <span class="s0">fun </span><span class="s1">formatForDisplay</span><span class="s2">(</span><span class="s1">normalizedNumber: String</span><span class="s2">)</span><span class="s1">: String </span><span class="s2">{</span>
+        <span class="s0">return if </span><span class="s2">(</span><span class="s1">normalizedNumber</span><span class="s2">.</span><span class="s1">startsWith</span><span class="s2">(</span><span class="s4">&quot;+33&quot;</span><span class="s2">) &amp;&amp; </span><span class="s1">normalizedNumber</span><span class="s2">.</span><span class="s1">length </span><span class="s2">== </span><span class="s6">12</span><span class="s2">) {</span>
+            <span class="s0">val </span><span class="s1">digits </span><span class="s2">= </span><span class="s1">normalizedNumber</span><span class="s2">.</span><span class="s1">substring</span><span class="s2">(</span><span class="s6">3</span><span class="s2">)</span>
+            <span class="s4">&quot;+33 </span><span class="s0">${</span><span class="s1">digits</span><span class="s2">[</span><span class="s6">0</span><span class="s2">]</span><span class="s0">} ${</span><span class="s1">digits</span><span class="s2">.</span><span class="s1">substring</span><span class="s2">(</span><span class="s6">1</span><span class="s2">, </span><span class="s6">3</span><span class="s2">)</span><span class="s0">} ${</span><span class="s1">digits</span><span class="s2">.</span><span class="s1">substring</span><span class="s2">(</span><span class="s6">3</span><span class="s2">, </span><span class="s6">5</span><span class="s2">)</span><span class="s0">} ${</span><span class="s1">digits</span><span class="s2">.</span><span class="s1">substring</span><span class="s2">(</span><span class="s6">5</span><span class="s2">, </span><span class="s6">7</span><span class="s2">)</span><span class="s0">} ${</span><span class="s1">digits</span><span class="s2">.</span><span class="s1">substring</span><span class="s2">(</span><span class="s6">7</span><span class="s2">, </span><span class="s6">9</span><span class="s2">)</span><span class="s0">}</span><span class="s4">&quot;</span>
+        <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+            <span class="s1">normalizedNumber</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+
+<span class="s3">// ContactDeduplicator.kt</span>
+<span class="s0">object </span><span class="s1">ContactDeduplicator </span><span class="s2">{</span>
+
+    <span class="s5">/**</span>
+     <span class="s5">* Détecte et groupe les contacts dupliqués</span>
+     <span class="s5">*/</span>
+    <span class="s0">fun </span><span class="s1">findDuplicates</span><span class="s2">(</span><span class="s1">contacts: List</span><span class="s2">&lt;</span><span class="s1">Contact</span><span class="s2">&gt;)</span><span class="s1">: Map</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">, </span><span class="s1">List</span><span class="s2">&lt;</span><span class="s1">Contact</span><span class="s2">&gt;&gt; {</span>
+        <span class="s0">val </span><span class="s1">phoneGroups </span><span class="s2">= </span><span class="s1">mutableMapOf</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">, </span><span class="s1">MutableList</span><span class="s2">&lt;</span><span class="s1">Contact</span><span class="s2">&gt;&gt;()</span>
+
+        <span class="s1">contacts</span><span class="s2">.</span><span class="s1">forEach </span><span class="s2">{ </span><span class="s1">contact </span><span class="s2">-&gt;</span>
+            <span class="s0">val </span><span class="s1">normalizedPhone </span><span class="s2">= </span><span class="s1">PhoneNormalizer</span><span class="s2">.</span><span class="s1">normalizePhoneNumber</span><span class="s2">(</span><span class="s1">contact</span><span class="s2">.</span><span class="s1">phoneNumber</span><span class="s2">)</span>
+
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">normalizedPhone</span><span class="s2">.</span><span class="s1">startsWith</span><span class="s2">(</span><span class="s4">&quot;+33&quot;</span><span class="s2">)) {</span>
+                <span class="s1">phoneGroups</span><span class="s2">.</span><span class="s1">getOrPut</span><span class="s2">(</span><span class="s1">normalizedPhone</span><span class="s2">) { </span><span class="s1">mutableListOf</span><span class="s2">() }.</span><span class="s1">add</span><span class="s2">(</span><span class="s1">contact</span><span class="s2">)</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+
+        <span class="s3">// Retourner seulement les groupes avec des doublons</span>
+        <span class="s0">return </span><span class="s1">phoneGroups</span><span class="s2">.</span><span class="s1">filter </span><span class="s2">{ </span><span class="s1">it</span><span class="s2">.</span><span class="s1">value</span><span class="s2">.</span><span class="s1">size </span><span class="s2">&gt; </span><span class="s6">1 </span><span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s5">/**</span>
+     <span class="s5">* Fusionne automatiquement les contacts dupliqués</span>
+     <span class="s5">*/</span>
+    <span class="s0">fun </span><span class="s1">mergeContacts</span><span class="s2">(</span><span class="s1">duplicates: List</span><span class="s2">&lt;</span><span class="s1">Contact</span><span class="s2">&gt;)</span><span class="s1">: Contact? </span><span class="s2">{</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">duplicates</span><span class="s2">.</span><span class="s1">isEmpty</span><span class="s2">()) </span><span class="s0">return null</span>
+
+        <span class="s3">// Prendre le contact avec le nom le plus complet</span>
+        <span class="s0">val </span><span class="s1">bestContact </span><span class="s2">= </span><span class="s1">duplicates</span><span class="s2">.</span><span class="s1">maxByOrNull </span><span class="s2">{ </span><span class="s1">it</span><span class="s2">.</span><span class="s1">name?</span><span class="s2">.</span><span class="s1">length ?: </span><span class="s6">0 </span><span class="s2">} </span><span class="s1">?: duplicates</span><span class="s2">.</span><span class="s1">first</span><span class="s2">()</span>
+
+        <span class="s3">// Créer le contact fusionné</span>
+        <span class="s0">return </span><span class="s1">Contact</span><span class="s2">(</span>
+            <span class="s1">id </span><span class="s2">= </span><span class="s1">bestContact</span><span class="s2">.</span><span class="s1">id</span><span class="s2">,</span>
+            <span class="s1">name </span><span class="s2">= </span><span class="s1">bestContact</span><span class="s2">.</span><span class="s1">name</span><span class="s2">,</span>
+            <span class="s1">phoneNumber </span><span class="s2">= </span><span class="s1">PhoneNormalizer</span><span class="s2">.</span><span class="s1">formatForDisplay</span><span class="s2">(</span>
+                <span class="s1">PhoneNormalizer</span><span class="s2">.</span><span class="s1">normalizePhoneNumber</span><span class="s2">(</span><span class="s1">bestContact</span><span class="s2">.</span><span class="s1">phoneNumber</span><span class="s2">)</span>
+            <span class="s2">)</span>
+        <span class="s2">)</span>
+    <span class="s2">}</span>
+
+    <span class="s5">/**</span>
+     <span class="s5">* Nettoie automatiquement la liste de contacts</span>
+     <span class="s5">*/</span>
+    <span class="s0">fun </span><span class="s1">cleanContacts</span><span class="s2">(</span><span class="s1">originalContacts: List</span><span class="s2">&lt;</span><span class="s1">Contact</span><span class="s2">&gt;)</span><span class="s1">: List</span><span class="s2">&lt;</span><span class="s1">Contact</span><span class="s2">&gt; {</span>
+        <span class="s0">val </span><span class="s1">cleanedContacts </span><span class="s2">= </span><span class="s1">mutableListOf</span><span class="s2">&lt;</span><span class="s1">Contact</span><span class="s2">&gt;()</span>
+        <span class="s0">val </span><span class="s1">processedPhones </span><span class="s2">= </span><span class="s1">mutableSetOf</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">&gt;()</span>
+
+        <span class="s0">val </span><span class="s1">duplicates </span><span class="s2">= </span><span class="s1">findDuplicates</span><span class="s2">(</span><span class="s1">originalContacts</span><span class="s2">)</span>
+
+        <span class="s3">// Traiter les doublons</span>
+        <span class="s1">duplicates</span><span class="s2">.</span><span class="s1">forEach </span><span class="s2">{ (</span><span class="s1">_</span><span class="s2">, </span><span class="s1">duplicateGroup</span><span class="s2">) -&gt;</span>
+            <span class="s0">val </span><span class="s1">merged </span><span class="s2">= </span><span class="s1">mergeContacts</span><span class="s2">(</span><span class="s1">duplicateGroup</span><span class="s2">)</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">merged </span><span class="s2">!= </span><span class="s0">null</span><span class="s2">) {</span>
+                <span class="s1">cleanedContacts</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s1">merged</span><span class="s2">)</span>
+                <span class="s3">// Marquer tous les numéros originaux comme traités</span>
+                <span class="s1">duplicateGroup</span><span class="s2">.</span><span class="s1">forEach </span><span class="s2">{ </span><span class="s1">contact </span><span class="s2">-&gt;</span>
+                    <span class="s1">processedPhones</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s1">contact</span><span class="s2">.</span><span class="s1">phoneNumber ?: </span><span class="s4">&quot;&quot;</span><span class="s2">)</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+
+        <span class="s3">// Ajouter les contacts sans doublons</span>
+        <span class="s1">originalContacts</span><span class="s2">.</span><span class="s1">forEach </span><span class="s2">{ </span><span class="s1">contact </span><span class="s2">-&gt;</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">contact</span><span class="s2">.</span><span class="s1">phoneNumber </span><span class="s0">!in </span><span class="s1">processedPhones</span><span class="s2">) {</span>
+                <span class="s0">val </span><span class="s1">normalized </span><span class="s2">= </span><span class="s1">PhoneNormalizer</span><span class="s2">.</span><span class="s1">normalizePhoneNumber</span><span class="s2">(</span><span class="s1">contact</span><span class="s2">.</span><span class="s1">phoneNumber</span><span class="s2">)</span>
+                <span class="s0">val </span><span class="s1">updatedContact </span><span class="s2">= </span><span class="s0">if </span><span class="s2">(</span><span class="s1">normalized</span><span class="s2">.</span><span class="s1">startsWith</span><span class="s2">(</span><span class="s4">&quot;+33&quot;</span><span class="s2">)) {</span>
+                    <span class="s1">contact</span><span class="s2">.</span><span class="s1">copy</span><span class="s2">(</span><span class="s1">phoneNumber </span><span class="s2">= </span><span class="s1">PhoneNormalizer</span><span class="s2">.</span><span class="s1">formatForDisplay</span><span class="s2">(</span><span class="s1">normalized</span><span class="s2">))</span>
+                <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+                    <span class="s1">contact</span>
+                <span class="s2">}</span>
+                <span class="s1">cleanedContacts</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s1">updatedContact</span><span class="s2">)</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+
+        <span class="s0">return </span><span class="s1">cleanedContacts</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+
+<span class="s3">// ContactDiffCallback.kt</span>
+<span class="s0">class </span><span class="s1">ContactDiffCallback</span><span class="s2">(</span>
+    <span class="s1">private </span><span class="s0">val </span><span class="s1">oldList: List</span><span class="s2">&lt;</span><span class="s1">Contact</span><span class="s2">&gt;,</span>
+    <span class="s1">private </span><span class="s0">val </span><span class="s1">newList: List</span><span class="s2">&lt;</span><span class="s1">Contact</span><span class="s2">&gt;</span>
+<span class="s2">) </span><span class="s1">: DiffUtil</span><span class="s2">.</span><span class="s1">Callback</span><span class="s2">() {</span>
+
+    <span class="s1">override </span><span class="s0">fun </span><span class="s1">getOldListSize</span><span class="s2">() = </span><span class="s1">oldList</span><span class="s2">.</span><span class="s1">size</span>
+    <span class="s1">override </span><span class="s0">fun </span><span class="s1">getNewListSize</span><span class="s2">() = </span><span class="s1">newList</span><span class="s2">.</span><span class="s1">size</span>
+
+    <span class="s1">override </span><span class="s0">fun </span><span class="s1">areItemsTheSame</span><span class="s2">(</span><span class="s1">oldItemPosition: Int</span><span class="s2">, </span><span class="s1">newItemPosition: Int</span><span class="s2">)</span><span class="s1">: Boolean </span><span class="s2">{</span>
+        <span class="s0">val </span><span class="s1">oldItem </span><span class="s2">= </span><span class="s1">oldList</span><span class="s2">[</span><span class="s1">oldItemPosition</span><span class="s2">]</span>
+        <span class="s0">val </span><span class="s1">newItem </span><span class="s2">= </span><span class="s1">newList</span><span class="s2">[</span><span class="s1">newItemPosition</span><span class="s2">]</span>
+
+        <span class="s3">// Comparer par numéro normalisé</span>
+        <span class="s0">val </span><span class="s1">oldNormalized </span><span class="s2">= </span><span class="s1">PhoneNormalizer</span><span class="s2">.</span><span class="s1">normalizePhoneNumber</span><span class="s2">(</span><span class="s1">oldItem</span><span class="s2">.</span><span class="s1">phoneNumber</span><span class="s2">)</span>
+        <span class="s0">val </span><span class="s1">newNormalized </span><span class="s2">= </span><span class="s1">PhoneNormalizer</span><span class="s2">.</span><span class="s1">normalizePhoneNumber</span><span class="s2">(</span><span class="s1">newItem</span><span class="s2">.</span><span class="s1">phoneNumber</span><span class="s2">)</span>
+
+        <span class="s0">return </span><span class="s1">oldNormalized </span><span class="s2">== </span><span class="s1">newNormalized</span>
+    <span class="s2">}</span>
+
+    <span class="s1">override </span><span class="s0">fun </span><span class="s1">areContentsTheSame</span><span class="s2">(</span><span class="s1">oldItemPosition: Int</span><span class="s2">, </span><span class="s1">newItemPosition: Int</span><span class="s2">)</span><span class="s1">: Boolean </span><span class="s2">{</span>
+        <span class="s0">return </span><span class="s1">oldList</span><span class="s2">[</span><span class="s1">oldItemPosition</span><span class="s2">] == </span><span class="s1">newList</span><span class="s2">[</span><span class="s1">newItemPosition</span><span class="s2">]</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+
+<span class="s3">// Extensions pour faciliter l'utilisation dans votre Fragment/Activity</span>
+<span class="s0">fun </span><span class="s1">ContactAdapter</span><span class="s2">.</span><span class="s1">showDuplicateCleanupDialog</span><span class="s2">(</span>
+    <span class="s1">context: android</span><span class="s2">.</span><span class="s1">content</span><span class="s2">.</span><span class="s1">Context</span><span class="s2">,</span>
+    <span class="s1">onCleanup: </span><span class="s2">(</span><span class="s1">Int</span><span class="s2">) -&gt; </span><span class="s1">Unit</span>
+<span class="s2">) {</span>
+    <span class="s0">val </span><span class="s1">duplicates </span><span class="s2">= </span><span class="s1">findDuplicates</span><span class="s2">()</span>
+
+    <span class="s0">if </span><span class="s2">(</span><span class="s1">duplicates</span><span class="s2">.</span><span class="s1">isNotEmpty</span><span class="s2">()) {</span>
+        <span class="s1">android</span><span class="s2">.</span><span class="s1">app</span><span class="s2">.</span><span class="s1">AlertDialog</span><span class="s2">.</span><span class="s1">Builder</span><span class="s2">(</span><span class="s1">context</span><span class="s2">)</span>
+            <span class="s2">.</span><span class="s1">setTitle</span><span class="s2">(</span><span class="s4">&quot;Doublons détectés&quot;</span><span class="s2">)</span>
+            <span class="s2">.</span><span class="s1">setMessage</span><span class="s2">(</span><span class="s4">&quot;</span><span class="s0">${</span><span class="s1">duplicates</span><span class="s2">.</span><span class="s1">size</span><span class="s0">} </span><span class="s4">groupes de contacts en doublon trouvés.</span><span class="s0">\n\n</span><span class="s4">Voulez-vous les fusionner automatiquement ?&quot;</span><span class="s2">)</span>
+            <span class="s2">.</span><span class="s1">setPositiveButton</span><span class="s2">(</span><span class="s4">&quot;Fusionner&quot;</span><span class="s2">) { </span><span class="s1">_</span><span class="s2">, </span><span class="s1">_ </span><span class="s2">-&gt;</span>
+                <span class="s0">val </span><span class="s1">removedCount </span><span class="s2">= </span><span class="s1">cleanDuplicates</span><span class="s2">()</span>
+                <span class="s1">onCleanup</span><span class="s2">(</span><span class="s1">removedCount</span><span class="s2">)</span>
+            <span class="s2">}</span>
+            <span class="s2">.</span><span class="s1">setNegativeButton</span><span class="s2">(</span><span class="s4">&quot;Annuler&quot;</span><span class="s2">, </span><span class="s0">null</span><span class="s2">)</span>
+            <span class="s2">.</span><span class="s1">show</span><span class="s2">()</span>
+    <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+        <span class="s1">android</span><span class="s2">.</span><span class="s1">widget</span><span class="s2">.</span><span class="s1">Toast</span><span class="s2">.</span><span class="s1">makeText</span><span class="s2">(</span><span class="s1">context</span><span class="s2">, </span><span class="s4">&quot;Aucun doublon détecté&quot;</span><span class="s2">, </span><span class="s1">android</span><span class="s2">.</span><span class="s1">widget</span><span class="s2">.</span><span class="s1">Toast</span><span class="s2">.</span><span class="s1">LENGTH_SHORT</span><span class="s2">).</span><span class="s1">show</span><span class="s2">()</span>
+    <span class="s2">}</span>
+<span class="s2">}</span></pre>
+</body>
+</html>

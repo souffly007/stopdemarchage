@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Couleurs existantes de votre app -->
+    <color name="colorPrimary">#6200EE</color>
+    <color name="colorPrimaryVariant">#3700B3</color>
+    <color name="colorOnPrimary">#FFFFFF</color>
+    <color name="colorSecondary">#03DAC5</color>
+    <color name="colorSecondaryVariant">#018786</color>
+    <color name="colorOnSecondary">#000000</color>
+    <color name="colorError">#B00020</color>
+    <color name="colorOnError">#FFFFFF</color>
+    <color name="colorSurface">#FFFFFF</color>
+    <color name="colorOnSurface">#000000</color>
+    <color name="colorBackground">#FFFFFF</color>
+    <color name="colorOnBackground">#000000</color>
+    <!-- Couleurs manquantes à ajouter (versions mode clair) -->
+    <color name="text_on_popup_dark">#000000</color>
+    <color name="colorOnPrimaryDark">#000000</color>
+    <color name="colorSurfaceDark">#FFFFFF</color>
+    <color name="colorOnSurfaceDark">#000000</color>
+    <!-- Couleurs popup manquantes -->
+    <color name="popup_text_color">#000000</color>
+    <color name="popup_background_color">#FFFFFF</color>
+    <color name="background_gradient">#FF000000</color>
+    <!-- Couleurs boutons manquantes -->
+    <color name="button_background">#2196F3</color>
+    <color name="button_text">#FFFFFF</color>
+
+    <!-- Autres couleurs que vous pourriez avoir -->
+    <color name="text_on_background_main">#000000</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="orange_clair">#FFD580</color>
+    <color name="vert_clair">#90EE90</color>
+
+    <!-- Couleurs manquantes pour les onglets, appels, et icônes -->
+    <color name="tab_selected">#FFFFFF</color>
+    <color name="tab_unselected">#AAAAAA</color>
+    <color name="tab_background_selected">#004D40</color>
+    <color name="tab_background_unselected">#263238</color>
+    <color name="colorPrimaryDark">#004D40</color>
+    <color name="prefix_text_color">#000000</color>
+
+    <color name="primary_blue_dark">#002B5C</color>
+    <color name="primary_blue">#0057B7</color>
+    <color name="app_dark_gray">#AAAAAA</color>
+
+    <color name="error_red">#D32F2F</color>
+    <color name="call_incoming">#388E3C</color>
+    <color name="call_outgoing">#1976D2</color>
+    <color name="call_missed">#D32F2F</color>
+
+    <color name="gray_200">#EEEEEE</color>
+    <color name="on_surface_variant">#B0BEC5</color>
+    <color name="call_blocked">#D32F2F</color> <!-- même rouge que missed/error -->
+
+    <!-- Couleurs pour les SMS -->
+    <color name="red">#F44336</color>
+    <color name="primary">#2196F3</color>
+    <color name="gray">#757575</color>
+    <color name="dark_gray">#424242</color>
+    <color name="background_light">#F5F5F5</color>
+
+    <!-- Couleurs spécifiques SMS spam -->
+    <color name="spam_red">#D32F2F</color>
+    <color name="spam_background">#FFEBEE</color>
+    <color name="legitimate_green">#4CAF50</color>
+    <color name="warning_orange">#FF9800</color>
+
+    <!-- Nouvelles couleurs pour le journal SMS -->
+    <color name="background_color">#F5F5F5</color>
+    <color name="title_color">#FF6F00</color>
+    <color name="subtitle_color">#666666</color>
+    <color name="accent_orange">#FF6F00</color>
+
+    <!-- Couleurs système -->
+    <color name="gray_light">#CCCCCC</color>
+    <color name="red_500">#F44336</color>
+    <color name="red_400">#EF5350</color>
+
+    <color name="primary_light">#F5F5F5</color>
+    <color name="accent_color">#2196F3</color>
+    <color name="secondary_color">#4CAF50</color>
+
+    <color name="call_button_color">#4CAF50</color>
+    <color name="text_primary">#212121</color>
+
+    <color name="card_background">#33FFFFFF</color>
+    <color name="card_stroke">#44FFFFFF</color>
+    <color name="text_secondary">#CCFFFFFF</color>
+    <color name="switch_track">#4CAF50</color>
+    <color name="bottom_nav_background">#E6000000</color>
+    <color name="bottom_nav_color">@android:color/white</color>
+</resources>

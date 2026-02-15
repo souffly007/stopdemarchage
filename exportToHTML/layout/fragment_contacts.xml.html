@@ -1,0 +1,202 @@
+<html>
+<head>
+<title>fragment_contacts.xml</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #d5b778;}
+.s1 { color: #bcbec4;}
+.s2 { color: #6aab73;}
+.s3 { color: #bcbec4;}
+.s4 { color: #7a7e85;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+fragment_contacts.xml</font>
+</center></td></tr></table>
+<pre><span class="s0">&lt;?</span><span class="s1">xml version</span><span class="s2">=&quot;1.0&quot; </span><span class="s1">encoding</span><span class="s2">=&quot;utf-8&quot;</span><span class="s0">?&gt;</span>
+<span class="s0">&lt;androidx.coordinatorlayout.widget.CoordinatorLayout </span><span class="s1">xmlns:android</span><span class="s2">=&quot;http://schemas.android.com/apk/res/android&quot;</span>
+    <span class="s1">xmlns:app</span><span class="s2">=&quot;http://schemas.android.com/apk/res-auto&quot;</span>
+    <span class="s1">xmlns:tools</span><span class="s2">=&quot;http://schemas.android.com/tools&quot;</span>
+    <span class="s1">android:id</span><span class="s2">=&quot;@+id/contacts_tab_content&quot;</span>
+    <span class="s1">android:layout_width</span><span class="s2">=&quot;match_parent&quot;</span>
+    <span class="s1">android:layout_height</span><span class="s2">=&quot;match_parent&quot;</span>
+    <span class="s1">android:background</span><span class="s2">=&quot;@color/colorPrimary&quot;</span><span class="s0">&gt;</span>
+
+    <span class="s4">&lt;!-- Contenu principal --&gt;</span>
+    <span class="s0">&lt;LinearLayout</span>
+        <span class="s1">android:layout_width</span><span class="s2">=&quot;match_parent&quot;</span>
+        <span class="s1">android:layout_height</span><span class="s2">=&quot;match_parent&quot;</span>
+        <span class="s1">android:orientation</span><span class="s2">=&quot;vertical&quot;</span><span class="s0">&gt;</span>
+
+        <span class="s4">&lt;!-- Header avec titre et compteur --&gt;</span>
+        <span class="s0">&lt;LinearLayout</span>
+            <span class="s1">android:layout_width</span><span class="s2">=&quot;match_parent&quot;</span>
+            <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+            <span class="s1">android:orientation</span><span class="s2">=&quot;horizontal&quot;</span>
+            <span class="s1">android:padding</span><span class="s2">=&quot;16dp&quot;</span>
+            <span class="s1">android:gravity</span><span class="s2">=&quot;center_vertical&quot;</span>
+            <span class="s1">android:background</span><span class="s2">=&quot;@color/colorPrimary&quot;</span>
+            <span class="s1">android:elevation</span><span class="s2">=&quot;4dp&quot;</span><span class="s0">&gt;</span>
+
+            <span class="s0">&lt;TextView</span>
+                <span class="s1">android:layout_width</span><span class="s2">=&quot;0dp&quot;</span>
+                <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                <span class="s1">android:layout_weight</span><span class="s2">=&quot;1&quot;</span>
+                <span class="s1">android:text</span><span class="s2">=&quot;Mes Contacts&quot;</span>
+                <span class="s1">android:textSize</span><span class="s2">=&quot;20sp&quot;</span>
+                <span class="s1">android:textStyle</span><span class="s2">=&quot;bold&quot;</span>
+                <span class="s1">android:textColor</span><span class="s2">=&quot;@color/text_primary&quot; </span><span class="s0">/&gt;</span>
+
+            <span class="s0">&lt;TextView</span>
+                <span class="s1">android:id</span><span class="s2">=&quot;@+id/contacts_count&quot;</span>
+                <span class="s1">android:layout_width</span><span class="s2">=&quot;wrap_content&quot;</span>
+                <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                <span class="s1">android:text</span><span class="s2">=&quot;0 contacts&quot;</span>
+                <span class="s1">android:textSize</span><span class="s2">=&quot;14sp&quot;</span>
+                <span class="s1">android:textColor</span><span class="s2">=&quot;@color/text_secondary&quot;</span>
+                <span class="s1">android:background</span><span class="s2">=&quot;@drawable/count_background&quot;</span>
+                <span class="s1">android:padding</span><span class="s2">=&quot;8dp&quot; </span><span class="s0">/&gt;</span>
+
+        <span class="s0">&lt;/LinearLayout&gt;</span>
+
+        <span class="s4">&lt;!-- Barre de recherche améliorée --&gt;</span>
+        <span class="s0">&lt;com.google.android.material.card.MaterialCardView</span>
+            <span class="s1">android:layout_width</span><span class="s2">=&quot;match_parent&quot;</span>
+            <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+            <span class="s1">android:layout_margin</span><span class="s2">=&quot;16dp&quot;</span>
+            <span class="s1">app:cardCornerRadius</span><span class="s2">=&quot;24dp&quot;</span>
+            <span class="s1">app:cardElevation</span><span class="s2">=&quot;2dp&quot;</span>
+            <span class="s1">app:strokeWidth</span><span class="s2">=&quot;0dp&quot;</span><span class="s0">&gt;</span>
+
+            <span class="s0">&lt;SearchView</span>
+                <span class="s1">android:id</span><span class="s2">=&quot;@+id/search_view&quot;</span>
+                <span class="s1">android:layout_width</span><span class="s2">=&quot;match_parent&quot;</span>
+                <span class="s1">android:layout_height</span><span class="s2">=&quot;48dp&quot;</span>
+                <span class="s1">android:queryHint</span><span class="s2">=&quot;Rechercher un contact...&quot;</span>
+                <span class="s1">android:iconifiedByDefault</span><span class="s2">=&quot;false&quot;</span>
+                <span class="s1">android:searchIcon</span><span class="s2">=&quot;@drawable/ic_search&quot;</span>
+                <span class="s1">android:closeIcon</span><span class="s2">=&quot;@drawable/ic_clear&quot;</span>
+                <span class="s1">android:background</span><span class="s2">=&quot;@android:color/transparent&quot; </span><span class="s0">/&gt;</span>
+
+        <span class="s0">&lt;/com.google.android.material.card.MaterialCardView&gt;</span>
+
+        <span class="s4">&lt;!-- Conteneur pour la liste et l'état vide --&gt;</span>
+        <span class="s0">&lt;FrameLayout</span>
+            <span class="s1">android:layout_width</span><span class="s2">=&quot;match_parent&quot;</span>
+            <span class="s1">android:layout_height</span><span class="s2">=&quot;0dp&quot;</span>
+            <span class="s1">android:layout_weight</span><span class="s2">=&quot;1&quot;</span><span class="s0">&gt;</span>
+
+            <span class="s4">&lt;!-- Liste des contacts avec SwipeRefreshLayout --&gt;</span>
+            <span class="s0">&lt;androidx.swiperefreshlayout.widget.SwipeRefreshLayout</span>
+                <span class="s1">android:id</span><span class="s2">=&quot;@+id/swipe_refresh_layout&quot;</span>
+                <span class="s1">android:layout_width</span><span class="s2">=&quot;match_parent&quot;</span>
+                <span class="s1">android:layout_height</span><span class="s2">=&quot;match_parent&quot;</span><span class="s0">&gt;</span>
+
+                <span class="s0">&lt;androidx.recyclerview.widget.RecyclerView</span>
+                    <span class="s1">android:id</span><span class="s2">=&quot;@+id/recycler_view_contacts&quot;</span>
+                    <span class="s1">android:layout_width</span><span class="s2">=&quot;match_parent&quot;</span>
+                    <span class="s1">android:layout_height</span><span class="s2">=&quot;match_parent&quot;</span>
+                    <span class="s1">android:padding</span><span class="s2">=&quot;8dp&quot;</span>
+                    <span class="s1">android:clipToPadding</span><span class="s2">=&quot;false&quot;</span>
+                    <span class="s1">android:scrollbars</span><span class="s2">=&quot;vertical&quot;</span>
+                    <span class="s1">android:fadeScrollbars</span><span class="s2">=&quot;true&quot;</span>
+                    <span class="s1">android:scrollbarStyle</span><span class="s2">=&quot;outsideOverlay&quot;</span>
+                    <span class="s1">app:layoutManager</span><span class="s2">=&quot;androidx.recyclerview.widget.LinearLayoutManager&quot;</span>
+                    <span class="s1">tools:listitem</span><span class="s2">=&quot;@layout/item_contact&quot; </span><span class="s0">/&gt;</span>
+
+            <span class="s0">&lt;/androidx.swiperefreshlayout.widget.SwipeRefreshLayout&gt;</span>
+
+            <span class="s4">&lt;!-- État vide amélioré --&gt;</span>
+            <span class="s0">&lt;LinearLayout</span>
+                <span class="s1">android:id</span><span class="s2">=&quot;@+id/empty_view&quot;</span>
+                <span class="s1">android:layout_width</span><span class="s2">=&quot;match_parent&quot;</span>
+                <span class="s1">android:layout_height</span><span class="s2">=&quot;match_parent&quot;</span>
+                <span class="s1">android:orientation</span><span class="s2">=&quot;vertical&quot;</span>
+                <span class="s1">android:gravity</span><span class="s2">=&quot;center&quot;</span>
+                <span class="s1">android:padding</span><span class="s2">=&quot;32dp&quot;</span>
+                <span class="s1">android:visibility</span><span class="s2">=&quot;gone&quot;</span><span class="s0">&gt;</span>
+
+                <span class="s0">&lt;ImageView</span>
+                    <span class="s1">android:layout_width</span><span class="s2">=&quot;120dp&quot;</span>
+                    <span class="s1">android:layout_height</span><span class="s2">=&quot;120dp&quot;</span>
+                    <span class="s1">android:src</span><span class="s2">=&quot;@drawable/ic_contacts_empty&quot;</span>
+                    <span class="s1">android:layout_marginBottom</span><span class="s2">=&quot;16dp&quot;</span>
+                    <span class="s1">android:alpha</span><span class="s2">=&quot;0.6&quot;</span>
+                    <span class="s1">app:tint</span><span class="s2">=&quot;@color/text_secondary&quot; </span><span class="s0">/&gt;</span>
+
+                <span class="s0">&lt;TextView</span>
+                    <span class="s1">android:layout_width</span><span class="s2">=&quot;wrap_content&quot;</span>
+                    <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                    <span class="s1">android:text</span><span class="s2">=&quot;Aucun contact&quot;</span>
+                    <span class="s1">android:textSize</span><span class="s2">=&quot;24sp&quot;</span>
+                    <span class="s1">android:textStyle</span><span class="s2">=&quot;bold&quot;</span>
+                    <span class="s1">android:textColor</span><span class="s2">=&quot;@color/text_primary&quot;</span>
+                    <span class="s1">android:layout_marginBottom</span><span class="s2">=&quot;8dp&quot; </span><span class="s0">/&gt;</span>
+
+                <span class="s0">&lt;TextView</span>
+                    <span class="s1">android:layout_width</span><span class="s2">=&quot;wrap_content&quot;</span>
+                    <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                    <span class="s1">android:text</span><span class="s2">=&quot;Appuyez sur + pour ajouter\nvotre premier contact&quot;</span>
+                    <span class="s1">android:textSize</span><span class="s2">=&quot;16sp&quot;</span>
+                    <span class="s1">android:textColor</span><span class="s2">=&quot;@color/text_secondary&quot;</span>
+                    <span class="s1">android:textAlignment</span><span class="s2">=&quot;center&quot;</span>
+                    <span class="s1">android:lineSpacingExtra</span><span class="s2">=&quot;4dp&quot; </span><span class="s0">/&gt;</span>
+
+                <span class="s0">&lt;com.google.android.material.button.MaterialButton</span>
+                    <span class="s1">android:id</span><span class="s2">=&quot;@+id/btn_add_first_contact&quot;</span>
+                    <span class="s1">android:layout_width</span><span class="s2">=&quot;wrap_content&quot;</span>
+                    <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                    <span class="s1">android:layout_marginTop</span><span class="s2">=&quot;24dp&quot;</span>
+                    <span class="s1">android:text</span><span class="s2">=&quot;Ajouter un contact&quot;</span>
+                    <span class="s1">app:icon</span><span class="s2">=&quot;@drawable/ic_person_add&quot;</span>
+                    <span class="s1">style</span><span class="s2">=&quot;@style/Widget.Material3.Button.TonalButton&quot; </span><span class="s0">/&gt;</span>
+
+            <span class="s0">&lt;/LinearLayout&gt;</span>
+
+            <span class="s4">&lt;!-- Indicateur de chargement --&gt;</span>
+            <span class="s0">&lt;ProgressBar</span>
+                <span class="s1">android:id</span><span class="s2">=&quot;@+id/progress_bar&quot;</span>
+                <span class="s1">android:layout_width</span><span class="s2">=&quot;wrap_content&quot;</span>
+                <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                <span class="s1">android:layout_gravity</span><span class="s2">=&quot;center&quot;</span>
+                <span class="s1">android:visibility</span><span class="s2">=&quot;gone&quot;</span>
+                <span class="s1">style</span><span class="s2">=&quot;@style/Widget.Material3.CircularProgressIndicator&quot; </span><span class="s0">/&gt;</span>
+
+        <span class="s0">&lt;/FrameLayout&gt;</span>
+
+    <span class="s0">&lt;/LinearLayout&gt;</span>
+
+    <span class="s4">&lt;!-- FloatingActionButton pour ajouter un contact --&gt;</span>
+    <span class="s0">&lt;com.google.android.material.floatingactionbutton.FloatingActionButton</span>
+        <span class="s1">android:id</span><span class="s2">=&quot;@+id/fab_add_contact&quot;</span>
+        <span class="s1">android:layout_width</span><span class="s2">=&quot;wrap_content&quot;</span>
+        <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+        <span class="s1">android:layout_gravity</span><span class="s2">=&quot;bottom|end&quot;</span>
+        <span class="s1">android:layout_margin</span><span class="s2">=&quot;16dp&quot;</span>
+        <span class="s1">android:src</span><span class="s2">=&quot;@drawable/ic_person_add&quot;</span>
+        <span class="s1">android:contentDescription</span><span class="s2">=&quot;Ajouter un contact&quot;</span>
+        <span class="s1">app:tint</span><span class="s2">=&quot;@android:color/white&quot;</span>
+        <span class="s1">app:backgroundTint</span><span class="s2">=&quot;@color/accent_color&quot;</span>
+        <span class="s1">app:elevation</span><span class="s2">=&quot;6dp&quot;</span>
+        <span class="s1">app:pressedTranslationZ</span><span class="s2">=&quot;12dp&quot; </span><span class="s0">/&gt;</span>
+
+    <span class="s4">&lt;!-- Menu d'actions rapides (optionnel) --&gt;</span>
+    <span class="s0">&lt;com.google.android.material.floatingactionbutton.FloatingActionButton</span>
+        <span class="s1">android:id</span><span class="s2">=&quot;@+id/fab_import_contacts&quot;</span>
+        <span class="s1">android:layout_width</span><span class="s2">=&quot;wrap_content&quot;</span>
+        <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+        <span class="s1">android:layout_gravity</span><span class="s2">=&quot;bottom|end&quot;</span>
+        <span class="s1">android:layout_margin</span><span class="s2">=&quot;16dp&quot;</span>
+        <span class="s1">android:layout_marginBottom</span><span class="s2">=&quot;88dp&quot;</span>
+        <span class="s1">android:src</span><span class="s2">=&quot;@drawable/ic_import&quot;</span>
+        <span class="s1">android:contentDescription</span><span class="s2">=&quot;Importer des contacts&quot;</span>
+        <span class="s1">app:fabSize</span><span class="s2">=&quot;mini&quot;</span>
+        <span class="s1">app:backgroundTint</span><span class="s2">=&quot;@color/secondary_color&quot;</span>
+        <span class="s1">android:visibility</span><span class="s2">=&quot;gone&quot; </span><span class="s0">/&gt;</span>
+
+<span class="s0">&lt;/androidx.coordinatorlayout.widget.CoordinatorLayout&gt;</span></pre>
+</body>
+</html>

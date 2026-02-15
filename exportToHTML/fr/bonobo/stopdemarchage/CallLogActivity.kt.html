@@ -1,0 +1,667 @@
+<html>
+<head>
+<title>CallLogActivity.kt</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #6aab73;}
+.s4 { color: #2aacb8;}
+.s5 { color: #5f826b; font-style: italic;}
+.s6 { color: #7a7e85;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+CallLogActivity.kt</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">fr</span><span class="s2">.</span><span class="s1">bonobo</span><span class="s2">.</span><span class="s1">stopdemarchage</span>
+
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">Manifest</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">content</span><span class="s2">.</span><span class="s1">Intent</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">content</span><span class="s2">.</span><span class="s1">pm</span><span class="s2">.</span><span class="s1">PackageManager</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">database</span><span class="s2">.</span><span class="s1">Cursor</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">net</span><span class="s2">.</span><span class="s1">Uri</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">os</span><span class="s2">.</span><span class="s1">Bundle</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">provider</span><span class="s2">.</span><span class="s1">ContactsContract</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">Log</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">view</span><span class="s2">.</span><span class="s1">View</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">widget</span><span class="s2">.</span><span class="s1">TextView</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">widget</span><span class="s2">.</span><span class="s1">Toast</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">widget</span><span class="s2">.</span><span class="s1">SearchView</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">widget</span><span class="s2">.</span><span class="s1">EditText</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">widget</span><span class="s2">.</span><span class="s1">Button</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">appcompat</span><span class="s2">.</span><span class="s1">app</span><span class="s2">.</span><span class="s1">AppCompatActivity</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">appcompat</span><span class="s2">.</span><span class="s1">app</span><span class="s2">.</span><span class="s1">AlertDialog</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">core</span><span class="s2">.</span><span class="s1">app</span><span class="s2">.</span><span class="s1">ActivityCompat</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">core</span><span class="s2">.</span><span class="s1">content</span><span class="s2">.</span><span class="s1">ContextCompat</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">lifecycle</span><span class="s2">.</span><span class="s1">lifecycleScope</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">recyclerview</span><span class="s2">.</span><span class="s1">widget</span><span class="s2">.</span><span class="s1">LinearLayoutManager</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">recyclerview</span><span class="s2">.</span><span class="s1">widget</span><span class="s2">.</span><span class="s1">RecyclerView</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">google</span><span class="s2">.</span><span class="s1">android</span><span class="s2">.</span><span class="s1">material</span><span class="s2">.</span><span class="s1">floatingactionbutton</span><span class="s2">.</span><span class="s1">FloatingActionButton</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">google</span><span class="s2">.</span><span class="s1">android</span><span class="s2">.</span><span class="s1">material</span><span class="s2">.</span><span class="s1">button</span><span class="s2">.</span><span class="s1">MaterialButton</span>
+<span class="s1">import kotlinx</span><span class="s2">.</span><span class="s1">coroutines</span><span class="s2">.</span><span class="s1">Dispatchers</span>
+<span class="s1">import kotlinx</span><span class="s2">.</span><span class="s1">coroutines</span><span class="s2">.</span><span class="s1">launch</span>
+<span class="s1">import kotlinx</span><span class="s2">.</span><span class="s1">coroutines</span><span class="s2">.</span><span class="s1">withContext</span>
+
+<span class="s0">class </span><span class="s1">CallLogActivity : AppCompatActivity</span><span class="s2">() {</span>
+
+    <span class="s1">private lateinit </span><span class="s0">var </span><span class="s1">callLogAdapter: CallLogAdapter</span>
+    <span class="s1">private lateinit </span><span class="s0">var </span><span class="s1">contactAdapter: ContactAdapter</span>
+    <span class="s1">private lateinit </span><span class="s0">var </span><span class="s1">callLogManager: CallLogManager</span>
+    <span class="s1">private lateinit </span><span class="s0">var </span><span class="s1">keypadManager: KeypadManager</span>
+    <span class="s1">private </span><span class="s0">val </span><span class="s1">TAG </span><span class="s2">= </span><span class="s3">&quot;CallLogActivity&quot;</span>
+
+    <span class="s1">companion </span><span class="s0">object </span><span class="s2">{</span>
+        <span class="s1">private const </span><span class="s0">val </span><span class="s1">PERMISSION_REQUEST_CODE </span><span class="s2">= </span><span class="s4">1001</span>
+    <span class="s2">}</span>
+
+    <span class="s1">override </span><span class="s0">fun </span><span class="s1">onCreate</span><span class="s2">(</span><span class="s1">savedInstanceState: Bundle?</span><span class="s2">) {</span>
+        <span class="s0">super</span><span class="s2">.</span><span class="s1">onCreate</span><span class="s2">(</span><span class="s1">savedInstanceState</span><span class="s2">)</span>
+        <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;onCreate() démarré - Intent: </span><span class="s0">${</span><span class="s1">intent</span><span class="s2">.</span><span class="s1">action</span><span class="s0">}</span><span class="s3">&quot;</span><span class="s2">)</span>
+
+        <span class="s0">try </span><span class="s2">{</span>
+            <span class="s1">setContentView</span><span class="s2">(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.</span><span class="s1">activity_call_log</span><span class="s2">)</span>
+            <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Layout chargé avec succès&quot;</span><span class="s2">)</span>
+        <span class="s2">} </span><span class="s1">catch </span><span class="s2">(</span><span class="s1">e: Exception</span><span class="s2">) {</span>
+            <span class="s1">Log</span><span class="s2">.</span><span class="s1">e</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Erreur lors du chargement du layout&quot;</span><span class="s2">, </span><span class="s1">e</span><span class="s2">)</span>
+            <span class="s1">Toast</span><span class="s2">.</span><span class="s1">makeText</span><span class="s2">(</span><span class="s0">this</span><span class="s2">, </span><span class="s3">&quot;Erreur: Layout non trouvé&quot;</span><span class="s2">, </span><span class="s1">Toast</span><span class="s2">.</span><span class="s1">LENGTH_LONG</span><span class="s2">).</span><span class="s1">show</span><span class="s2">()</span>
+            <span class="s1">finish</span><span class="s2">()</span>
+            <span class="s0">return</span>
+        <span class="s2">}</span>
+
+        <span class="s0">try </span><span class="s2">{</span>
+            <span class="s1">callLogManager </span><span class="s2">= </span><span class="s1">CallLogManager</span><span class="s2">(</span><span class="s0">this</span><span class="s2">)</span>
+            <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;CallLogManager initialisé&quot;</span><span class="s2">)</span>
+        <span class="s2">} </span><span class="s1">catch </span><span class="s2">(</span><span class="s1">e: Exception</span><span class="s2">) {</span>
+            <span class="s1">Log</span><span class="s2">.</span><span class="s1">e</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Erreur lors de l'initialisation de CallLogManager&quot;</span><span class="s2">, </span><span class="s1">e</span><span class="s2">)</span>
+            <span class="s1">Toast</span><span class="s2">.</span><span class="s1">makeText</span><span class="s2">(</span><span class="s0">this</span><span class="s2">, </span><span class="s3">&quot;Erreur: CallLogManager non disponible&quot;</span><span class="s2">, </span><span class="s1">Toast</span><span class="s2">.</span><span class="s1">LENGTH_LONG</span><span class="s2">).</span><span class="s1">show</span><span class="s2">()</span>
+        <span class="s2">}</span>
+
+        <span class="s1">setupViews</span><span class="s2">()</span>
+        <span class="s1">handleDialerIntent</span><span class="s2">()</span>
+        <span class="s1">checkPermissionsAndLoadData</span><span class="s2">()</span>
+    <span class="s2">}</span>
+
+    <span class="s5">/**</span>
+     <span class="s5">* Gère les intents de composeur par défaut</span>
+     <span class="s5">*/</span>
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">handleDialerIntent</span><span class="s2">() {</span>
+        <span class="s0">val </span><span class="s1">action </span><span class="s2">= </span><span class="s1">intent</span><span class="s2">.</span><span class="s1">action</span>
+        <span class="s0">val </span><span class="s1">data </span><span class="s2">= </span><span class="s1">intent</span><span class="s2">.</span><span class="s1">data</span>
+
+        <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Gestion de l'intent - Action: </span><span class="s0">$</span><span class="s1">action</span><span class="s3">, Data: </span><span class="s0">$</span><span class="s1">data</span><span class="s3">&quot;</span><span class="s2">)</span>
+
+        <span class="s0">when </span><span class="s2">(</span><span class="s1">action</span><span class="s2">) {</span>
+            <span class="s1">Intent</span><span class="s2">.</span><span class="s1">ACTION_DIAL </span><span class="s2">-&gt; {</span>
+                <span class="s6">// Lancé comme composeur par défaut</span>
+                <span class="s1">showKeypadTab</span><span class="s2">()</span>
+                <span class="s1">updateTabSelection</span><span class="s2">(</span><span class="s1">TabType</span><span class="s2">.</span><span class="s1">KEYPAD</span><span class="s2">)</span>
+
+                <span class="s6">// Si un numéro est fourni, le pré-remplir</span>
+                <span class="s1">data?</span><span class="s2">.</span><span class="s1">schemeSpecificPart?</span><span class="s2">.</span><span class="s1">let </span><span class="s2">{ </span><span class="s1">phoneNumber </span><span class="s2">-&gt;</span>
+                    <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Numéro pré-rempli: </span><span class="s0">$</span><span class="s1">phoneNumber</span><span class="s3">&quot;</span><span class="s2">)</span>
+                    <span class="s6">// Attendre que le clavier soit initialisé</span>
+                    <span class="s1">findViewById</span><span class="s2">&lt;</span><span class="s1">EditText</span><span class="s2">&gt;(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">et_phone_number</span><span class="s2">)</span><span class="s1">?</span><span class="s2">.</span><span class="s1">setText</span><span class="s2">(</span><span class="s1">phoneNumber</span><span class="s2">)</span>
+                <span class="s2">}</span>
+
+                <span class="s1">Toast</span><span class="s2">.</span><span class="s1">makeText</span><span class="s2">(</span><span class="s0">this</span><span class="s2">, </span><span class="s3">&quot;Composeur StopDémarchage activé&quot;</span><span class="s2">, </span><span class="s1">Toast</span><span class="s2">.</span><span class="s1">LENGTH_SHORT</span><span class="s2">).</span><span class="s1">show</span><span class="s2">()</span>
+            <span class="s2">}</span>
+            <span class="s1">Intent</span><span class="s2">.</span><span class="s1">ACTION_CALL_BUTTON </span><span class="s2">-&gt; {</span>
+                <span class="s6">// Bouton d'appel appuyé</span>
+                <span class="s1">showKeypadTab</span><span class="s2">()</span>
+                <span class="s1">updateTabSelection</span><span class="s2">(</span><span class="s1">TabType</span><span class="s2">.</span><span class="s1">KEYPAD</span><span class="s2">)</span>
+                <span class="s1">Toast</span><span class="s2">.</span><span class="s1">makeText</span><span class="s2">(</span><span class="s0">this</span><span class="s2">, </span><span class="s3">&quot;Prêt à composer&quot;</span><span class="s2">, </span><span class="s1">Toast</span><span class="s2">.</span><span class="s1">LENGTH_SHORT</span><span class="s2">).</span><span class="s1">show</span><span class="s2">()</span>
+            <span class="s2">}</span>
+            <span class="s1">Intent</span><span class="s2">.</span><span class="s1">ACTION_VIEW </span><span class="s2">-&gt; {</span>
+                <span class="s6">// Lien tel: cliqué</span>
+                <span class="s1">showKeypadTab</span><span class="s2">()</span>
+                <span class="s1">updateTabSelection</span><span class="s2">(</span><span class="s1">TabType</span><span class="s2">.</span><span class="s1">KEYPAD</span><span class="s2">)</span>
+                <span class="s1">data?</span><span class="s2">.</span><span class="s1">schemeSpecificPart?</span><span class="s2">.</span><span class="s1">let </span><span class="s2">{ </span><span class="s1">phoneNumber </span><span class="s2">-&gt;</span>
+                    <span class="s1">findViewById</span><span class="s2">&lt;</span><span class="s1">EditText</span><span class="s2">&gt;(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">et_phone_number</span><span class="s2">)</span><span class="s1">?</span><span class="s2">.</span><span class="s1">setText</span><span class="s2">(</span><span class="s1">phoneNumber</span><span class="s2">)</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+            <span class="s0">else </span><span class="s2">-&gt; {</span>
+                <span class="s6">// Lancement normal depuis l'app</span>
+                <span class="s1">showRecentTab</span><span class="s2">()</span>
+                <span class="s1">updateTabSelection</span><span class="s2">(</span><span class="s1">TabType</span><span class="s2">.</span><span class="s1">RECENT</span><span class="s2">)</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">setupViews</span><span class="s2">() {</span>
+        <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Configuration des vues...&quot;</span><span class="s2">)</span>
+        <span class="s1">setupTabs</span><span class="s2">()</span>
+        <span class="s1">setupRecyclerViews</span><span class="s2">()</span>
+        <span class="s6">//setupFab()</span>
+        <span class="s1">setupSearchView</span><span class="s2">()</span>
+        <span class="s1">setupKeypad</span><span class="s2">()</span>
+        <span class="s6">// Ne pas appeler showRecentTab() ici - c'est géré par handleDialerIntent()</span>
+        <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Vues configurées avec succès&quot;</span><span class="s2">)</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">setupSearchView</span><span class="s2">() {</span>
+        <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Configuration de la barre de recherche...&quot;</span><span class="s2">)</span>
+
+        <span class="s6">// Récupérer le SearchView depuis le layout</span>
+        <span class="s0">val </span><span class="s1">searchView </span><span class="s2">= </span><span class="s1">findViewById</span><span class="s2">&lt;</span><span class="s1">SearchView</span><span class="s2">&gt;(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">search_view</span><span class="s2">)</span>
+
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">searchView </span><span class="s2">== </span><span class="s0">null</span><span class="s2">) {</span>
+            <span class="s1">Log</span><span class="s2">.</span><span class="s1">e</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;SearchView non trouvé!&quot;</span><span class="s2">)</span>
+            <span class="s0">return</span>
+        <span class="s2">}</span>
+
+        <span class="s1">searchView</span><span class="s2">.</span><span class="s1">setOnQueryTextListener</span><span class="s2">(</span><span class="s0">object </span><span class="s1">: SearchView</span><span class="s2">.</span><span class="s1">OnQueryTextListener </span><span class="s2">{</span>
+            <span class="s1">override </span><span class="s0">fun </span><span class="s1">onQueryTextChange</span><span class="s2">(</span><span class="s1">newText: String?</span><span class="s2">)</span><span class="s1">: Boolean </span><span class="s2">{</span>
+                <span class="s0">val </span><span class="s1">query </span><span class="s2">= </span><span class="s1">newText ?: </span><span class="s3">&quot;&quot;</span>
+                <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Recherche contacts: '</span><span class="s0">$</span><span class="s1">query</span><span class="s3">' (longueur: </span><span class="s0">${</span><span class="s1">query</span><span class="s2">.</span><span class="s1">length</span><span class="s0">}</span><span class="s3">)&quot;</span><span class="s2">)</span>
+
+                <span class="s0">if </span><span class="s2">(</span><span class="s1">::contactAdapter</span><span class="s2">.</span><span class="s1">isInitialized</span><span class="s2">) {</span>
+                    <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Total contacts avant filtrage: </span><span class="s0">${</span><span class="s1">contactAdapter</span><span class="s2">.</span><span class="s1">getTotalContactsCount</span><span class="s2">()</span><span class="s0">}</span><span class="s3">&quot;</span><span class="s2">)</span>
+                    <span class="s1">contactAdapter</span><span class="s2">.</span><span class="s1">filterContacts</span><span class="s2">(</span><span class="s1">query</span><span class="s2">)</span>
+                    <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Contacts affichés après filtrage: </span><span class="s0">${</span><span class="s1">contactAdapter</span><span class="s2">.</span><span class="s1">itemCount</span><span class="s0">}</span><span class="s3">&quot;</span><span class="s2">)</span>
+                    <span class="s1">updateContactsCount</span><span class="s2">()</span>
+
+                    <span class="s6">// Afficher/masquer l'état vide selon les résultats</span>
+                    <span class="s0">if </span><span class="s2">(</span><span class="s1">contactAdapter</span><span class="s2">.</span><span class="s1">itemCount </span><span class="s2">== </span><span class="s4">0 </span><span class="s2">&amp;&amp; </span><span class="s1">query</span><span class="s2">.</span><span class="s1">isNotEmpty</span><span class="s2">()) {</span>
+                        <span class="s1">findViewById</span><span class="s2">&lt;</span><span class="s1">TextView</span><span class="s2">&gt;(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">contacts_count</span><span class="s2">)</span><span class="s1">?</span><span class="s2">.</span><span class="s1">text </span><span class="s2">= </span><span class="s3">&quot;Aucun résultat pour </span><span class="s0">\&quot;$</span><span class="s1">query</span><span class="s0">\&quot;</span><span class="s3">&quot;</span>
+                    <span class="s2">}</span>
+                <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+                    <span class="s1">Log</span><span class="s2">.</span><span class="s1">w</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;ContactAdapter non initialisé!&quot;</span><span class="s2">)</span>
+                <span class="s2">}</span>
+                <span class="s0">return true</span>
+            <span class="s2">}</span>
+
+            <span class="s1">override </span><span class="s0">fun </span><span class="s1">onQueryTextSubmit</span><span class="s2">(</span><span class="s1">query: String?</span><span class="s2">)</span><span class="s1">: Boolean </span><span class="s2">{</span>
+                <span class="s0">return false</span>
+            <span class="s2">}</span>
+        <span class="s2">})</span>
+
+        <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;SearchView configuré avec succès&quot;</span><span class="s2">)</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">setupKeypad</span><span class="s2">() {</span>
+        <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Configuration du clavier numérique...&quot;</span><span class="s2">)</span>
+
+        <span class="s1">keypadManager </span><span class="s2">= </span><span class="s1">KeypadManager</span><span class="s2">(</span><span class="s0">this</span><span class="s2">, </span><span class="s0">this</span><span class="s2">)</span>
+
+        <span class="s6">// Récupération des vues du clavier</span>
+        <span class="s0">val </span><span class="s1">phoneField </span><span class="s2">= </span><span class="s1">findViewById</span><span class="s2">&lt;</span><span class="s1">EditText</span><span class="s2">&gt;(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">et_phone_number</span><span class="s2">)</span>
+        <span class="s0">val </span><span class="s1">contactField </span><span class="s2">= </span><span class="s1">findViewById</span><span class="s2">&lt;</span><span class="s1">TextView</span><span class="s2">&gt;(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">tv_contact_name</span><span class="s2">)</span>
+
+        <span class="s6">// Vérifier si les vues existent (elles pourraient ne pas être dans le layout actuel)</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">phoneField </span><span class="s2">== </span><span class="s0">null </span><span class="s2">|| </span><span class="s1">contactField </span><span class="s2">== </span><span class="s0">null</span><span class="s2">) {</span>
+            <span class="s1">Log</span><span class="s2">.</span><span class="s1">w</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Vues du clavier non trouvées dans le layout actuel&quot;</span><span class="s2">)</span>
+            <span class="s0">return</span>
+        <span class="s2">}</span>
+
+        <span class="s6">// Mapping des boutons du clavier</span>
+        <span class="s0">val </span><span class="s1">keypadButtons </span><span class="s2">= </span><span class="s1">mapOf</span><span class="s2">(</span>
+            <span class="s3">'1' </span><span class="s1">to findViewById</span><span class="s2">&lt;</span><span class="s1">Button</span><span class="s2">&gt;(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">btn_1</span><span class="s2">),</span>
+            <span class="s3">'2' </span><span class="s1">to findViewById</span><span class="s2">&lt;</span><span class="s1">Button</span><span class="s2">&gt;(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">btn_2</span><span class="s2">),</span>
+            <span class="s3">'3' </span><span class="s1">to findViewById</span><span class="s2">&lt;</span><span class="s1">Button</span><span class="s2">&gt;(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">btn_3</span><span class="s2">),</span>
+            <span class="s3">'4' </span><span class="s1">to findViewById</span><span class="s2">&lt;</span><span class="s1">Button</span><span class="s2">&gt;(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">btn_4</span><span class="s2">),</span>
+            <span class="s3">'5' </span><span class="s1">to findViewById</span><span class="s2">&lt;</span><span class="s1">Button</span><span class="s2">&gt;(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">btn_5</span><span class="s2">),</span>
+            <span class="s3">'6' </span><span class="s1">to findViewById</span><span class="s2">&lt;</span><span class="s1">Button</span><span class="s2">&gt;(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">btn_6</span><span class="s2">),</span>
+            <span class="s3">'7' </span><span class="s1">to findViewById</span><span class="s2">&lt;</span><span class="s1">Button</span><span class="s2">&gt;(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">btn_7</span><span class="s2">),</span>
+            <span class="s3">'8' </span><span class="s1">to findViewById</span><span class="s2">&lt;</span><span class="s1">Button</span><span class="s2">&gt;(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">btn_8</span><span class="s2">),</span>
+            <span class="s3">'9' </span><span class="s1">to findViewById</span><span class="s2">&lt;</span><span class="s1">Button</span><span class="s2">&gt;(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">btn_9</span><span class="s2">),</span>
+            <span class="s3">'0' </span><span class="s1">to findViewById</span><span class="s2">&lt;</span><span class="s1">Button</span><span class="s2">&gt;(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">btn_0</span><span class="s2">),</span>
+            <span class="s3">'*' </span><span class="s1">to findViewById</span><span class="s2">&lt;</span><span class="s1">Button</span><span class="s2">&gt;(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">btn_star</span><span class="s2">),</span>
+            <span class="s3">'#' </span><span class="s1">to findViewById</span><span class="s2">&lt;</span><span class="s1">Button</span><span class="s2">&gt;(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">btn_hash</span><span class="s2">)</span>
+        <span class="s2">)</span>
+
+        <span class="s6">// Boutons d'action</span>
+        <span class="s0">val </span><span class="s1">deleteButton </span><span class="s2">= </span><span class="s1">findViewById</span><span class="s2">&lt;</span><span class="s1">Button</span><span class="s2">&gt;(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">btn_delete</span><span class="s2">)</span>
+        <span class="s0">val </span><span class="s1">callButton </span><span class="s2">= </span><span class="s1">findViewById</span><span class="s2">&lt;</span><span class="s1">MaterialButton</span><span class="s2">&gt;(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">btn_call</span><span class="s2">)</span>
+        <span class="s0">val </span><span class="s1">addContactButton </span><span class="s2">= </span><span class="s1">findViewById</span><span class="s2">&lt;</span><span class="s1">MaterialButton</span><span class="s2">&gt;(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">btn_add_contact</span><span class="s2">)</span>
+        <span class="s0">val </span><span class="s1">smsButton </span><span class="s2">= </span><span class="s1">findViewById</span><span class="s2">&lt;</span><span class="s1">MaterialButton</span><span class="s2">&gt;(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">btn_sms</span><span class="s2">)</span>
+        <span class="s0">val </span><span class="s1">historyButton </span><span class="s2">= </span><span class="s1">findViewById</span><span class="s2">&lt;</span><span class="s1">MaterialButton</span><span class="s2">&gt;(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">btn_history</span><span class="s2">)</span>
+
+        <span class="s6">// Vérifier que tous les boutons existent</span>
+        <span class="s0">val </span><span class="s1">allButtonsExist </span><span class="s2">= </span><span class="s1">keypadButtons</span><span class="s2">.</span><span class="s1">values</span><span class="s2">.</span><span class="s1">all </span><span class="s2">{ </span><span class="s1">it </span><span class="s2">!= </span><span class="s0">null </span><span class="s2">} &amp;&amp;</span>
+                <span class="s1">deleteButton </span><span class="s2">!= </span><span class="s0">null </span><span class="s2">&amp;&amp; </span><span class="s1">callButton </span><span class="s2">!= </span><span class="s0">null </span><span class="s2">&amp;&amp;</span>
+                <span class="s1">addContactButton </span><span class="s2">!= </span><span class="s0">null </span><span class="s2">&amp;&amp; </span><span class="s1">smsButton </span><span class="s2">!= </span><span class="s0">null </span><span class="s2">&amp;&amp; </span><span class="s1">historyButton </span><span class="s2">!= </span><span class="s0">null</span>
+
+        <span class="s0">if </span><span class="s2">(!</span><span class="s1">allButtonsExist</span><span class="s2">) {</span>
+            <span class="s1">Log</span><span class="s2">.</span><span class="s1">w</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Certains boutons du clavier non trouvés&quot;</span><span class="s2">)</span>
+            <span class="s0">return</span>
+        <span class="s2">}</span>
+
+        <span class="s6">// Configuration du gestionnaire de clavier</span>
+        <span class="s1">keypadManager</span><span class="s2">.</span><span class="s1">setupKeypad</span><span class="s2">(</span>
+            <span class="s1">phoneField</span><span class="s2">, </span><span class="s1">contactField</span><span class="s2">,</span>
+            <span class="s1">keypadButtons</span><span class="s2">.</span><span class="s1">mapValues </span><span class="s2">{ </span><span class="s1">it</span><span class="s2">.</span><span class="s1">value</span><span class="s2">!! },</span>
+            <span class="s1">deleteButton</span><span class="s2">!!, </span><span class="s1">callButton</span><span class="s2">!!, </span><span class="s1">addContactButton</span><span class="s2">!!, </span><span class="s1">smsButton</span><span class="s2">!!, </span><span class="s1">historyButton</span><span class="s2">!!</span>
+        <span class="s2">)</span>
+
+        <span class="s6">// Gestion du bouton historique pour basculer vers l'onglet Récents</span>
+        <span class="s1">historyButton</span><span class="s2">.</span><span class="s1">setOnClickListener </span><span class="s2">{</span>
+            <span class="s1">showRecentTab</span><span class="s2">()</span>
+            <span class="s1">updateTabSelection</span><span class="s2">(</span><span class="s1">TabType</span><span class="s2">.</span><span class="s1">RECENT</span><span class="s2">)</span>
+        <span class="s2">}</span>
+
+        <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Clavier numérique configuré avec succès&quot;</span><span class="s2">)</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">updateContactsCount</span><span class="s2">() {</span>
+        <span class="s0">val </span><span class="s1">count </span><span class="s2">= </span><span class="s1">contactAdapter</span><span class="s2">.</span><span class="s1">itemCount</span>
+        <span class="s1">findViewById</span><span class="s2">&lt;</span><span class="s1">TextView</span><span class="s2">&gt;(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">contacts_count</span><span class="s2">)</span><span class="s1">?</span><span class="s2">.</span><span class="s1">text </span><span class="s2">= </span><span class="s3">&quot;</span><span class="s0">$</span><span class="s1">count </span><span class="s3">contacts&quot;</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">setupTabs</span><span class="s2">() {</span>
+        <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Configuration des onglets...&quot;</span><span class="s2">)</span>
+        <span class="s1">findViewById</span><span class="s2">&lt;</span><span class="s1">TextView</span><span class="s2">&gt;(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">tab_recent</span><span class="s2">)</span><span class="s1">?</span><span class="s2">.</span><span class="s1">setOnClickListener </span><span class="s2">{</span>
+            <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Onglet Recent cliqué&quot;</span><span class="s2">)</span>
+            <span class="s1">showRecentTab</span><span class="s2">()</span>
+            <span class="s1">updateTabSelection</span><span class="s2">(</span><span class="s1">TabType</span><span class="s2">.</span><span class="s1">RECENT</span><span class="s2">)</span>
+        <span class="s2">}</span>
+        <span class="s1">findViewById</span><span class="s2">&lt;</span><span class="s1">TextView</span><span class="s2">&gt;(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">tab_contacts</span><span class="s2">)</span><span class="s1">?</span><span class="s2">.</span><span class="s1">setOnClickListener </span><span class="s2">{</span>
+            <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Onglet Contacts cliqué&quot;</span><span class="s2">)</span>
+            <span class="s1">showContactsTab</span><span class="s2">()</span>
+            <span class="s1">updateTabSelection</span><span class="s2">(</span><span class="s1">TabType</span><span class="s2">.</span><span class="s1">CONTACTS</span><span class="s2">)</span>
+        <span class="s2">}</span>
+        <span class="s1">findViewById</span><span class="s2">&lt;</span><span class="s1">TextView</span><span class="s2">&gt;(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">tab_keypad</span><span class="s2">)</span><span class="s1">?</span><span class="s2">.</span><span class="s1">setOnClickListener </span><span class="s2">{</span>
+            <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Onglet Keypad cliqué&quot;</span><span class="s2">)</span>
+            <span class="s1">showKeypadTab</span><span class="s2">()</span>
+            <span class="s1">updateTabSelection</span><span class="s2">(</span><span class="s1">TabType</span><span class="s2">.</span><span class="s1">KEYPAD</span><span class="s2">)</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">setupRecyclerViews</span><span class="s2">() {</span>
+        <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Configuration des RecyclerViews...&quot;</span><span class="s2">)</span>
+        <span class="s1">findViewById</span><span class="s2">&lt;</span><span class="s1">RecyclerView</span><span class="s2">&gt;(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">calls_recycler_view</span><span class="s2">)</span><span class="s1">?</span><span class="s2">.</span><span class="s1">let </span><span class="s2">{ </span><span class="s1">recyclerView </span><span class="s2">-&gt;</span>
+            <span class="s1">callLogAdapter </span><span class="s2">= </span><span class="s1">CallLogAdapter</span><span class="s2">(</span>
+                <span class="s1">context </span><span class="s2">= </span><span class="s0">this</span><span class="s2">,</span>
+                <span class="s1">onCallClick </span><span class="s2">= { </span><span class="s1">callEntry </span><span class="s2">-&gt; </span><span class="s1">makeCall</span><span class="s2">(</span><span class="s1">callEntry</span><span class="s2">.</span><span class="s1">number</span><span class="s2">) },</span>
+                <span class="s1">onBlockToggle </span><span class="s2">= { </span><span class="s1">callEntry </span><span class="s2">-&gt; </span><span class="s1">toggleBlockNumber</span><span class="s2">(</span><span class="s1">callEntry</span><span class="s2">) },</span>
+                <span class="s1">onAddToContacts </span><span class="s2">= { </span><span class="s1">callEntry </span><span class="s2">-&gt; </span><span class="s1">addToContacts</span><span class="s2">(</span><span class="s1">callEntry</span><span class="s2">) },</span>
+                <span class="s1">onSendMessage </span><span class="s2">= { </span><span class="s1">callEntry </span><span class="s2">-&gt; </span><span class="s1">sendMessage</span><span class="s2">(</span><span class="s1">callEntry</span><span class="s2">.</span><span class="s1">number</span><span class="s2">) }</span>
+            <span class="s2">)</span>
+            <span class="s1">recyclerView</span><span class="s2">.</span><span class="s1">apply </span><span class="s2">{</span>
+                <span class="s1">layoutManager </span><span class="s2">= </span><span class="s1">LinearLayoutManager</span><span class="s2">(</span><span class="s0">this</span><span class="s1">@CallLogActivity</span><span class="s2">)</span>
+                <span class="s1">adapter </span><span class="s2">= </span><span class="s1">callLogAdapter</span>
+            <span class="s2">}</span>
+        <span class="s2">} </span><span class="s1">?: Log</span><span class="s2">.</span><span class="s1">e</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;RecyclerView d'appels non trouvé!&quot;</span><span class="s2">)</span>
+
+        <span class="s1">findViewById</span><span class="s2">&lt;</span><span class="s1">RecyclerView</span><span class="s2">&gt;(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">recycler_view_contacts</span><span class="s2">)</span><span class="s1">?</span><span class="s2">.</span><span class="s1">let </span><span class="s2">{ </span><span class="s1">contactsRecyclerView </span><span class="s2">-&gt;</span>
+            <span class="s1">contactAdapter </span><span class="s2">= </span><span class="s1">ContactAdapter </span><span class="s2">{ </span><span class="s1">contact </span><span class="s2">-&gt;</span>
+                <span class="s1">makeCall</span><span class="s2">(</span><span class="s1">contact</span><span class="s2">.</span><span class="s1">phoneNumber ?: </span><span class="s3">&quot;&quot;</span><span class="s2">)</span>
+            <span class="s2">}</span>
+            <span class="s1">contactsRecyclerView</span><span class="s2">.</span><span class="s1">apply </span><span class="s2">{</span>
+                <span class="s1">layoutManager </span><span class="s2">= </span><span class="s1">LinearLayoutManager</span><span class="s2">(</span><span class="s0">this</span><span class="s1">@CallLogActivity</span><span class="s2">)</span>
+                <span class="s1">adapter </span><span class="s2">= </span><span class="s1">contactAdapter</span>
+            <span class="s2">}</span>
+        <span class="s2">} </span><span class="s1">?: Log</span><span class="s2">.</span><span class="s1">e</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;RecyclerView de contacts non trouvé!&quot;</span><span class="s2">)</span>
+    <span class="s2">}</span>
+
+
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">showDuplicateCleanupDialog</span><span class="s2">() {</span>
+        <span class="s1">lifecycleScope</span><span class="s2">.</span><span class="s1">launch </span><span class="s2">{</span>
+            <span class="s0">val </span><span class="s1">rawContacts </span><span class="s2">= </span><span class="s1">withContext</span><span class="s2">(</span><span class="s1">Dispatchers</span><span class="s2">.</span><span class="s1">IO</span><span class="s2">) {</span>
+                <span class="s1">getContactsFromCursor</span><span class="s2">()</span>
+            <span class="s2">}</span>
+            <span class="s0">val </span><span class="s1">duplicates </span><span class="s2">= </span><span class="s1">ContactDeduplicator</span><span class="s2">.</span><span class="s1">findDuplicates</span><span class="s2">(</span><span class="s1">rawContacts</span><span class="s2">)</span>
+
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">duplicates</span><span class="s2">.</span><span class="s1">isNotEmpty</span><span class="s2">()) {</span>
+                <span class="s1">AlertDialog</span><span class="s2">.</span><span class="s1">Builder</span><span class="s2">(</span><span class="s0">this</span><span class="s1">@CallLogActivity</span><span class="s2">)</span>
+                    <span class="s2">.</span><span class="s1">setTitle</span><span class="s2">(</span><span class="s3">&quot;Doublons détectés&quot;</span><span class="s2">)</span>
+                    <span class="s2">.</span><span class="s1">setMessage</span><span class="s2">(</span><span class="s3">&quot;</span><span class="s0">${</span><span class="s1">duplicates</span><span class="s2">.</span><span class="s1">size</span><span class="s0">} </span><span class="s3">groupes de contacts en doublon trouvés.</span><span class="s0">\n\n</span><span class="s3">Voulez-vous les fusionner automatiquement ?&quot;</span><span class="s2">)</span>
+                    <span class="s2">.</span><span class="s1">setPositiveButton</span><span class="s2">(</span><span class="s3">&quot;Fusionner&quot;</span><span class="s2">) { </span><span class="s1">_</span><span class="s2">, </span><span class="s1">_ </span><span class="s2">-&gt;</span>
+                        <span class="s0">val </span><span class="s1">cleanedContacts </span><span class="s2">= </span><span class="s1">ContactDeduplicator</span><span class="s2">.</span><span class="s1">cleanContacts</span><span class="s2">(</span><span class="s1">rawContacts</span><span class="s2">)</span>
+                        <span class="s1">contactAdapter</span><span class="s2">.</span><span class="s1">updateContacts</span><span class="s2">(</span><span class="s1">cleanedContacts</span><span class="s2">)</span>
+                        <span class="s1">updateContactsCount</span><span class="s2">()</span>
+                        <span class="s1">Toast</span><span class="s2">.</span><span class="s1">makeText</span><span class="s2">(</span><span class="s0">this</span><span class="s1">@CallLogActivity</span><span class="s2">, </span><span class="s3">&quot;✅ </span><span class="s0">${</span><span class="s1">rawContacts</span><span class="s2">.</span><span class="s1">size </span><span class="s2">- </span><span class="s1">cleanedContacts</span><span class="s2">.</span><span class="s1">size</span><span class="s0">} </span><span class="s3">doublons fusionnés&quot;</span><span class="s2">, </span><span class="s1">Toast</span><span class="s2">.</span><span class="s1">LENGTH_SHORT</span><span class="s2">).</span><span class="s1">show</span><span class="s2">()</span>
+                    <span class="s2">}</span>
+                    <span class="s2">.</span><span class="s1">setNegativeButton</span><span class="s2">(</span><span class="s3">&quot;Annuler&quot;</span><span class="s2">, </span><span class="s0">null</span><span class="s2">)</span>
+                    <span class="s2">.</span><span class="s1">show</span><span class="s2">()</span>
+            <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+                <span class="s1">Toast</span><span class="s2">.</span><span class="s1">makeText</span><span class="s2">(</span><span class="s0">this</span><span class="s1">@CallLogActivity</span><span class="s2">, </span><span class="s3">&quot;Aucun doublon détecté&quot;</span><span class="s2">, </span><span class="s1">Toast</span><span class="s2">.</span><span class="s1">LENGTH_SHORT</span><span class="s2">).</span><span class="s1">show</span><span class="s2">()</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">checkPermissionsAndLoadData</span><span class="s2">() {</span>
+        <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Vérification des permissions...&quot;</span><span class="s2">)</span>
+        <span class="s0">val </span><span class="s1">permissions </span><span class="s2">= </span><span class="s1">arrayOf</span><span class="s2">(</span>
+            <span class="s1">Manifest</span><span class="s2">.</span><span class="s1">permission</span><span class="s2">.</span><span class="s1">READ_CALL_LOG</span><span class="s2">,</span>
+            <span class="s1">Manifest</span><span class="s2">.</span><span class="s1">permission</span><span class="s2">.</span><span class="s1">READ_CONTACTS</span><span class="s2">,</span>
+            <span class="s1">Manifest</span><span class="s2">.</span><span class="s1">permission</span><span class="s2">.</span><span class="s1">CALL_PHONE</span>
+        <span class="s2">)</span>
+        <span class="s0">val </span><span class="s1">missingPermissions </span><span class="s2">= </span><span class="s1">permissions</span><span class="s2">.</span><span class="s1">filter </span><span class="s2">{</span>
+            <span class="s1">ContextCompat</span><span class="s2">.</span><span class="s1">checkSelfPermission</span><span class="s2">(</span><span class="s0">this</span><span class="s2">, </span><span class="s1">it</span><span class="s2">) != </span><span class="s1">PackageManager</span><span class="s2">.</span><span class="s1">PERMISSION_GRANTED</span>
+        <span class="s2">}</span>
+
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">missingPermissions</span><span class="s2">.</span><span class="s1">isNotEmpty</span><span class="s2">()) {</span>
+            <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Permissions manquantes: </span><span class="s0">$</span><span class="s1">missingPermissions</span><span class="s3">&quot;</span><span class="s2">)</span>
+            <span class="s1">ActivityCompat</span><span class="s2">.</span><span class="s1">requestPermissions</span><span class="s2">(</span><span class="s0">this</span><span class="s2">, </span><span class="s1">missingPermissions</span><span class="s2">.</span><span class="s1">toTypedArray</span><span class="s2">(), </span><span class="s1">PERMISSION_REQUEST_CODE</span><span class="s2">)</span>
+        <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+            <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Toutes les permissions accordées, chargement des données...&quot;</span><span class="s2">)</span>
+            <span class="s1">loadCallLogs</span><span class="s2">()</span>
+            <span class="s1">loadContacts</span><span class="s2">()</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">override </span><span class="s0">fun </span><span class="s1">onRequestPermissionsResult</span><span class="s2">(</span>
+        <span class="s1">requestCode: Int</span><span class="s2">,</span>
+        <span class="s1">permissions: Array</span><span class="s2">&lt;</span><span class="s1">out String</span><span class="s2">&gt;,</span>
+        <span class="s1">grantResults: IntArray</span>
+    <span class="s2">) {</span>
+        <span class="s0">super</span><span class="s2">.</span><span class="s1">onRequestPermissionsResult</span><span class="s2">(</span><span class="s1">requestCode</span><span class="s2">, </span><span class="s1">permissions</span><span class="s2">, </span><span class="s1">grantResults</span><span class="s2">)</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">requestCode </span><span class="s2">== </span><span class="s1">PERMISSION_REQUEST_CODE</span><span class="s2">) {</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">grantResults</span><span class="s2">.</span><span class="s1">all </span><span class="s2">{ </span><span class="s1">it </span><span class="s2">== </span><span class="s1">PackageManager</span><span class="s2">.</span><span class="s1">PERMISSION_GRANTED </span><span class="s2">}) {</span>
+                <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Permissions accordées, chargement des données&quot;</span><span class="s2">)</span>
+                <span class="s1">loadCallLogs</span><span class="s2">()</span>
+                <span class="s1">loadContacts</span><span class="s2">()</span>
+            <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+                <span class="s1">Log</span><span class="s2">.</span><span class="s1">w</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Permissions refusées&quot;</span><span class="s2">)</span>
+                <span class="s1">Toast</span><span class="s2">.</span><span class="s1">makeText</span><span class="s2">(</span><span class="s0">this</span><span class="s2">, </span><span class="s3">&quot;Permissions nécessaires&quot;</span><span class="s2">, </span><span class="s1">Toast</span><span class="s2">.</span><span class="s1">LENGTH_LONG</span><span class="s2">).</span><span class="s1">show</span><span class="s2">()</span>
+                <span class="s1">showEmptyState</span><span class="s2">()</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">loadCallLogs</span><span class="s2">() {</span>
+        <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Chargement du journal d'appels...&quot;</span><span class="s2">)</span>
+        <span class="s0">if </span><span class="s2">(!</span><span class="s1">::callLogManager</span><span class="s2">.</span><span class="s1">isInitialized</span><span class="s2">) {</span>
+            <span class="s1">Log</span><span class="s2">.</span><span class="s1">e</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;CallLogManager non initialisé!&quot;</span><span class="s2">)</span>
+            <span class="s0">return</span>
+        <span class="s2">}</span>
+        <span class="s1">lifecycleScope</span><span class="s2">.</span><span class="s1">launch </span><span class="s2">{</span>
+            <span class="s0">val </span><span class="s1">callLogs </span><span class="s2">= </span><span class="s1">withContext</span><span class="s2">(</span><span class="s1">Dispatchers</span><span class="s2">.</span><span class="s1">IO</span><span class="s2">) {</span>
+                <span class="s1">callLogManager</span><span class="s2">.</span><span class="s1">getCallLogs</span><span class="s2">(</span><span class="s4">50</span><span class="s2">)</span>
+            <span class="s2">}</span>
+            <span class="s1">callLogAdapter</span><span class="s2">.</span><span class="s1">updateCalls</span><span class="s2">(</span><span class="s1">callLogs</span><span class="s2">)</span>
+            <span class="s1">updateStats</span><span class="s2">(</span><span class="s1">callLogs</span><span class="s2">)</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">callLogs</span><span class="s2">.</span><span class="s1">isEmpty</span><span class="s2">()) {</span>
+                <span class="s1">showEmptyState</span><span class="s2">()</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">loadContacts</span><span class="s2">() {</span>
+        <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Chargement des contacts...&quot;</span><span class="s2">)</span>
+        <span class="s0">if </span><span class="s2">(!</span><span class="s1">::contactAdapter</span><span class="s2">.</span><span class="s1">isInitialized</span><span class="s2">) {</span>
+            <span class="s1">Log</span><span class="s2">.</span><span class="s1">e</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;ContactAdapter non initialisé!&quot;</span><span class="s2">)</span>
+            <span class="s0">return</span>
+        <span class="s2">}</span>
+        <span class="s1">lifecycleScope</span><span class="s2">.</span><span class="s1">launch </span><span class="s2">{</span>
+            <span class="s0">val </span><span class="s1">rawContacts </span><span class="s2">= </span><span class="s1">withContext</span><span class="s2">(</span><span class="s1">Dispatchers</span><span class="s2">.</span><span class="s1">IO</span><span class="s2">) {</span>
+                <span class="s1">getContactsFromCursor</span><span class="s2">()</span>
+            <span class="s2">}</span>
+            <span class="s0">val </span><span class="s1">cleanedContacts </span><span class="s2">= </span><span class="s1">ContactDeduplicator</span><span class="s2">.</span><span class="s1">cleanContacts</span><span class="s2">(</span><span class="s1">rawContacts</span><span class="s2">)</span>
+            <span class="s0">val </span><span class="s1">sortedContacts </span><span class="s2">= </span><span class="s1">cleanedContacts</span><span class="s2">.</span><span class="s1">sortedBy </span><span class="s2">{ </span><span class="s1">it</span><span class="s2">.</span><span class="s1">name </span><span class="s2">}</span>
+
+            <span class="s1">contactAdapter</span><span class="s2">.</span><span class="s1">updateContacts</span><span class="s2">(</span><span class="s1">sortedContacts</span><span class="s2">)</span>
+            <span class="s1">updateContactsCount</span><span class="s2">()</span>
+
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">sortedContacts</span><span class="s2">.</span><span class="s1">isEmpty</span><span class="s2">()) {</span>
+                <span class="s1">showEmptyContactsState</span><span class="s2">()</span>
+            <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+                <span class="s1">findViewById</span><span class="s2">&lt;</span><span class="s1">RecyclerView</span><span class="s2">&gt;(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">recycler_view_contacts</span><span class="s2">)</span><span class="s1">?</span><span class="s2">.</span><span class="s1">visibility </span><span class="s2">= </span><span class="s1">View</span><span class="s2">.</span><span class="s1">VISIBLE</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">getContactsFromCursor</span><span class="s2">()</span><span class="s1">: List</span><span class="s2">&lt;</span><span class="s1">Contact</span><span class="s2">&gt; {</span>
+        <span class="s0">val </span><span class="s1">contacts </span><span class="s2">= </span><span class="s1">mutableListOf</span><span class="s2">&lt;</span><span class="s1">Contact</span><span class="s2">&gt;()</span>
+        <span class="s0">try </span><span class="s2">{</span>
+            <span class="s0">val </span><span class="s1">cursor </span><span class="s2">= </span><span class="s1">contentResolver</span><span class="s2">.</span><span class="s1">query</span><span class="s2">(</span>
+                <span class="s1">ContactsContract</span><span class="s2">.</span><span class="s1">CommonDataKinds</span><span class="s2">.</span><span class="s1">Phone</span><span class="s2">.</span><span class="s1">CONTENT_URI</span><span class="s2">,</span>
+                <span class="s1">arrayOf</span><span class="s2">(</span>
+                    <span class="s1">ContactsContract</span><span class="s2">.</span><span class="s1">CommonDataKinds</span><span class="s2">.</span><span class="s1">Phone</span><span class="s2">.</span><span class="s1">CONTACT_ID</span><span class="s2">,</span>
+                    <span class="s1">ContactsContract</span><span class="s2">.</span><span class="s1">CommonDataKinds</span><span class="s2">.</span><span class="s1">Phone</span><span class="s2">.</span><span class="s1">DISPLAY_NAME</span><span class="s2">,</span>
+                    <span class="s1">ContactsContract</span><span class="s2">.</span><span class="s1">CommonDataKinds</span><span class="s2">.</span><span class="s1">Phone</span><span class="s2">.</span><span class="s1">NUMBER</span><span class="s2">,</span>
+                    <span class="s1">ContactsContract</span><span class="s2">.</span><span class="s1">CommonDataKinds</span><span class="s2">.</span><span class="s1">Phone</span><span class="s2">.</span><span class="s1">PHOTO_URI</span>
+                <span class="s2">), </span><span class="s0">null</span><span class="s2">, </span><span class="s0">null</span><span class="s2">, </span><span class="s1">ContactsContract</span><span class="s2">.</span><span class="s1">CommonDataKinds</span><span class="s2">.</span><span class="s1">Phone</span><span class="s2">.</span><span class="s1">DISPLAY_NAME </span><span class="s2">+ </span><span class="s3">&quot; ASC&quot;</span>
+            <span class="s2">)</span>
+            <span class="s1">cursor?</span><span class="s2">.</span><span class="s1">use </span><span class="s2">{</span>
+                <span class="s0">val </span><span class="s1">idIndex </span><span class="s2">= </span><span class="s1">it</span><span class="s2">.</span><span class="s1">getColumnIndexOrThrow</span><span class="s2">(</span><span class="s1">ContactsContract</span><span class="s2">.</span><span class="s1">CommonDataKinds</span><span class="s2">.</span><span class="s1">Phone</span><span class="s2">.</span><span class="s1">CONTACT_ID</span><span class="s2">)</span>
+                <span class="s0">val </span><span class="s1">nameIndex </span><span class="s2">= </span><span class="s1">it</span><span class="s2">.</span><span class="s1">getColumnIndexOrThrow</span><span class="s2">(</span><span class="s1">ContactsContract</span><span class="s2">.</span><span class="s1">CommonDataKinds</span><span class="s2">.</span><span class="s1">Phone</span><span class="s2">.</span><span class="s1">DISPLAY_NAME</span><span class="s2">)</span>
+                <span class="s0">val </span><span class="s1">numberIndex </span><span class="s2">= </span><span class="s1">it</span><span class="s2">.</span><span class="s1">getColumnIndexOrThrow</span><span class="s2">(</span><span class="s1">ContactsContract</span><span class="s2">.</span><span class="s1">CommonDataKinds</span><span class="s2">.</span><span class="s1">Phone</span><span class="s2">.</span><span class="s1">NUMBER</span><span class="s2">)</span>
+                <span class="s0">while </span><span class="s2">(</span><span class="s1">it</span><span class="s2">.</span><span class="s1">moveToNext</span><span class="s2">()) {</span>
+                    <span class="s0">val </span><span class="s1">contact </span><span class="s2">= </span><span class="s1">Contact</span><span class="s2">(</span>
+                        <span class="s1">id </span><span class="s2">= </span><span class="s1">it</span><span class="s2">.</span><span class="s1">getLong</span><span class="s2">(</span><span class="s1">idIndex</span><span class="s2">),</span>
+                        <span class="s1">name </span><span class="s2">= </span><span class="s1">it</span><span class="s2">.</span><span class="s1">getString</span><span class="s2">(</span><span class="s1">nameIndex</span><span class="s2">),</span>
+                        <span class="s1">phoneNumber </span><span class="s2">= </span><span class="s1">it</span><span class="s2">.</span><span class="s1">getString</span><span class="s2">(</span><span class="s1">numberIndex</span><span class="s2">)</span>
+                    <span class="s2">)</span>
+                    <span class="s1">contacts</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s1">contact</span><span class="s2">)</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+        <span class="s2">} </span><span class="s1">catch </span><span class="s2">(</span><span class="s1">e: Exception</span><span class="s2">) {</span>
+            <span class="s1">Log</span><span class="s2">.</span><span class="s1">e</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Erreur lors de la lecture des contacts&quot;</span><span class="s2">, </span><span class="s1">e</span><span class="s2">)</span>
+        <span class="s2">}</span>
+        <span class="s0">return </span><span class="s1">contacts</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">showEmptyState</span><span class="s2">() {</span>
+        <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Affichage de l'état vide&quot;</span><span class="s2">)</span>
+        <span class="s0">try </span><span class="s2">{</span>
+            <span class="s1">findViewById</span><span class="s2">&lt;</span><span class="s1">RecyclerView</span><span class="s2">&gt;(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">calls_recycler_view</span><span class="s2">)</span><span class="s1">?</span><span class="s2">.</span><span class="s1">visibility </span><span class="s2">= </span><span class="s1">View</span><span class="s2">.</span><span class="s1">GONE</span>
+            <span class="s1">findViewById</span><span class="s2">&lt;</span><span class="s1">TextView</span><span class="s2">&gt;(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">empty_state_text</span><span class="s2">)</span><span class="s1">?</span><span class="s2">.</span><span class="s1">visibility </span><span class="s2">= </span><span class="s1">View</span><span class="s2">.</span><span class="s1">VISIBLE</span>
+        <span class="s2">} </span><span class="s1">catch </span><span class="s2">(</span><span class="s1">e: Exception</span><span class="s2">) {</span>
+            <span class="s1">Log</span><span class="s2">.</span><span class="s1">e</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Erreur lors de l'affichage de l'état vide&quot;</span><span class="s2">, </span><span class="s1">e</span><span class="s2">)</span>
+            <span class="s1">Toast</span><span class="s2">.</span><span class="s1">makeText</span><span class="s2">(</span><span class="s0">this</span><span class="s2">, </span><span class="s3">&quot;Aucun appel dans l'historique</span><span class="s0">\n</span><span class="s3">Passez un appel pour voir les données&quot;</span><span class="s2">, </span><span class="s1">Toast</span><span class="s2">.</span><span class="s1">LENGTH_LONG</span><span class="s2">).</span><span class="s1">show</span><span class="s2">()</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">showEmptyContactsState</span><span class="s2">() {</span>
+        <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Affichage de l'état vide des contacts&quot;</span><span class="s2">)</span>
+        <span class="s0">try </span><span class="s2">{</span>
+            <span class="s1">findViewById</span><span class="s2">&lt;</span><span class="s1">RecyclerView</span><span class="s2">&gt;(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">recycler_view_contacts</span><span class="s2">)</span><span class="s1">?</span><span class="s2">.</span><span class="s1">visibility </span><span class="s2">= </span><span class="s1">View</span><span class="s2">.</span><span class="s1">GONE</span>
+            <span class="s1">findViewById</span><span class="s2">&lt;</span><span class="s1">View</span><span class="s2">&gt;(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">empty_view</span><span class="s2">)</span><span class="s1">?</span><span class="s2">.</span><span class="s1">visibility </span><span class="s2">= </span><span class="s1">View</span><span class="s2">.</span><span class="s1">VISIBLE</span>
+        <span class="s2">} </span><span class="s1">catch </span><span class="s2">(</span><span class="s1">e: Exception</span><span class="s2">) {</span>
+            <span class="s1">Log</span><span class="s2">.</span><span class="s1">e</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Erreur lors de l'affichage de l'état vide des contacts&quot;</span><span class="s2">, </span><span class="s1">e</span><span class="s2">)</span>
+            <span class="s1">Toast</span><span class="s2">.</span><span class="s1">makeText</span><span class="s2">(</span><span class="s0">this</span><span class="s2">, </span><span class="s3">&quot;Aucun contact trouvé&quot;</span><span class="s2">, </span><span class="s1">Toast</span><span class="s2">.</span><span class="s1">LENGTH_SHORT</span><span class="s2">).</span><span class="s1">show</span><span class="s2">()</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">updateStats</span><span class="s2">(</span><span class="s1">callLogs: List</span><span class="s2">&lt;</span><span class="s1">CallLogEntry</span><span class="s2">&gt;) {</span>
+        <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Mise à jour des statistiques...&quot;</span><span class="s2">)</span>
+        <span class="s0">try </span><span class="s2">{</span>
+            <span class="s0">val </span><span class="s1">received </span><span class="s2">= </span><span class="s1">callLogs</span><span class="s2">.</span><span class="s1">count </span><span class="s2">{ </span><span class="s1">it</span><span class="s2">.</span><span class="s1">type </span><span class="s2">== </span><span class="s1">android</span><span class="s2">.</span><span class="s1">provider</span><span class="s2">.</span><span class="s1">CallLog</span><span class="s2">.</span><span class="s1">Calls</span><span class="s2">.</span><span class="s1">INCOMING_TYPE </span><span class="s2">}</span>
+            <span class="s0">val </span><span class="s1">outgoing </span><span class="s2">= </span><span class="s1">callLogs</span><span class="s2">.</span><span class="s1">count </span><span class="s2">{ </span><span class="s1">it</span><span class="s2">.</span><span class="s1">type </span><span class="s2">== </span><span class="s1">android</span><span class="s2">.</span><span class="s1">provider</span><span class="s2">.</span><span class="s1">CallLog</span><span class="s2">.</span><span class="s1">Calls</span><span class="s2">.</span><span class="s1">OUTGOING_TYPE </span><span class="s2">}</span>
+            <span class="s0">val </span><span class="s1">missed </span><span class="s2">= </span><span class="s1">callLogs</span><span class="s2">.</span><span class="s1">count </span><span class="s2">{ </span><span class="s1">it</span><span class="s2">.</span><span class="s1">type </span><span class="s2">== </span><span class="s1">android</span><span class="s2">.</span><span class="s1">provider</span><span class="s2">.</span><span class="s1">CallLog</span><span class="s2">.</span><span class="s1">Calls</span><span class="s2">.</span><span class="s1">MISSED_TYPE </span><span class="s2">}</span>
+            <span class="s0">val </span><span class="s1">blocked </span><span class="s2">= </span><span class="s1">callLogs</span><span class="s2">.</span><span class="s1">count </span><span class="s2">{ </span><span class="s1">it</span><span class="s2">.</span><span class="s1">isBlocked </span><span class="s2">}</span>
+            <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Stats - Reçus: </span><span class="s0">$</span><span class="s1">received</span><span class="s3">, Sortants: </span><span class="s0">$</span><span class="s1">outgoing</span><span class="s3">, Manqués: </span><span class="s0">$</span><span class="s1">missed</span><span class="s3">, Bloqués: </span><span class="s0">$</span><span class="s1">blocked</span><span class="s3">&quot;</span><span class="s2">)</span>
+            <span class="s1">findViewById</span><span class="s2">&lt;</span><span class="s1">TextView</span><span class="s2">&gt;(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">stats_received</span><span class="s2">)</span><span class="s1">?</span><span class="s2">.</span><span class="s1">text </span><span class="s2">= </span><span class="s3">&quot;Reçus: </span><span class="s0">$</span><span class="s1">received</span><span class="s3">&quot;</span>
+            <span class="s1">findViewById</span><span class="s2">&lt;</span><span class="s1">TextView</span><span class="s2">&gt;(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">stats_outgoing</span><span class="s2">)</span><span class="s1">?</span><span class="s2">.</span><span class="s1">text </span><span class="s2">= </span><span class="s3">&quot;Sortants: </span><span class="s0">$</span><span class="s1">outgoing</span><span class="s3">&quot;</span>
+            <span class="s1">findViewById</span><span class="s2">&lt;</span><span class="s1">TextView</span><span class="s2">&gt;(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">stats_missed</span><span class="s2">)</span><span class="s1">?</span><span class="s2">.</span><span class="s1">text </span><span class="s2">= </span><span class="s3">&quot;Manqués: </span><span class="s0">$</span><span class="s1">missed</span><span class="s3">&quot;</span>
+            <span class="s1">findViewById</span><span class="s2">&lt;</span><span class="s1">TextView</span><span class="s2">&gt;(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">stats_blocked</span><span class="s2">)</span><span class="s1">?</span><span class="s2">.</span><span class="s1">text </span><span class="s2">= </span><span class="s3">&quot;Bloqués: </span><span class="s0">$</span><span class="s1">blocked</span><span class="s3">&quot;</span>
+        <span class="s2">} </span><span class="s1">catch </span><span class="s2">(</span><span class="s1">e: Exception</span><span class="s2">) {</span>
+            <span class="s1">Log</span><span class="s2">.</span><span class="s1">e</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Erreur lors de la mise à jour des stats&quot;</span><span class="s2">, </span><span class="s1">e</span><span class="s2">)</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">showRecentTab</span><span class="s2">() {</span>
+        <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Affichage de l'onglet Recent&quot;</span><span class="s2">)</span>
+        <span class="s0">try </span><span class="s2">{</span>
+            <span class="s1">findViewById</span><span class="s2">&lt;</span><span class="s1">View</span><span class="s2">&gt;(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">recent_tab_content</span><span class="s2">)</span><span class="s1">?</span><span class="s2">.</span><span class="s1">visibility </span><span class="s2">= </span><span class="s1">View</span><span class="s2">.</span><span class="s1">VISIBLE</span>
+            <span class="s1">findViewById</span><span class="s2">&lt;</span><span class="s1">View</span><span class="s2">&gt;(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">contacts_tab_content</span><span class="s2">)</span><span class="s1">?</span><span class="s2">.</span><span class="s1">visibility </span><span class="s2">= </span><span class="s1">View</span><span class="s2">.</span><span class="s1">GONE</span>
+            <span class="s1">findViewById</span><span class="s2">&lt;</span><span class="s1">View</span><span class="s2">&gt;(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">keypad_tab_content</span><span class="s2">)</span><span class="s1">?</span><span class="s2">.</span><span class="s1">visibility </span><span class="s2">= </span><span class="s1">View</span><span class="s2">.</span><span class="s1">GONE</span>
+            <span class="s1">findViewById</span><span class="s2">&lt;</span><span class="s1">FloatingActionButton</span><span class="s2">&gt;(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">fab_clean_duplicates</span><span class="s2">)</span><span class="s1">?</span><span class="s2">.</span><span class="s1">visibility </span><span class="s2">= </span><span class="s1">View</span><span class="s2">.</span><span class="s1">GONE</span>
+        <span class="s2">} </span><span class="s1">catch </span><span class="s2">(</span><span class="s1">e: Exception</span><span class="s2">) {</span>
+            <span class="s1">Log</span><span class="s2">.</span><span class="s1">e</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Erreur lors de l'affichage de l'onglet Recent&quot;</span><span class="s2">, </span><span class="s1">e</span><span class="s2">)</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">showContactsTab</span><span class="s2">() {</span>
+        <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Affichage de l'onglet Contacts&quot;</span><span class="s2">)</span>
+        <span class="s0">try </span><span class="s2">{</span>
+            <span class="s1">findViewById</span><span class="s2">&lt;</span><span class="s1">View</span><span class="s2">&gt;(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">recent_tab_content</span><span class="s2">)</span><span class="s1">?</span><span class="s2">.</span><span class="s1">visibility </span><span class="s2">= </span><span class="s1">View</span><span class="s2">.</span><span class="s1">GONE</span>
+            <span class="s1">findViewById</span><span class="s2">&lt;</span><span class="s1">View</span><span class="s2">&gt;(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">contacts_tab_content</span><span class="s2">)</span><span class="s1">?</span><span class="s2">.</span><span class="s1">visibility </span><span class="s2">= </span><span class="s1">View</span><span class="s2">.</span><span class="s1">VISIBLE</span>
+            <span class="s1">findViewById</span><span class="s2">&lt;</span><span class="s1">View</span><span class="s2">&gt;(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">keypad_tab_content</span><span class="s2">)</span><span class="s1">?</span><span class="s2">.</span><span class="s1">visibility </span><span class="s2">= </span><span class="s1">View</span><span class="s2">.</span><span class="s1">GONE</span>
+            <span class="s1">findViewById</span><span class="s2">&lt;</span><span class="s1">FloatingActionButton</span><span class="s2">&gt;(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">fab_clean_duplicates</span><span class="s2">)</span><span class="s1">?</span><span class="s2">.</span><span class="s1">visibility </span><span class="s2">= </span><span class="s1">View</span><span class="s2">.</span><span class="s1">VISIBLE</span>
+            <span class="s0">if </span><span class="s2">(!</span><span class="s1">::contactAdapter</span><span class="s2">.</span><span class="s1">isInitialized</span><span class="s2">) {</span>
+                <span class="s1">loadContacts</span><span class="s2">()</span>
+            <span class="s2">}</span>
+        <span class="s2">} </span><span class="s1">catch </span><span class="s2">(</span><span class="s1">e: Exception</span><span class="s2">) {</span>
+            <span class="s1">Log</span><span class="s2">.</span><span class="s1">e</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Erreur lors de l'affichage de l'onglet Contacts&quot;</span><span class="s2">, </span><span class="s1">e</span><span class="s2">)</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">showKeypadTab</span><span class="s2">() {</span>
+        <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Affichage de l'onglet Keypad&quot;</span><span class="s2">)</span>
+        <span class="s0">try </span><span class="s2">{</span>
+            <span class="s1">findViewById</span><span class="s2">&lt;</span><span class="s1">View</span><span class="s2">&gt;(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">recent_tab_content</span><span class="s2">)</span><span class="s1">?</span><span class="s2">.</span><span class="s1">visibility </span><span class="s2">= </span><span class="s1">View</span><span class="s2">.</span><span class="s1">GONE</span>
+            <span class="s1">findViewById</span><span class="s2">&lt;</span><span class="s1">View</span><span class="s2">&gt;(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">contacts_tab_content</span><span class="s2">)</span><span class="s1">?</span><span class="s2">.</span><span class="s1">visibility </span><span class="s2">= </span><span class="s1">View</span><span class="s2">.</span><span class="s1">GONE</span>
+            <span class="s1">findViewById</span><span class="s2">&lt;</span><span class="s1">View</span><span class="s2">&gt;(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">keypad_tab_content</span><span class="s2">)</span><span class="s1">?</span><span class="s2">.</span><span class="s1">visibility </span><span class="s2">= </span><span class="s1">View</span><span class="s2">.</span><span class="s1">VISIBLE</span>
+            <span class="s1">findViewById</span><span class="s2">&lt;</span><span class="s1">FloatingActionButton</span><span class="s2">&gt;(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">fab_clean_duplicates</span><span class="s2">)</span><span class="s1">?</span><span class="s2">.</span><span class="s1">visibility </span><span class="s2">= </span><span class="s1">View</span><span class="s2">.</span><span class="s1">GONE</span>
+
+            <span class="s6">// Focus sur le champ de numéro</span>
+            <span class="s1">findViewById</span><span class="s2">&lt;</span><span class="s1">EditText</span><span class="s2">&gt;(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">et_phone_number</span><span class="s2">)</span><span class="s1">?</span><span class="s2">.</span><span class="s1">requestFocus</span><span class="s2">()</span>
+
+        <span class="s2">} </span><span class="s1">catch </span><span class="s2">(</span><span class="s1">e: Exception</span><span class="s2">) {</span>
+            <span class="s1">Log</span><span class="s2">.</span><span class="s1">e</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Erreur lors de l'affichage de l'onglet Keypad&quot;</span><span class="s2">, </span><span class="s1">e</span><span class="s2">)</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">updateTabSelection</span><span class="s2">(</span><span class="s1">selectedTab: TabType</span><span class="s2">) {</span>
+        <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Mise à jour de la sélection d'onglet: </span><span class="s0">$</span><span class="s1">selectedTab</span><span class="s3">&quot;</span><span class="s2">)</span>
+        <span class="s0">try </span><span class="s2">{</span>
+            <span class="s1">findViewById</span><span class="s2">&lt;</span><span class="s1">TextView</span><span class="s2">&gt;(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">tab_recent</span><span class="s2">)</span><span class="s1">?</span><span class="s2">.</span><span class="s1">isSelected </span><span class="s2">= </span><span class="s0">false</span>
+            <span class="s1">findViewById</span><span class="s2">&lt;</span><span class="s1">TextView</span><span class="s2">&gt;(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">tab_contacts</span><span class="s2">)</span><span class="s1">?</span><span class="s2">.</span><span class="s1">isSelected </span><span class="s2">= </span><span class="s0">false</span>
+            <span class="s1">findViewById</span><span class="s2">&lt;</span><span class="s1">TextView</span><span class="s2">&gt;(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">tab_keypad</span><span class="s2">)</span><span class="s1">?</span><span class="s2">.</span><span class="s1">isSelected </span><span class="s2">= </span><span class="s0">false</span>
+            <span class="s0">when </span><span class="s2">(</span><span class="s1">selectedTab</span><span class="s2">) {</span>
+                <span class="s1">TabType</span><span class="s2">.</span><span class="s1">RECENT </span><span class="s2">-&gt; </span><span class="s1">findViewById</span><span class="s2">&lt;</span><span class="s1">TextView</span><span class="s2">&gt;(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">tab_recent</span><span class="s2">)</span><span class="s1">?</span><span class="s2">.</span><span class="s1">isSelected </span><span class="s2">= </span><span class="s0">true</span>
+                <span class="s1">TabType</span><span class="s2">.</span><span class="s1">CONTACTS </span><span class="s2">-&gt; </span><span class="s1">findViewById</span><span class="s2">&lt;</span><span class="s1">TextView</span><span class="s2">&gt;(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">tab_contacts</span><span class="s2">)</span><span class="s1">?</span><span class="s2">.</span><span class="s1">isSelected </span><span class="s2">= </span><span class="s0">true</span>
+                <span class="s1">TabType</span><span class="s2">.</span><span class="s1">KEYPAD </span><span class="s2">-&gt; </span><span class="s1">findViewById</span><span class="s2">&lt;</span><span class="s1">TextView</span><span class="s2">&gt;(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">tab_keypad</span><span class="s2">)</span><span class="s1">?</span><span class="s2">.</span><span class="s1">isSelected </span><span class="s2">= </span><span class="s0">true</span>
+            <span class="s2">}</span>
+        <span class="s2">} </span><span class="s1">catch </span><span class="s2">(</span><span class="s1">e: Exception</span><span class="s2">) {</span>
+            <span class="s1">Log</span><span class="s2">.</span><span class="s1">e</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Erreur lors de la mise à jour de la sélection d'onglet&quot;</span><span class="s2">, </span><span class="s1">e</span><span class="s2">)</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">makeCall</span><span class="s2">(</span><span class="s1">phoneNumber: String</span><span class="s2">) {</span>
+        <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Appel direct vers: </span><span class="s0">$</span><span class="s1">phoneNumber</span><span class="s3">&quot;</span><span class="s2">)</span>
+        <span class="s0">try </span><span class="s2">{</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">ContextCompat</span><span class="s2">.</span><span class="s1">checkSelfPermission</span><span class="s2">(</span><span class="s0">this</span><span class="s2">, </span><span class="s1">Manifest</span><span class="s2">.</span><span class="s1">permission</span><span class="s2">.</span><span class="s1">CALL_PHONE</span><span class="s2">)</span>
+                <span class="s2">== </span><span class="s1">PackageManager</span><span class="s2">.</span><span class="s1">PERMISSION_GRANTED</span><span class="s2">) {</span>
+                <span class="s0">val </span><span class="s1">callIntent </span><span class="s2">= </span><span class="s1">Intent</span><span class="s2">(</span><span class="s1">Intent</span><span class="s2">.</span><span class="s1">ACTION_CALL</span><span class="s2">).</span><span class="s1">apply </span><span class="s2">{</span>
+                    <span class="s1">data </span><span class="s2">= </span><span class="s1">Uri</span><span class="s2">.</span><span class="s1">parse</span><span class="s2">(</span><span class="s3">&quot;tel:</span><span class="s0">$</span><span class="s1">phoneNumber</span><span class="s3">&quot;</span><span class="s2">)</span>
+                <span class="s2">}</span>
+                <span class="s1">startActivity</span><span class="s2">(</span><span class="s1">callIntent</span><span class="s2">)</span>
+                <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Appel direct initié vers: </span><span class="s0">$</span><span class="s1">phoneNumber</span><span class="s3">&quot;</span><span class="s2">)</span>
+            <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+                <span class="s1">Log</span><span class="s2">.</span><span class="s1">w</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Permission CALL_PHONE manquante, demande de permission...&quot;</span><span class="s2">)</span>
+                <span class="s1">ActivityCompat</span><span class="s2">.</span><span class="s1">requestPermissions</span><span class="s2">(</span>
+                    <span class="s0">this</span><span class="s2">,</span>
+                    <span class="s1">arrayOf</span><span class="s2">(</span><span class="s1">Manifest</span><span class="s2">.</span><span class="s1">permission</span><span class="s2">.</span><span class="s1">CALL_PHONE</span><span class="s2">),</span>
+                    <span class="s1">PERMISSION_REQUEST_CODE</span>
+                <span class="s2">)</span>
+            <span class="s2">}</span>
+        <span class="s2">} </span><span class="s1">catch </span><span class="s2">(</span><span class="s1">e: Exception</span><span class="s2">) {</span>
+            <span class="s1">Log</span><span class="s2">.</span><span class="s1">e</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Erreur lors de l'appel direct&quot;</span><span class="s2">, </span><span class="s1">e</span><span class="s2">)</span>
+            <span class="s1">Toast</span><span class="s2">.</span><span class="s1">makeText</span><span class="s2">(</span><span class="s0">this</span><span class="s2">, </span><span class="s3">&quot;Impossible de passer l'appel: </span><span class="s0">${</span><span class="s1">e</span><span class="s2">.</span><span class="s1">message</span><span class="s0">}</span><span class="s3">&quot;</span><span class="s2">, </span><span class="s1">Toast</span><span class="s2">.</span><span class="s1">LENGTH_SHORT</span><span class="s2">).</span><span class="s1">show</span><span class="s2">()</span>
+            <span class="s0">try </span><span class="s2">{</span>
+                <span class="s0">val </span><span class="s1">dialIntent </span><span class="s2">= </span><span class="s1">Intent</span><span class="s2">(</span><span class="s1">Intent</span><span class="s2">.</span><span class="s1">ACTION_DIAL</span><span class="s2">).</span><span class="s1">apply </span><span class="s2">{</span>
+                    <span class="s1">data </span><span class="s2">= </span><span class="s1">Uri</span><span class="s2">.</span><span class="s1">parse</span><span class="s2">(</span><span class="s3">&quot;tel:</span><span class="s0">$</span><span class="s1">phoneNumber</span><span class="s3">&quot;</span><span class="s2">)</span>
+                <span class="s2">}</span>
+                <span class="s1">startActivity</span><span class="s2">(</span><span class="s1">dialIntent</span><span class="s2">)</span>
+                <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Fallback vers dialer pour: </span><span class="s0">$</span><span class="s1">phoneNumber</span><span class="s3">&quot;</span><span class="s2">)</span>
+            <span class="s2">} </span><span class="s1">catch </span><span class="s2">(</span><span class="s1">fallbackException: Exception</span><span class="s2">) {</span>
+                <span class="s1">Log</span><span class="s2">.</span><span class="s1">e</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Erreur même avec le dialer&quot;</span><span class="s2">, </span><span class="s1">fallbackException</span><span class="s2">)</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">toggleBlockNumber</span><span class="s2">(</span><span class="s1">callEntry: CallLogEntry</span><span class="s2">) {</span>
+        <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Toggle blocage pour: </span><span class="s0">${</span><span class="s1">callEntry</span><span class="s2">.</span><span class="s1">number</span><span class="s0">}</span><span class="s3">&quot;</span><span class="s2">)</span>
+        <span class="s0">try </span><span class="s2">{</span>
+            <span class="s0">if </span><span class="s2">(!</span><span class="s1">::callLogManager</span><span class="s2">.</span><span class="s1">isInitialized</span><span class="s2">) {</span>
+                <span class="s1">Log</span><span class="s2">.</span><span class="s1">e</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;CallLogManager non initialisé!&quot;</span><span class="s2">)</span>
+                <span class="s1">Toast</span><span class="s2">.</span><span class="s1">makeText</span><span class="s2">(</span><span class="s0">this</span><span class="s2">, </span><span class="s3">&quot;Erreur: Manager non disponible&quot;</span><span class="s2">, </span><span class="s1">Toast</span><span class="s2">.</span><span class="s1">LENGTH_SHORT</span><span class="s2">).</span><span class="s1">show</span><span class="s2">()</span>
+                <span class="s0">return</span>
+            <span class="s2">}</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">callEntry</span><span class="s2">.</span><span class="s1">isBlocked</span><span class="s2">) {</span>
+                <span class="s1">callLogManager</span><span class="s2">.</span><span class="s1">unblockNumber</span><span class="s2">(</span><span class="s1">callEntry</span><span class="s2">.</span><span class="s1">number</span><span class="s2">)</span>
+                <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Numéro </span><span class="s0">${</span><span class="s1">callEntry</span><span class="s2">.</span><span class="s1">number</span><span class="s0">} </span><span class="s3">débloqué&quot;</span><span class="s2">)</span>
+                <span class="s1">Toast</span><span class="s2">.</span><span class="s1">makeText</span><span class="s2">(</span><span class="s0">this</span><span class="s2">, </span><span class="s3">&quot;Numéro </span><span class="s0">${</span><span class="s1">callEntry</span><span class="s2">.</span><span class="s1">number</span><span class="s0">} </span><span class="s3">débloqué&quot;</span><span class="s2">, </span><span class="s1">Toast</span><span class="s2">.</span><span class="s1">LENGTH_SHORT</span><span class="s2">).</span><span class="s1">show</span><span class="s2">()</span>
+            <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+                <span class="s1">callLogManager</span><span class="s2">.</span><span class="s1">blockNumber</span><span class="s2">(</span><span class="s1">callEntry</span><span class="s2">.</span><span class="s1">number</span><span class="s2">)</span>
+                <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Numéro </span><span class="s0">${</span><span class="s1">callEntry</span><span class="s2">.</span><span class="s1">number</span><span class="s0">} </span><span class="s3">bloqué&quot;</span><span class="s2">)</span>
+                <span class="s1">Toast</span><span class="s2">.</span><span class="s1">makeText</span><span class="s2">(</span><span class="s0">this</span><span class="s2">, </span><span class="s3">&quot;Numéro </span><span class="s0">${</span><span class="s1">callEntry</span><span class="s2">.</span><span class="s1">number</span><span class="s0">} </span><span class="s3">bloqué&quot;</span><span class="s2">, </span><span class="s1">Toast</span><span class="s2">.</span><span class="s1">LENGTH_SHORT</span><span class="s2">).</span><span class="s1">show</span><span class="s2">()</span>
+            <span class="s2">}</span>
+            <span class="s1">loadCallLogs</span><span class="s2">()</span>
+        <span class="s2">} </span><span class="s1">catch </span><span class="s2">(</span><span class="s1">e: Exception</span><span class="s2">) {</span>
+            <span class="s1">Log</span><span class="s2">.</span><span class="s1">e</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Erreur lors du toggle de blocage pour </span><span class="s0">${</span><span class="s1">callEntry</span><span class="s2">.</span><span class="s1">number</span><span class="s0">}</span><span class="s3">&quot;</span><span class="s2">, </span><span class="s1">e</span><span class="s2">)</span>
+            <span class="s1">Toast</span><span class="s2">.</span><span class="s1">makeText</span><span class="s2">(</span><span class="s0">this</span><span class="s2">, </span><span class="s3">&quot;Erreur lors du blocage/déblocage: </span><span class="s0">${</span><span class="s1">e</span><span class="s2">.</span><span class="s1">message</span><span class="s0">}</span><span class="s3">&quot;</span><span class="s2">, </span><span class="s1">Toast</span><span class="s2">.</span><span class="s1">LENGTH_SHORT</span><span class="s2">).</span><span class="s1">show</span><span class="s2">()</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">addToContacts</span><span class="s2">(</span><span class="s1">callEntry: CallLogEntry</span><span class="s2">) {</span>
+        <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Ajout aux contacts: </span><span class="s0">${</span><span class="s1">callEntry</span><span class="s2">.</span><span class="s1">number</span><span class="s0">}</span><span class="s3">&quot;</span><span class="s2">)</span>
+        <span class="s0">try </span><span class="s2">{</span>
+            <span class="s0">val </span><span class="s1">intent </span><span class="s2">= </span><span class="s1">Intent</span><span class="s2">(</span><span class="s1">Intent</span><span class="s2">.</span><span class="s1">ACTION_INSERT</span><span class="s2">).</span><span class="s1">apply </span><span class="s2">{</span>
+                <span class="s1">type </span><span class="s2">= </span><span class="s3">&quot;vnd.android.cursor.dir/contact&quot;</span>
+                <span class="s1">putExtra</span><span class="s2">(</span><span class="s3">&quot;phone&quot;</span><span class="s2">, </span><span class="s1">callEntry</span><span class="s2">.</span><span class="s1">number</span><span class="s2">)</span>
+            <span class="s2">}</span>
+            <span class="s1">startActivity</span><span class="s2">(</span><span class="s1">intent</span><span class="s2">)</span>
+        <span class="s2">} </span><span class="s1">catch </span><span class="s2">(</span><span class="s1">e: Exception</span><span class="s2">) {</span>
+            <span class="s1">Log</span><span class="s2">.</span><span class="s1">e</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Erreur lors de l'ajout aux contacts&quot;</span><span class="s2">, </span><span class="s1">e</span><span class="s2">)</span>
+            <span class="s1">Toast</span><span class="s2">.</span><span class="s1">makeText</span><span class="s2">(</span><span class="s0">this</span><span class="s2">, </span><span class="s3">&quot;Impossible d'ouvrir les contacts&quot;</span><span class="s2">, </span><span class="s1">Toast</span><span class="s2">.</span><span class="s1">LENGTH_SHORT</span><span class="s2">).</span><span class="s1">show</span><span class="s2">()</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">sendMessage</span><span class="s2">(</span><span class="s1">phoneNumber: String</span><span class="s2">) {</span>
+        <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Envoi message vers: </span><span class="s0">$</span><span class="s1">phoneNumber</span><span class="s3">&quot;</span><span class="s2">)</span>
+        <span class="s0">try </span><span class="s2">{</span>
+            <span class="s0">val </span><span class="s1">intent </span><span class="s2">= </span><span class="s1">Intent</span><span class="s2">(</span><span class="s1">Intent</span><span class="s2">.</span><span class="s1">ACTION_SENDTO</span><span class="s2">).</span><span class="s1">apply </span><span class="s2">{</span>
+                <span class="s1">data </span><span class="s2">= </span><span class="s1">Uri</span><span class="s2">.</span><span class="s1">parse</span><span class="s2">(</span><span class="s3">&quot;smsto:</span><span class="s0">$</span><span class="s1">phoneNumber</span><span class="s3">&quot;</span><span class="s2">)</span>
+            <span class="s2">}</span>
+            <span class="s1">startActivity</span><span class="s2">(</span><span class="s1">intent</span><span class="s2">)</span>
+        <span class="s2">} </span><span class="s1">catch </span><span class="s2">(</span><span class="s1">e: Exception</span><span class="s2">) {</span>
+            <span class="s1">Log</span><span class="s2">.</span><span class="s1">e</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Erreur lors de l'envoi de message&quot;</span><span class="s2">, </span><span class="s1">e</span><span class="s2">)</span>
+            <span class="s1">Toast</span><span class="s2">.</span><span class="s1">makeText</span><span class="s2">(</span><span class="s0">this</span><span class="s2">, </span><span class="s3">&quot;Impossible d'ouvrir les messages&quot;</span><span class="s2">, </span><span class="s1">Toast</span><span class="s2">.</span><span class="s1">LENGTH_SHORT</span><span class="s2">).</span><span class="s1">show</span><span class="s2">()</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s6">// Méthodes utilitaires pour interagir avec le clavier depuis d'autres parties de l'app</span>
+    <span class="s0">fun </span><span class="s1">setKeypadNumber</span><span class="s2">(</span><span class="s1">number: String</span><span class="s2">) {</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">::keypadManager</span><span class="s2">.</span><span class="s1">isInitialized</span><span class="s2">) {</span>
+            <span class="s1">keypadManager</span><span class="s2">.</span><span class="s1">setNumber</span><span class="s2">(</span><span class="s1">number</span><span class="s2">)</span>
+            <span class="s1">showKeypadTab</span><span class="s2">()</span>
+            <span class="s1">updateTabSelection</span><span class="s2">(</span><span class="s1">TabType</span><span class="s2">.</span><span class="s1">KEYPAD</span><span class="s2">)</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">fun </span><span class="s1">clearKeypadNumber</span><span class="s2">() {</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">::keypadManager</span><span class="s2">.</span><span class="s1">isInitialized</span><span class="s2">) {</span>
+            <span class="s1">keypadManager</span><span class="s2">.</span><span class="s1">clearNumber</span><span class="s2">()</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private enum </span><span class="s0">class </span><span class="s1">TabType </span><span class="s2">{</span>
+        <span class="s1">RECENT</span><span class="s2">, </span><span class="s1">CONTACTS</span><span class="s2">, </span><span class="s1">KEYPAD</span>
+    <span class="s2">}</span>
+
+    <span class="s1">override </span><span class="s0">fun </span><span class="s1">onResume</span><span class="s2">() {</span>
+        <span class="s0">super</span><span class="s2">.</span><span class="s1">onResume</span><span class="s2">()</span>
+        <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;onResume() appelé&quot;</span><span class="s2">)</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">::callLogManager</span><span class="s2">.</span><span class="s1">isInitialized</span><span class="s2">) {</span>
+            <span class="s1">loadCallLogs</span><span class="s2">()</span>
+        <span class="s2">}</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">findViewById</span><span class="s2">&lt;</span><span class="s1">View</span><span class="s2">&gt;(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">contacts_tab_content</span><span class="s2">)</span><span class="s1">?</span><span class="s2">.</span><span class="s1">visibility </span><span class="s2">== </span><span class="s1">View</span><span class="s2">.</span><span class="s1">VISIBLE</span><span class="s2">) {</span>
+            <span class="s1">loadContacts</span><span class="s2">()</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">override </span><span class="s0">fun </span><span class="s1">onPause</span><span class="s2">() {</span>
+        <span class="s0">super</span><span class="s2">.</span><span class="s1">onPause</span><span class="s2">()</span>
+        <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;onPause() appelé&quot;</span><span class="s2">)</span>
+    <span class="s2">}</span>
+
+    <span class="s1">override </span><span class="s0">fun </span><span class="s1">onDestroy</span><span class="s2">() {</span>
+        <span class="s0">super</span><span class="s2">.</span><span class="s1">onDestroy</span><span class="s2">()</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">::keypadManager</span><span class="s2">.</span><span class="s1">isInitialized</span><span class="s2">) {</span>
+            <span class="s1">keypadManager</span><span class="s2">.</span><span class="s1">cleanup</span><span class="s2">()</span>
+        <span class="s2">}</span>
+        <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;onDestroy() appelé&quot;</span><span class="s2">)</span>
+    <span class="s2">}</span>
+<span class="s2">}</span></pre>
+</body>
+</html>

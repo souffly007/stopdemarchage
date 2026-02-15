@@ -1,0 +1,106 @@
+<html>
+<head>
+<title>PhoneCallReceiver.kt</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #5f826b; font-style: italic;}
+.s4 { color: #6aab73;}
+.s5 { color: #7a7e85;}
+.s6 { color: #2aacb8;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+PhoneCallReceiver.kt</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">fr</span><span class="s2">.</span><span class="s1">bonobo</span><span class="s2">.</span><span class="s1">stopdemarchage</span><span class="s2">.</span><span class="s1">receivers</span>
+
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">content</span><span class="s2">.</span><span class="s1">BroadcastReceiver</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">content</span><span class="s2">.</span><span class="s1">Context</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">content</span><span class="s2">.</span><span class="s1">Intent</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">telephony</span><span class="s2">.</span><span class="s1">TelephonyManager</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">Log</span>
+<span class="s1">import fr</span><span class="s2">.</span><span class="s1">bonobo</span><span class="s2">.</span><span class="s1">stopdemarchage</span><span class="s2">.</span><span class="s1">CallLogManager</span>
+<span class="s1">import fr</span><span class="s2">.</span><span class="s1">bonobo</span><span class="s2">.</span><span class="s1">stopdemarchage</span><span class="s2">.</span><span class="s1">utils</span><span class="s2">.</span><span class="s1">PhoneNumberNormalizer</span>
+<span class="s1">import kotlinx</span><span class="s2">.</span><span class="s1">coroutines</span><span class="s2">.</span><span class="s1">CoroutineScope</span>
+<span class="s1">import kotlinx</span><span class="s2">.</span><span class="s1">coroutines</span><span class="s2">.</span><span class="s1">Dispatchers</span>
+<span class="s1">import kotlinx</span><span class="s2">.</span><span class="s1">coroutines</span><span class="s2">.</span><span class="s1">launch</span>
+<span class="s1">import kotlinx</span><span class="s2">.</span><span class="s1">coroutines</span><span class="s2">.</span><span class="s1">withContext</span>
+
+<span class="s3">/**</span>
+ <span class="s3">* BroadcastReceiver pour intercepter les appels et déclencher le nettoyage.</span>
+ <span class="s3">*/</span>
+<span class="s0">class </span><span class="s1">PhoneCallReceiver : BroadcastReceiver</span><span class="s2">() {</span>
+
+    <span class="s1">companion </span><span class="s0">object </span><span class="s2">{</span>
+        <span class="s1">private const </span><span class="s0">val </span><span class="s1">TAG </span><span class="s2">= </span><span class="s4">&quot;PhoneCallReceiver&quot;</span>
+    <span class="s2">}</span>
+
+    <span class="s1">override </span><span class="s0">fun </span><span class="s1">onReceive</span><span class="s2">(</span><span class="s1">context: Context</span><span class="s2">, </span><span class="s1">intent: Intent</span><span class="s2">) {</span>
+        <span class="s0">val </span><span class="s1">state </span><span class="s2">= </span><span class="s1">intent</span><span class="s2">.</span><span class="s1">getStringExtra</span><span class="s2">(</span><span class="s1">TelephonyManager</span><span class="s2">.</span><span class="s1">EXTRA_STATE</span><span class="s2">)</span>
+
+        <span class="s0">when </span><span class="s2">(</span><span class="s1">state</span><span class="s2">) {</span>
+            <span class="s1">TelephonyManager</span><span class="s2">.</span><span class="s1">EXTRA_STATE_IDLE </span><span class="s2">-&gt; {</span>
+                <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s4">&quot;Appel terminé - déclenchement du nettoyage du journal.&quot;</span><span class="s2">)</span>
+                <span class="s5">// Lancez la déduplication après chaque appel terminé.</span>
+                <span class="s1">CoroutineScope</span><span class="s2">(</span><span class="s1">Dispatchers</span><span class="s2">.</span><span class="s1">IO</span><span class="s2">).</span><span class="s1">launch </span><span class="s2">{</span>
+                    <span class="s0">try </span><span class="s2">{</span>
+                        <span class="s0">val </span><span class="s1">callLogManager </span><span class="s2">= </span><span class="s1">CallLogManager</span><span class="s2">(</span><span class="s1">context</span><span class="s2">)</span>
+                        <span class="s1">callLogManager</span><span class="s2">.</span><span class="s1">performFullCleanup</span><span class="s2">()</span>
+                        <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s4">&quot;Nettoyage du journal d'appels terminé.&quot;</span><span class="s2">)</span>
+                    <span class="s2">} </span><span class="s1">catch </span><span class="s2">(</span><span class="s1">e: Exception</span><span class="s2">) {</span>
+                        <span class="s1">Log</span><span class="s2">.</span><span class="s1">e</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s4">&quot;Erreur lors du nettoyage du journal d'appels&quot;</span><span class="s2">, </span><span class="s1">e</span><span class="s2">)</span>
+                    <span class="s2">}</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+
+<span class="s3">/**</span>
+ <span class="s3">* Extensions pour votre CallLogManager</span>
+ <span class="s3">*/</span>
+
+<span class="s3">/**</span>
+ <span class="s3">* Extension pour fusionner automatiquement les formats de numéros.</span>
+ <span class="s3">*/</span>
+<span class="s0">fun </span><span class="s1">CallLogManager</span><span class="s2">.</span><span class="s1">mergeNumberFormats</span><span class="s2">(</span><span class="s1">oldFormat: String</span><span class="s2">, </span><span class="s1">normalizedFormat: String</span><span class="s2">) {</span>
+    <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s4">&quot;CallLogManager&quot;</span><span class="s2">, </span><span class="s4">&quot;Fusion des formats : </span><span class="s0">$</span><span class="s1">oldFormat </span><span class="s4">-&gt; </span><span class="s0">$</span><span class="s1">normalizedFormat</span><span class="s4">&quot;</span><span class="s2">)</span>
+    <span class="s5">// Vous devez implémenter ici la logique de mise à jour dans votre base de données ou votre</span>
+    <span class="s5">// source de données. Par exemple, une requête SQL &quot;UPDATE calls SET number = ? WHERE number = ?&quot;.</span>
+<span class="s2">}</span>
+
+<span class="s3">/**</span>
+ <span class="s3">* Extension pour nettoyer périodiquement tous les doublons.</span>
+ <span class="s3">*/</span>
+<span class="s1">suspend </span><span class="s0">fun </span><span class="s1">CallLogManager</span><span class="s2">.</span><span class="s1">performFullCleanup</span><span class="s2">() = </span><span class="s1">withContext</span><span class="s2">(</span><span class="s1">Dispatchers</span><span class="s2">.</span><span class="s1">IO</span><span class="s2">) {</span>
+    <span class="s0">try </span><span class="s2">{</span>
+        <span class="s0">val </span><span class="s1">allCalls </span><span class="s2">= </span><span class="s1">getCallLogs</span><span class="s2">(</span><span class="s6">1000</span><span class="s2">) </span><span class="s5">// Récupère tous les appels pour un nettoyage complet.</span>
+        <span class="s0">val </span><span class="s1">normalizedGroups </span><span class="s2">= </span><span class="s1">allCalls</span><span class="s2">.</span><span class="s1">groupBy </span><span class="s2">{ </span><span class="s1">call </span><span class="s2">-&gt;</span>
+            <span class="s1">PhoneNumberNormalizer</span><span class="s2">.</span><span class="s1">normalizePhoneNumber</span><span class="s2">(</span><span class="s1">call</span><span class="s2">.</span><span class="s1">number</span><span class="s2">)</span>
+        <span class="s2">}</span>
+
+        <span class="s1">normalizedGroups</span><span class="s2">.</span><span class="s1">forEach </span><span class="s2">{ (</span><span class="s1">normalized</span><span class="s2">, </span><span class="s1">calls</span><span class="s2">) -&gt;</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">calls</span><span class="s2">.</span><span class="s1">size </span><span class="s2">&gt; </span><span class="s6">1</span><span class="s2">) {</span>
+                <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s4">&quot;CallLogManager&quot;</span><span class="s2">, </span><span class="s4">&quot;Groupe de doublons détecté pour </span><span class="s0">$</span><span class="s1">normalized</span><span class="s4">. Fusion de </span><span class="s0">${</span><span class="s1">calls</span><span class="s2">.</span><span class="s1">size</span><span class="s0">} </span><span class="s4">entrées.&quot;</span><span class="s2">)</span>
+                <span class="s1">calls</span><span class="s2">.</span><span class="s1">forEach </span><span class="s2">{ </span><span class="s1">call </span><span class="s2">-&gt;</span>
+                    <span class="s0">val </span><span class="s1">originalNumber </span><span class="s2">= </span><span class="s1">call</span><span class="s2">.</span><span class="s1">number</span>
+                    <span class="s5">// Vérifiez si le format original est déjà normalisé</span>
+                    <span class="s0">if </span><span class="s2">(</span><span class="s1">originalNumber </span><span class="s2">!= </span><span class="s1">normalized</span><span class="s2">) {</span>
+                        <span class="s5">// Mettez à jour chaque entrée vers le format normalisé.</span>
+                        <span class="s1">mergeNumberFormats</span><span class="s2">(</span><span class="s1">originalNumber</span><span class="s2">, </span><span class="s1">normalized</span><span class="s2">!!)</span>
+                    <span class="s2">}</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+    <span class="s2">} </span><span class="s1">catch </span><span class="s2">(</span><span class="s1">e: Exception</span><span class="s2">) {</span>
+        <span class="s1">Log</span><span class="s2">.</span><span class="s1">e</span><span class="s2">(</span><span class="s4">&quot;CallLogManager&quot;</span><span class="s2">, </span><span class="s4">&quot;Erreur lors du nettoyage complet&quot;</span><span class="s2">, </span><span class="s1">e</span><span class="s2">)</span>
+    <span class="s2">}</span>
+<span class="s2">}</span></pre>
+</body>
+</html>

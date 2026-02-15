@@ -1,0 +1,118 @@
+<html>
+<head>
+<title>SmsConversationAdapter.kt</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #7a7e85;}
+.s4 { color: #6aab73;}
+.s5 { color: #2aacb8;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+SmsConversationAdapter.kt</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">fr</span><span class="s2">.</span><span class="s1">bonobo</span><span class="s2">.</span><span class="s1">stopdemarchage</span><span class="s2">.</span><span class="s1">adapters</span>
+
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">graphics</span><span class="s2">.</span><span class="s1">Color</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">view</span><span class="s2">.</span><span class="s1">LayoutInflater</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">view</span><span class="s2">.</span><span class="s1">View</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">view</span><span class="s2">.</span><span class="s1">ViewGroup</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">widget</span><span class="s2">.</span><span class="s1">TextView</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">cardview</span><span class="s2">.</span><span class="s1">widget</span><span class="s2">.</span><span class="s1">CardView</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">recyclerview</span><span class="s2">.</span><span class="s1">widget</span><span class="s2">.</span><span class="s1">RecyclerView</span>
+<span class="s1">import fr</span><span class="s2">.</span><span class="s1">bonobo</span><span class="s2">.</span><span class="s1">stopdemarchage</span><span class="s2">.</span><span class="s1">R</span>
+<span class="s1">import fr</span><span class="s2">.</span><span class="s1">bonobo</span><span class="s2">.</span><span class="s1">stopdemarchage</span><span class="s2">.</span><span class="s1">SuspicionLevel</span>
+<span class="s1">import fr</span><span class="s2">.</span><span class="s1">bonobo</span><span class="s2">.</span><span class="s1">stopdemarchage</span><span class="s2">.</span><span class="s1">data</span><span class="s2">.</span><span class="s1">SmsConversation</span>
+
+<span class="s0">class </span><span class="s1">SmsConversationAdapter</span><span class="s2">(</span>
+    <span class="s1">private </span><span class="s0">val </span><span class="s1">conversations: List</span><span class="s2">&lt;</span><span class="s1">SmsConversation</span><span class="s2">&gt;,</span>
+    <span class="s1">private </span><span class="s0">val </span><span class="s1">onConversationClick: </span><span class="s2">(</span><span class="s1">SmsConversation</span><span class="s2">) -&gt; </span><span class="s1">Unit</span>
+<span class="s2">) </span><span class="s1">: RecyclerView</span><span class="s2">.</span><span class="s1">Adapter</span><span class="s2">&lt;</span><span class="s1">SmsConversationAdapter</span><span class="s2">.</span><span class="s1">ConversationViewHolder</span><span class="s2">&gt;() {</span>
+
+    <span class="s0">class </span><span class="s1">ConversationViewHolder</span><span class="s2">(</span><span class="s1">itemView: View</span><span class="s2">) </span><span class="s1">: RecyclerView</span><span class="s2">.</span><span class="s1">ViewHolder</span><span class="s2">(</span><span class="s1">itemView</span><span class="s2">) {</span>
+        <span class="s0">val </span><span class="s1">cardView: CardView </span><span class="s2">= </span><span class="s1">itemView</span><span class="s2">.</span><span class="s1">findViewById</span><span class="s2">(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">card_conversation_item</span><span class="s2">)</span>
+        <span class="s0">val </span><span class="s1">textContactName: TextView </span><span class="s2">= </span><span class="s1">itemView</span><span class="s2">.</span><span class="s1">findViewById</span><span class="s2">(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">text_contact_name</span><span class="s2">)</span>
+        <span class="s0">val </span><span class="s1">textLastMessage: TextView </span><span class="s2">= </span><span class="s1">itemView</span><span class="s2">.</span><span class="s1">findViewById</span><span class="s2">(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">text_last_message</span><span class="s2">)</span>
+        <span class="s0">val </span><span class="s1">textDate: TextView </span><span class="s2">= </span><span class="s1">itemView</span><span class="s2">.</span><span class="s1">findViewById</span><span class="s2">(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">text_conversation_date</span><span class="s2">)</span>
+        <span class="s0">val </span><span class="s1">textMessageCount: TextView </span><span class="s2">= </span><span class="s1">itemView</span><span class="s2">.</span><span class="s1">findViewById</span><span class="s2">(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">text_message_count</span><span class="s2">)</span>
+        <span class="s0">val </span><span class="s1">textRiskIndicator: TextView </span><span class="s2">= </span><span class="s1">itemView</span><span class="s2">.</span><span class="s1">findViewById</span><span class="s2">(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">text_risk_indicator</span><span class="s2">)</span>
+    <span class="s2">}</span>
+
+    <span class="s1">override </span><span class="s0">fun </span><span class="s1">onCreateViewHolder</span><span class="s2">(</span><span class="s1">parent: ViewGroup</span><span class="s2">, </span><span class="s1">viewType: Int</span><span class="s2">)</span><span class="s1">: ConversationViewHolder </span><span class="s2">{</span>
+        <span class="s0">val </span><span class="s1">view </span><span class="s2">= </span><span class="s1">LayoutInflater</span><span class="s2">.</span><span class="s1">from</span><span class="s2">(</span><span class="s1">parent</span><span class="s2">.</span><span class="s1">context</span><span class="s2">)</span>
+            <span class="s2">.</span><span class="s1">inflate</span><span class="s2">(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.</span><span class="s1">item_sms_conversation</span><span class="s2">, </span><span class="s1">parent</span><span class="s2">, </span><span class="s0">false</span><span class="s2">)</span>
+        <span class="s0">return </span><span class="s1">ConversationViewHolder</span><span class="s2">(</span><span class="s1">view</span><span class="s2">)</span>
+    <span class="s2">}</span>
+
+    <span class="s1">override </span><span class="s0">fun </span><span class="s1">onBindViewHolder</span><span class="s2">(</span><span class="s1">holder: ConversationViewHolder</span><span class="s2">, </span><span class="s1">position: Int</span><span class="s2">) {</span>
+        <span class="s0">val </span><span class="s1">conversation </span><span class="s2">= </span><span class="s1">conversations</span><span class="s2">[</span><span class="s1">position</span><span class="s2">]</span>
+
+        <span class="s3">// Nom du contact ou numéro</span>
+        <span class="s1">holder</span><span class="s2">.</span><span class="s1">textContactName</span><span class="s2">.</span><span class="s1">text </span><span class="s2">= </span><span class="s1">conversation</span><span class="s2">.</span><span class="s1">displayName</span>
+
+        <span class="s3">// Aperçu du dernier message</span>
+        <span class="s0">val </span><span class="s1">messagePrefix </span><span class="s2">= </span><span class="s0">if </span><span class="s2">(</span><span class="s1">conversation</span><span class="s2">.</span><span class="s1">lastMessage</span><span class="s2">.</span><span class="s1">isSent</span><span class="s2">) </span><span class="s4">&quot;Vous: &quot; </span><span class="s0">else </span><span class="s4">&quot;&quot;</span>
+        <span class="s1">holder</span><span class="s2">.</span><span class="s1">textLastMessage</span><span class="s2">.</span><span class="s1">text </span><span class="s2">= </span><span class="s4">&quot;</span><span class="s0">$</span><span class="s1">messagePrefix</span><span class="s0">${</span><span class="s1">conversation</span><span class="s2">.</span><span class="s1">lastMessagePreview</span><span class="s0">}</span><span class="s4">&quot;</span>
+
+        <span class="s3">// Date/Heure</span>
+        <span class="s1">holder</span><span class="s2">.</span><span class="s1">textDate</span><span class="s2">.</span><span class="s1">text </span><span class="s2">= </span><span class="s1">conversation</span><span class="s2">.</span><span class="s1">formattedDate</span>
+
+        <span class="s3">// Nombre de messages</span>
+        <span class="s1">holder</span><span class="s2">.</span><span class="s1">textMessageCount</span><span class="s2">.</span><span class="s1">text </span><span class="s2">= </span><span class="s4">&quot;</span><span class="s0">${</span><span class="s1">conversation</span><span class="s2">.</span><span class="s1">messageCount</span><span class="s0">} </span><span class="s4">msg&quot;</span>
+
+        <span class="s3">// Indicateur de risque</span>
+        <span class="s0">val </span><span class="s2">(</span><span class="s1">riskText</span><span class="s2">, </span><span class="s1">riskEmoji</span><span class="s2">, </span><span class="s1">cardColor</span><span class="s2">, </span><span class="s1">textColor</span><span class="s2">) = </span><span class="s0">when </span><span class="s2">(</span><span class="s1">conversation</span><span class="s2">.</span><span class="s1">riskLevel</span><span class="s2">) {</span>
+            <span class="s1">SuspicionLevel</span><span class="s2">.</span><span class="s1">LOW </span><span class="s2">-&gt; {</span>
+                <span class="s1">Quadruple</span><span class="s2">(</span><span class="s4">&quot;&quot;</span><span class="s2">, </span><span class="s4">&quot;&quot;</span><span class="s2">, </span><span class="s4">&quot;#FFFFFF&quot;</span><span class="s2">, </span><span class="s4">&quot;#000000&quot;</span><span class="s2">)</span>
+            <span class="s2">}</span>
+            <span class="s1">SuspicionLevel</span><span class="s2">.</span><span class="s1">MEDIUM </span><span class="s2">-&gt; {</span>
+                <span class="s1">Quadruple</span><span class="s2">(</span><span class="s4">&quot;Suspect&quot;</span><span class="s2">, </span><span class="s4">&quot;🟡&quot;</span><span class="s2">, </span><span class="s4">&quot;#FFF9C4&quot;</span><span class="s2">, </span><span class="s4">&quot;#F57F17&quot;</span><span class="s2">)</span>
+            <span class="s2">}</span>
+            <span class="s1">SuspicionLevel</span><span class="s2">.</span><span class="s1">HIGH </span><span class="s2">-&gt; {</span>
+                <span class="s1">Quadruple</span><span class="s2">(</span><span class="s4">&quot;Dangereux&quot;</span><span class="s2">, </span><span class="s4">&quot;🟠&quot;</span><span class="s2">, </span><span class="s4">&quot;#FFE0B2&quot;</span><span class="s2">, </span><span class="s4">&quot;#E65100&quot;</span><span class="s2">)</span>
+            <span class="s2">}</span>
+            <span class="s1">SuspicionLevel</span><span class="s2">.</span><span class="s1">CRITICAL </span><span class="s2">-&gt; {</span>
+                <span class="s1">Quadruple</span><span class="s2">(</span><span class="s4">&quot;⚠️ ARNAQUE&quot;</span><span class="s2">, </span><span class="s4">&quot;🔴&quot;</span><span class="s2">, </span><span class="s4">&quot;#FFCDD2&quot;</span><span class="s2">, </span><span class="s4">&quot;#C62828&quot;</span><span class="s2">)</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+
+        <span class="s3">// Afficher l'indicateur de risque seulement si suspect</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">conversation</span><span class="s2">.</span><span class="s1">maxSuspicionScore </span><span class="s2">&gt;= </span><span class="s5">30</span><span class="s2">) {</span>
+            <span class="s1">holder</span><span class="s2">.</span><span class="s1">textRiskIndicator</span><span class="s2">.</span><span class="s1">visibility </span><span class="s2">= </span><span class="s1">View</span><span class="s2">.</span><span class="s1">VISIBLE</span>
+            <span class="s1">holder</span><span class="s2">.</span><span class="s1">textRiskIndicator</span><span class="s2">.</span><span class="s1">text </span><span class="s2">= </span><span class="s4">&quot;</span><span class="s0">$</span><span class="s1">riskEmoji </span><span class="s0">$</span><span class="s1">riskText</span><span class="s4">&quot;</span>
+            <span class="s1">holder</span><span class="s2">.</span><span class="s1">cardView</span><span class="s2">.</span><span class="s1">setCardBackgroundColor</span><span class="s2">(</span><span class="s1">Color</span><span class="s2">.</span><span class="s1">parseColor</span><span class="s2">(</span><span class="s1">cardColor</span><span class="s2">))</span>
+            <span class="s1">holder</span><span class="s2">.</span><span class="s1">textContactName</span><span class="s2">.</span><span class="s1">setTextColor</span><span class="s2">(</span><span class="s1">Color</span><span class="s2">.</span><span class="s1">parseColor</span><span class="s2">(</span><span class="s1">textColor</span><span class="s2">))</span>
+        <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+            <span class="s1">holder</span><span class="s2">.</span><span class="s1">textRiskIndicator</span><span class="s2">.</span><span class="s1">visibility </span><span class="s2">= </span><span class="s1">View</span><span class="s2">.</span><span class="s1">GONE</span>
+            <span class="s1">holder</span><span class="s2">.</span><span class="s1">cardView</span><span class="s2">.</span><span class="s1">setCardBackgroundColor</span><span class="s2">(</span><span class="s1">Color</span><span class="s2">.</span><span class="s1">parseColor</span><span class="s2">(</span><span class="s4">&quot;#FFFFFF&quot;</span><span class="s2">))</span>
+            <span class="s1">holder</span><span class="s2">.</span><span class="s1">textContactName</span><span class="s2">.</span><span class="s1">setTextColor</span><span class="s2">(</span><span class="s1">Color</span><span class="s2">.</span><span class="s1">parseColor</span><span class="s2">(</span><span class="s4">&quot;#000000&quot;</span><span class="s2">))</span>
+        <span class="s2">}</span>
+
+        <span class="s3">// Style pour le nom du contact (gras si inconnu)</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">conversation</span><span class="s2">.</span><span class="s1">contactName </span><span class="s2">== </span><span class="s0">null</span><span class="s2">) {</span>
+            <span class="s1">holder</span><span class="s2">.</span><span class="s1">textContactName</span><span class="s2">.</span><span class="s1">text </span><span class="s2">= </span><span class="s4">&quot;📱 </span><span class="s0">${</span><span class="s1">conversation</span><span class="s2">.</span><span class="s1">address</span><span class="s0">}</span><span class="s4">&quot;</span>
+        <span class="s2">}</span>
+
+        <span class="s3">// Click listener</span>
+        <span class="s1">holder</span><span class="s2">.</span><span class="s1">cardView</span><span class="s2">.</span><span class="s1">setOnClickListener </span><span class="s2">{</span>
+            <span class="s1">onConversationClick</span><span class="s2">(</span><span class="s1">conversation</span><span class="s2">)</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">override </span><span class="s0">fun </span><span class="s1">getItemCount</span><span class="s2">()</span><span class="s1">: Int </span><span class="s2">= </span><span class="s1">conversations</span><span class="s2">.</span><span class="s1">size</span>
+
+    <span class="s1">private data </span><span class="s0">class </span><span class="s1">Quadruple</span><span class="s2">&lt;</span><span class="s1">A</span><span class="s2">, </span><span class="s1">B</span><span class="s2">, </span><span class="s1">C</span><span class="s2">, </span><span class="s1">D</span><span class="s2">&gt;(</span>
+        <span class="s0">val </span><span class="s1">first: A</span><span class="s2">,</span>
+        <span class="s0">val </span><span class="s1">second: B</span><span class="s2">,</span>
+        <span class="s0">val </span><span class="s1">third: C</span><span class="s2">,</span>
+        <span class="s0">val </span><span class="s1">fourth: D</span>
+    <span class="s2">)</span>
+<span class="s2">}</span></pre>
+</body>
+</html>

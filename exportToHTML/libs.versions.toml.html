@@ -1,0 +1,49 @@
+<html>
+<head>
+<title>libs.versions.toml</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #bcbec4;}
+.s1 { color: #cf8e6d;}
+.s2 { color: #6aab73;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+libs.versions.toml</font>
+</center></td></tr></table>
+<pre><span class="s0">[</span><span class="s1">versions</span><span class="s0">]</span>
+<span class="s1">agp </span><span class="s0">= </span><span class="s2">&quot;9.0.0&quot;</span>
+<span class="s1">kotlin </span><span class="s0">= </span><span class="s2">&quot;2.2.10&quot;</span>
+<span class="s1">coreKtx </span><span class="s0">= </span><span class="s2">&quot;1.16.0&quot;</span>
+<span class="s1">junit </span><span class="s0">= </span><span class="s2">&quot;4.13.2&quot;</span>
+<span class="s1">junitVersion </span><span class="s0">= </span><span class="s2">&quot;1.2.1&quot;</span>
+<span class="s1">espressoCore </span><span class="s0">= </span><span class="s2">&quot;3.6.1&quot;</span>
+<span class="s1">appcompat </span><span class="s0">= </span><span class="s2">&quot;1.7.1&quot;</span>
+<span class="s1">material </span><span class="s0">= </span><span class="s2">&quot;1.12.0&quot;</span>
+<span class="s1">activity </span><span class="s0">= </span><span class="s2">&quot;1.10.1&quot;</span>
+<span class="s1">constraintlayout </span><span class="s0">= </span><span class="s2">&quot;2.2.1&quot;</span>
+<span class="s1">hilt </span><span class="s0">= </span><span class="s2">&quot;2.51.1&quot;</span>
+
+<span class="s0">[</span><span class="s1">libraries</span><span class="s0">]</span>
+<span class="s1">androidx-core-ktx </span><span class="s0">= { </span><span class="s1">group </span><span class="s0">= </span><span class="s2">&quot;androidx.core&quot;</span><span class="s0">, </span><span class="s1">name </span><span class="s0">= </span><span class="s2">&quot;core-ktx&quot;</span><span class="s0">, </span><span class="s1">version</span><span class="s0">.</span><span class="s1">ref </span><span class="s0">= </span><span class="s2">&quot;coreKtx&quot; </span><span class="s0">}</span>
+<span class="s1">junit </span><span class="s0">= { </span><span class="s1">group </span><span class="s0">= </span><span class="s2">&quot;junit&quot;</span><span class="s0">, </span><span class="s1">name </span><span class="s0">= </span><span class="s2">&quot;junit&quot;</span><span class="s0">, </span><span class="s1">version</span><span class="s0">.</span><span class="s1">ref </span><span class="s0">= </span><span class="s2">&quot;junit&quot; </span><span class="s0">}</span>
+<span class="s1">androidx-junit </span><span class="s0">= { </span><span class="s1">group </span><span class="s0">= </span><span class="s2">&quot;androidx.test.ext&quot;</span><span class="s0">, </span><span class="s1">name </span><span class="s0">= </span><span class="s2">&quot;junit&quot;</span><span class="s0">, </span><span class="s1">version</span><span class="s0">.</span><span class="s1">ref </span><span class="s0">= </span><span class="s2">&quot;junitVersion&quot; </span><span class="s0">}</span>
+<span class="s1">androidx-espresso-core </span><span class="s0">= { </span><span class="s1">group </span><span class="s0">= </span><span class="s2">&quot;androidx.test.espresso&quot;</span><span class="s0">, </span><span class="s1">name </span><span class="s0">= </span><span class="s2">&quot;espresso-core&quot;</span><span class="s0">, </span><span class="s1">version</span><span class="s0">.</span><span class="s1">ref </span><span class="s0">= </span><span class="s2">&quot;espressoCore&quot; </span><span class="s0">}</span>
+<span class="s1">androidx-appcompat </span><span class="s0">= { </span><span class="s1">group </span><span class="s0">= </span><span class="s2">&quot;androidx.appcompat&quot;</span><span class="s0">, </span><span class="s1">name </span><span class="s0">= </span><span class="s2">&quot;appcompat&quot;</span><span class="s0">, </span><span class="s1">version</span><span class="s0">.</span><span class="s1">ref </span><span class="s0">= </span><span class="s2">&quot;appcompat&quot; </span><span class="s0">}</span>
+<span class="s1">material </span><span class="s0">= { </span><span class="s1">group </span><span class="s0">= </span><span class="s2">&quot;com.google.android.material&quot;</span><span class="s0">, </span><span class="s1">name </span><span class="s0">= </span><span class="s2">&quot;material&quot;</span><span class="s0">, </span><span class="s1">version</span><span class="s0">.</span><span class="s1">ref </span><span class="s0">= </span><span class="s2">&quot;material&quot; </span><span class="s0">}</span>
+<span class="s1">androidx-activity </span><span class="s0">= { </span><span class="s1">group </span><span class="s0">= </span><span class="s2">&quot;androidx.activity&quot;</span><span class="s0">, </span><span class="s1">name </span><span class="s0">= </span><span class="s2">&quot;activity&quot;</span><span class="s0">, </span><span class="s1">version</span><span class="s0">.</span><span class="s1">ref </span><span class="s0">= </span><span class="s2">&quot;activity&quot; </span><span class="s0">}</span>
+<span class="s1">androidx-constraintlayout </span><span class="s0">= { </span><span class="s1">group </span><span class="s0">= </span><span class="s2">&quot;androidx.constraintlayout&quot;</span><span class="s0">, </span><span class="s1">name </span><span class="s0">= </span><span class="s2">&quot;constraintlayout&quot;</span><span class="s0">, </span><span class="s1">version</span><span class="s0">.</span><span class="s1">ref </span><span class="s0">= </span><span class="s2">&quot;constraintlayout&quot; </span><span class="s0">}</span>
+<span class="s1">hilt-android </span><span class="s0">= { </span><span class="s1">group </span><span class="s0">= </span><span class="s2">&quot;com.google.dagger&quot;</span><span class="s0">, </span><span class="s1">name </span><span class="s0">= </span><span class="s2">&quot;hilt-android&quot;</span><span class="s0">, </span><span class="s1">version</span><span class="s0">.</span><span class="s1">ref </span><span class="s0">= </span><span class="s2">&quot;hilt&quot; </span><span class="s0">}</span>
+<span class="s1">hilt-compiler </span><span class="s0">= { </span><span class="s1">group </span><span class="s0">= </span><span class="s2">&quot;com.google.dagger&quot;</span><span class="s0">, </span><span class="s1">name </span><span class="s0">= </span><span class="s2">&quot;hilt-compiler&quot;</span><span class="s0">, </span><span class="s1">version</span><span class="s0">.</span><span class="s1">ref </span><span class="s0">= </span><span class="s2">&quot;hilt&quot; </span><span class="s0">}</span>
+
+<span class="s0">[</span><span class="s1">plugins</span><span class="s0">]</span>
+<span class="s1">android-application </span><span class="s0">= { </span><span class="s1">id </span><span class="s0">= </span><span class="s2">&quot;com.android.application&quot;</span><span class="s0">, </span><span class="s1">version</span><span class="s0">.</span><span class="s1">ref </span><span class="s0">= </span><span class="s2">&quot;agp&quot; </span><span class="s0">}</span>
+<span class="s1">kotlin-android </span><span class="s0">= { </span><span class="s1">id </span><span class="s0">= </span><span class="s2">&quot;org.jetbrains.kotlin.android&quot;</span><span class="s0">, </span><span class="s1">version</span><span class="s0">.</span><span class="s1">ref </span><span class="s0">= </span><span class="s2">&quot;kotlin&quot; </span><span class="s0">}</span>
+<span class="s1">hilt-android </span><span class="s0">= { </span><span class="s1">id </span><span class="s0">= </span><span class="s2">&quot;com.google.dagger.hilt.android&quot;</span><span class="s0">, </span><span class="s1">version</span><span class="s0">.</span><span class="s1">ref </span><span class="s0">= </span><span class="s2">&quot;hilt&quot; </span><span class="s0">}</span>
+
+</pre>
+</body>
+</html>

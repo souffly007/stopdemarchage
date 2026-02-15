@@ -1,0 +1,5 @@
+{
+  "blocked_prefixes": ["06", "07", "08"],
+  "block_unknown_numbers": true
+}
+

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="text_on_background_main">#FFFFFF</color>
+    <color name="text_on_popup_dark">#FFF8DC</color>
+    <color name="colorPrimaryDark">#FF5722</color>
+    <color name="colorOnPrimaryDark">#FFF8DC</color>
+    <color name="colorSurfaceDark">#121212</color>
+    <color name="colorOnSurfaceDark">#FFF8DC</color>
+    <color name="prefix_text_color">#FFFFFF</color>
+
+</resources>

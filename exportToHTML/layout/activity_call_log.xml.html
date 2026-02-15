@@ -1,0 +1,697 @@
+<html>
+<head>
+<title>activity_call_log.xml</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #d5b778;}
+.s1 { color: #bcbec4;}
+.s2 { color: #6aab73;}
+.s3 { color: #bcbec4;}
+.s4 { color: #7a7e85;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+activity_call_log.xml</font>
+</center></td></tr></table>
+<pre><span class="s0">&lt;?</span><span class="s1">xml version</span><span class="s2">=&quot;1.0&quot; </span><span class="s1">encoding</span><span class="s2">=&quot;utf-8&quot;</span><span class="s0">?&gt;</span>
+<span class="s0">&lt;androidx.constraintlayout.widget.ConstraintLayout</span>
+    <span class="s1">xmlns:android</span><span class="s2">=&quot;http://schemas.android.com/apk/res/android&quot;</span>
+    <span class="s1">xmlns:app</span><span class="s2">=&quot;http://schemas.android.com/apk/res-auto&quot;</span>
+    <span class="s1">xmlns:tools</span><span class="s2">=&quot;http://schemas.android.com/tools&quot;</span>
+    <span class="s1">android:layout_width</span><span class="s2">=&quot;match_parent&quot;</span>
+    <span class="s1">android:layout_height</span><span class="s2">=&quot;match_parent&quot;</span>
+    <span class="s1">android:background</span><span class="s2">=&quot;@drawable/gradient_background&quot;</span>
+    <span class="s1">tools:context</span><span class="s2">=&quot;.CallLogActivity&quot;</span><span class="s0">&gt;</span>
+
+    <span class="s4">&lt;!-- Statistiques --&gt;</span>
+    <span class="s0">&lt;LinearLayout</span>
+        <span class="s1">android:id</span><span class="s2">=&quot;@+id/stats_container&quot;</span>
+        <span class="s1">android:layout_width</span><span class="s2">=&quot;match_parent&quot;</span>
+        <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+        <span class="s1">android:orientation</span><span class="s2">=&quot;horizontal&quot;</span>
+        <span class="s1">android:padding</span><span class="s2">=&quot;14dp&quot;</span>
+        <span class="s1">android:layout_marginTop</span><span class="s2">=&quot;80dp&quot;</span>
+        <span class="s1">android:background</span><span class="s2">=&quot;#AA000000&quot;</span>
+        <span class="s1">app:layout_constraintTop_toTopOf</span><span class="s2">=&quot;parent&quot;</span><span class="s0">&gt;</span>
+
+        <span class="s0">&lt;TextView</span>
+            <span class="s1">android:id</span><span class="s2">=&quot;@+id/stats_received&quot;</span>
+            <span class="s1">android:layout_width</span><span class="s2">=&quot;0dp&quot;</span>
+            <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+            <span class="s1">android:layout_weight</span><span class="s2">=&quot;1&quot;</span>
+            <span class="s1">android:text</span><span class="s2">=&quot;Reçus: 0&quot;</span>
+            <span class="s1">android:textColor</span><span class="s2">=&quot;#FFFFFF&quot;</span>
+            <span class="s1">android:textStyle</span><span class="s2">=&quot;bold&quot;</span>
+            <span class="s1">android:textSize</span><span class="s2">=&quot;14sp&quot;</span>
+            <span class="s1">android:shadowColor</span><span class="s2">=&quot;#000000&quot;</span>
+            <span class="s1">android:shadowDx</span><span class="s2">=&quot;2&quot;</span>
+            <span class="s1">android:shadowDy</span><span class="s2">=&quot;2&quot;</span>
+            <span class="s1">android:shadowRadius</span><span class="s2">=&quot;4&quot;</span>
+            <span class="s1">android:gravity</span><span class="s2">=&quot;center&quot; </span><span class="s0">/&gt;</span>
+
+        <span class="s0">&lt;TextView</span>
+            <span class="s1">android:id</span><span class="s2">=&quot;@+id/stats_outgoing&quot;</span>
+            <span class="s1">android:layout_width</span><span class="s2">=&quot;0dp&quot;</span>
+            <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+            <span class="s1">android:layout_weight</span><span class="s2">=&quot;1&quot;</span>
+            <span class="s1">android:text</span><span class="s2">=&quot;Sortants: 0&quot;</span>
+            <span class="s1">android:textColor</span><span class="s2">=&quot;#FFFFFF&quot;</span>
+            <span class="s1">android:textStyle</span><span class="s2">=&quot;bold&quot;</span>
+            <span class="s1">android:textSize</span><span class="s2">=&quot;14sp&quot;</span>
+            <span class="s1">android:shadowColor</span><span class="s2">=&quot;#000000&quot;</span>
+            <span class="s1">android:shadowDx</span><span class="s2">=&quot;2&quot;</span>
+            <span class="s1">android:shadowDy</span><span class="s2">=&quot;2&quot;</span>
+            <span class="s1">android:shadowRadius</span><span class="s2">=&quot;4&quot;</span>
+            <span class="s1">android:gravity</span><span class="s2">=&quot;center&quot; </span><span class="s0">/&gt;</span>
+
+        <span class="s0">&lt;TextView</span>
+            <span class="s1">android:id</span><span class="s2">=&quot;@+id/stats_missed&quot;</span>
+            <span class="s1">android:layout_width</span><span class="s2">=&quot;0dp&quot;</span>
+            <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+            <span class="s1">android:layout_weight</span><span class="s2">=&quot;1&quot;</span>
+            <span class="s1">android:text</span><span class="s2">=&quot;Manqués: 0&quot;</span>
+            <span class="s1">android:textColor</span><span class="s2">=&quot;#FFFFFF&quot;</span>
+            <span class="s1">android:textStyle</span><span class="s2">=&quot;bold&quot;</span>
+            <span class="s1">android:textSize</span><span class="s2">=&quot;14sp&quot;</span>
+            <span class="s1">android:shadowColor</span><span class="s2">=&quot;#000000&quot;</span>
+            <span class="s1">android:shadowDx</span><span class="s2">=&quot;2&quot;</span>
+            <span class="s1">android:shadowDy</span><span class="s2">=&quot;2&quot;</span>
+            <span class="s1">android:shadowRadius</span><span class="s2">=&quot;4&quot;</span>
+            <span class="s1">android:gravity</span><span class="s2">=&quot;center&quot; </span><span class="s0">/&gt;</span>
+
+        <span class="s0">&lt;TextView</span>
+            <span class="s1">android:id</span><span class="s2">=&quot;@+id/stats_blocked&quot;</span>
+            <span class="s1">android:layout_width</span><span class="s2">=&quot;0dp&quot;</span>
+            <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+            <span class="s1">android:layout_weight</span><span class="s2">=&quot;1&quot;</span>
+            <span class="s1">android:text</span><span class="s2">=&quot;Bloqués: 0&quot;</span>
+            <span class="s1">android:textColor</span><span class="s2">=&quot;#FFFFFF&quot;</span>
+            <span class="s1">android:textStyle</span><span class="s2">=&quot;bold&quot;</span>
+            <span class="s1">android:textSize</span><span class="s2">=&quot;14sp&quot;</span>
+            <span class="s1">android:shadowColor</span><span class="s2">=&quot;#000000&quot;</span>
+            <span class="s1">android:shadowDx</span><span class="s2">=&quot;2&quot;</span>
+            <span class="s1">android:shadowDy</span><span class="s2">=&quot;2&quot;</span>
+            <span class="s1">android:shadowRadius</span><span class="s2">=&quot;4&quot;</span>
+            <span class="s1">android:gravity</span><span class="s2">=&quot;center&quot; </span><span class="s0">/&gt;</span>
+    <span class="s0">&lt;/LinearLayout&gt;</span>
+
+    <span class="s4">&lt;!-- Onglets --&gt;</span>
+    <span class="s0">&lt;LinearLayout</span>
+        <span class="s1">android:id</span><span class="s2">=&quot;@+id/tabs_container&quot;</span>
+        <span class="s1">android:layout_width</span><span class="s2">=&quot;match_parent&quot;</span>
+        <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+        <span class="s1">android:orientation</span><span class="s2">=&quot;horizontal&quot;</span>
+        <span class="s1">android:background</span><span class="s2">=&quot;#BB000000&quot;</span>
+        <span class="s1">app:layout_constraintTop_toBottomOf</span><span class="s2">=&quot;@id/stats_container&quot;</span><span class="s0">&gt;</span>
+
+        <span class="s0">&lt;TextView</span>
+            <span class="s1">android:id</span><span class="s2">=&quot;@+id/tab_recent&quot;</span>
+            <span class="s1">android:layout_width</span><span class="s2">=&quot;0dp&quot;</span>
+            <span class="s1">android:layout_height</span><span class="s2">=&quot;48dp&quot;</span>
+            <span class="s1">android:layout_weight</span><span class="s2">=&quot;1&quot;</span>
+            <span class="s1">android:text</span><span class="s2">=&quot;Récents&quot;</span>
+            <span class="s1">android:gravity</span><span class="s2">=&quot;center&quot;</span>
+            <span class="s1">android:textColor</span><span class="s2">=&quot;#FFFFFF&quot;</span>
+            <span class="s1">android:textStyle</span><span class="s2">=&quot;bold&quot;</span>
+            <span class="s1">android:textSize</span><span class="s2">=&quot;18sp&quot;</span>
+            <span class="s1">android:shadowColor</span><span class="s2">=&quot;#000000&quot;</span>
+            <span class="s1">android:shadowDx</span><span class="s2">=&quot;2&quot;</span>
+            <span class="s1">android:shadowDy</span><span class="s2">=&quot;2&quot;</span>
+            <span class="s1">android:shadowRadius</span><span class="s2">=&quot;4&quot;</span>
+            <span class="s1">android:background</span><span class="s2">=&quot;?android:attr/selectableItemBackground&quot; </span><span class="s0">/&gt;</span>
+
+        <span class="s0">&lt;TextView</span>
+            <span class="s1">android:id</span><span class="s2">=&quot;@+id/tab_contacts&quot;</span>
+            <span class="s1">android:layout_width</span><span class="s2">=&quot;0dp&quot;</span>
+            <span class="s1">android:layout_height</span><span class="s2">=&quot;48dp&quot;</span>
+            <span class="s1">android:layout_weight</span><span class="s2">=&quot;1&quot;</span>
+            <span class="s1">android:text</span><span class="s2">=&quot;Contacts&quot;</span>
+            <span class="s1">android:gravity</span><span class="s2">=&quot;center&quot;</span>
+            <span class="s1">android:textColor</span><span class="s2">=&quot;#FFFFFF&quot;</span>
+            <span class="s1">android:textStyle</span><span class="s2">=&quot;bold&quot;</span>
+            <span class="s1">android:textSize</span><span class="s2">=&quot;18sp&quot;</span>
+            <span class="s1">android:shadowColor</span><span class="s2">=&quot;#000000&quot;</span>
+            <span class="s1">android:shadowDx</span><span class="s2">=&quot;2&quot;</span>
+            <span class="s1">android:shadowDy</span><span class="s2">=&quot;2&quot;</span>
+            <span class="s1">android:shadowRadius</span><span class="s2">=&quot;4&quot;</span>
+            <span class="s1">android:background</span><span class="s2">=&quot;?android:attr/selectableItemBackground&quot; </span><span class="s0">/&gt;</span>
+
+        <span class="s0">&lt;TextView</span>
+            <span class="s1">android:id</span><span class="s2">=&quot;@+id/tab_keypad&quot;</span>
+            <span class="s1">android:layout_width</span><span class="s2">=&quot;0dp&quot;</span>
+            <span class="s1">android:layout_height</span><span class="s2">=&quot;48dp&quot;</span>
+            <span class="s1">android:layout_weight</span><span class="s2">=&quot;1&quot;</span>
+            <span class="s1">android:text</span><span class="s2">=&quot;Clavier&quot;</span>
+            <span class="s1">android:gravity</span><span class="s2">=&quot;center&quot;</span>
+            <span class="s1">android:textColor</span><span class="s2">=&quot;#FFFFFF&quot;</span>
+            <span class="s1">android:textStyle</span><span class="s2">=&quot;bold&quot;</span>
+            <span class="s1">android:textSize</span><span class="s2">=&quot;18sp&quot;</span>
+            <span class="s1">android:shadowColor</span><span class="s2">=&quot;#000000&quot;</span>
+            <span class="s1">android:shadowDx</span><span class="s2">=&quot;2&quot;</span>
+            <span class="s1">android:shadowDy</span><span class="s2">=&quot;2&quot;</span>
+            <span class="s1">android:shadowRadius</span><span class="s2">=&quot;4&quot;</span>
+            <span class="s1">android:background</span><span class="s2">=&quot;?android:attr/selectableItemBackground&quot; </span><span class="s0">/&gt;</span>
+    <span class="s0">&lt;/LinearLayout&gt;</span>
+
+    <span class="s4">&lt;!-- Contenu des onglets --&gt;</span>
+    <span class="s0">&lt;FrameLayout</span>
+        <span class="s1">android:id</span><span class="s2">=&quot;@+id/tab_content_container&quot;</span>
+        <span class="s1">android:layout_width</span><span class="s2">=&quot;0dp&quot;</span>
+        <span class="s1">android:layout_height</span><span class="s2">=&quot;0dp&quot;</span>
+        <span class="s1">app:layout_constraintTop_toBottomOf</span><span class="s2">=&quot;@id/tabs_container&quot;</span>
+        <span class="s1">app:layout_constraintBottom_toBottomOf</span><span class="s2">=&quot;parent&quot;</span>
+        <span class="s1">app:layout_constraintStart_toStartOf</span><span class="s2">=&quot;parent&quot;</span>
+        <span class="s1">app:layout_constraintEnd_toEndOf</span><span class="s2">=&quot;parent&quot;</span><span class="s0">&gt;</span>
+
+        <span class="s4">&lt;!-- Récents --&gt;</span>
+        <span class="s0">&lt;LinearLayout</span>
+            <span class="s1">android:id</span><span class="s2">=&quot;@+id/recent_tab_content&quot;</span>
+            <span class="s1">android:layout_width</span><span class="s2">=&quot;match_parent&quot;</span>
+            <span class="s1">android:layout_height</span><span class="s2">=&quot;match_parent&quot;</span>
+            <span class="s1">android:orientation</span><span class="s2">=&quot;vertical&quot;</span>
+            <span class="s1">android:background</span><span class="s2">=&quot;#44000000&quot;</span>
+            <span class="s1">android:visibility</span><span class="s2">=&quot;visible&quot;</span><span class="s0">&gt;</span>
+
+            <span class="s0">&lt;androidx.recyclerview.widget.RecyclerView</span>
+                <span class="s1">android:id</span><span class="s2">=&quot;@+id/calls_recycler_view&quot;</span>
+                <span class="s1">android:layout_width</span><span class="s2">=&quot;match_parent&quot;</span>
+                <span class="s1">android:layout_height</span><span class="s2">=&quot;match_parent&quot;</span>
+                <span class="s1">android:paddingTop</span><span class="s2">=&quot;16dp&quot;</span>
+                <span class="s1">android:clipToPadding</span><span class="s2">=&quot;false&quot;</span>
+                <span class="s1">android:background</span><span class="s2">=&quot;@android:color/transparent&quot; </span><span class="s0">/&gt;</span>
+        <span class="s0">&lt;/LinearLayout&gt;</span>
+
+        <span class="s4">&lt;!-- Contacts --&gt;</span>
+        <span class="s0">&lt;LinearLayout</span>
+            <span class="s1">android:id</span><span class="s2">=&quot;@+id/contacts_tab_content&quot;</span>
+            <span class="s1">android:layout_width</span><span class="s2">=&quot;match_parent&quot;</span>
+            <span class="s1">android:layout_height</span><span class="s2">=&quot;match_parent&quot;</span>
+            <span class="s1">android:background</span><span class="s2">=&quot;#00F57F17&quot;</span>
+            <span class="s1">android:orientation</span><span class="s2">=&quot;vertical&quot;</span>
+            <span class="s1">android:visibility</span><span class="s2">=&quot;gone&quot;</span><span class="s0">&gt;</span>
+
+            <span class="s4">&lt;!-- Header avec titre et compteur --&gt;</span>
+            <span class="s0">&lt;LinearLayout</span>
+                <span class="s1">android:layout_width</span><span class="s2">=&quot;match_parent&quot;</span>
+                <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                <span class="s1">android:orientation</span><span class="s2">=&quot;horizontal&quot;</span>
+                <span class="s1">android:padding</span><span class="s2">=&quot;16dp&quot;</span>
+                <span class="s1">android:gravity</span><span class="s2">=&quot;center_vertical&quot;</span><span class="s0">&gt;</span>
+
+                <span class="s0">&lt;TextView</span>
+                    <span class="s1">android:layout_width</span><span class="s2">=&quot;0dp&quot;</span>
+                    <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                    <span class="s1">android:layout_weight</span><span class="s2">=&quot;1&quot;</span>
+                    <span class="s1">android:text</span><span class="s2">=&quot;Mes Contacts&quot;</span>
+                    <span class="s1">android:textSize</span><span class="s2">=&quot;20sp&quot;</span>
+                    <span class="s1">android:textStyle</span><span class="s2">=&quot;bold&quot;</span>
+                    <span class="s1">android:textColor</span><span class="s2">=&quot;#FFFFFF&quot;</span>
+                    <span class="s1">android:shadowColor</span><span class="s2">=&quot;#000000&quot;</span>
+                    <span class="s1">android:shadowDx</span><span class="s2">=&quot;2&quot;</span>
+                    <span class="s1">android:shadowDy</span><span class="s2">=&quot;2&quot;</span>
+                    <span class="s1">android:shadowRadius</span><span class="s2">=&quot;4&quot; </span><span class="s0">/&gt;</span>
+
+                <span class="s0">&lt;TextView</span>
+                    <span class="s1">android:id</span><span class="s2">=&quot;@+id/contacts_count&quot;</span>
+                    <span class="s1">android:layout_width</span><span class="s2">=&quot;wrap_content&quot;</span>
+                    <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                    <span class="s1">android:text</span><span class="s2">=&quot;0 contacts&quot;</span>
+                    <span class="s1">android:textSize</span><span class="s2">=&quot;14sp&quot;</span>
+                    <span class="s1">android:textColor</span><span class="s2">=&quot;#CCFFFFFF&quot;</span>
+                    <span class="s1">android:background</span><span class="s2">=&quot;#33FFFFFF&quot;</span>
+                    <span class="s1">android:padding</span><span class="s2">=&quot;8dp&quot;</span>
+                    <span class="s1">android:layout_marginStart</span><span class="s2">=&quot;8dp&quot; </span><span class="s0">/&gt;</span>
+
+            <span class="s0">&lt;/LinearLayout&gt;</span>
+
+            <span class="s4">&lt;!-- Barre de recherche --&gt;</span>
+            <span class="s0">&lt;androidx.cardview.widget.CardView</span>
+                <span class="s1">android:layout_width</span><span class="s2">=&quot;match_parent&quot;</span>
+                <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                <span class="s1">android:layout_margin</span><span class="s2">=&quot;16dp&quot;</span>
+                <span class="s1">app:cardCornerRadius</span><span class="s2">=&quot;24dp&quot;</span>
+                <span class="s1">app:cardElevation</span><span class="s2">=&quot;4dp&quot;</span><span class="s0">&gt;</span>
+
+                <span class="s0">&lt;SearchView</span>
+                    <span class="s1">android:id</span><span class="s2">=&quot;@+id/search_view&quot;</span>
+                    <span class="s1">android:layout_width</span><span class="s2">=&quot;match_parent&quot;</span>
+                    <span class="s1">android:layout_height</span><span class="s2">=&quot;48dp&quot;</span>
+                    <span class="s1">android:queryHint</span><span class="s2">=&quot;Rechercher un contact...&quot;</span>
+                    <span class="s1">android:iconifiedByDefault</span><span class="s2">=&quot;false&quot;</span>
+                    <span class="s1">android:background</span><span class="s2">=&quot;@android:color/white&quot; </span><span class="s0">/&gt;</span>
+
+            <span class="s0">&lt;/androidx.cardview.widget.CardView&gt;</span>
+
+            <span class="s4">&lt;!-- Conteneur pour la liste et l'état vide --&gt;</span>
+            <span class="s0">&lt;FrameLayout</span>
+                <span class="s1">android:layout_width</span><span class="s2">=&quot;match_parent&quot;</span>
+                <span class="s1">android:layout_height</span><span class="s2">=&quot;0dp&quot;</span>
+                <span class="s1">android:layout_weight</span><span class="s2">=&quot;1&quot;</span><span class="s0">&gt;</span>
+
+                <span class="s4">&lt;!-- Liste des contacts --&gt;</span>
+                <span class="s0">&lt;androidx.recyclerview.widget.RecyclerView</span>
+                    <span class="s1">android:id</span><span class="s2">=&quot;@+id/recycler_view_contacts&quot;</span>
+                    <span class="s1">android:layout_width</span><span class="s2">=&quot;match_parent&quot;</span>
+                    <span class="s1">android:layout_height</span><span class="s2">=&quot;match_parent&quot;</span>
+                    <span class="s1">android:padding</span><span class="s2">=&quot;8dp&quot;</span>
+                    <span class="s1">android:clipToPadding</span><span class="s2">=&quot;false&quot;</span>
+                    <span class="s1">android:scrollbars</span><span class="s2">=&quot;vertical&quot;</span>
+                    <span class="s1">android:fadeScrollbars</span><span class="s2">=&quot;true&quot;</span>
+                    <span class="s1">android:scrollbarStyle</span><span class="s2">=&quot;outsideOverlay&quot; </span><span class="s0">/&gt;</span>
+
+                <span class="s4">&lt;!-- État vide --&gt;</span>
+                <span class="s0">&lt;LinearLayout</span>
+                    <span class="s1">android:id</span><span class="s2">=&quot;@+id/empty_view&quot;</span>
+                    <span class="s1">android:layout_width</span><span class="s2">=&quot;match_parent&quot;</span>
+                    <span class="s1">android:layout_height</span><span class="s2">=&quot;match_parent&quot;</span>
+                    <span class="s1">android:orientation</span><span class="s2">=&quot;vertical&quot;</span>
+                    <span class="s1">android:gravity</span><span class="s2">=&quot;center&quot;</span>
+                    <span class="s1">android:padding</span><span class="s2">=&quot;32dp&quot;</span>
+                    <span class="s1">android:visibility</span><span class="s2">=&quot;gone&quot;</span><span class="s0">&gt;</span>
+
+                    <span class="s0">&lt;TextView</span>
+                        <span class="s1">android:layout_width</span><span class="s2">=&quot;wrap_content&quot;</span>
+                        <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                        <span class="s1">android:text</span><span class="s2">=&quot;📱&quot;</span>
+                        <span class="s1">android:textSize</span><span class="s2">=&quot;64sp&quot;</span>
+                        <span class="s1">android:layout_marginBottom</span><span class="s2">=&quot;16dp&quot; </span><span class="s0">/&gt;</span>
+
+                    <span class="s0">&lt;TextView</span>
+                        <span class="s1">android:layout_width</span><span class="s2">=&quot;wrap_content&quot;</span>
+                        <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                        <span class="s1">android:text</span><span class="s2">=&quot;Aucun contact&quot;</span>
+                        <span class="s1">android:textSize</span><span class="s2">=&quot;24sp&quot;</span>
+                        <span class="s1">android:textStyle</span><span class="s2">=&quot;bold&quot;</span>
+                        <span class="s1">android:textColor</span><span class="s2">=&quot;#FFFFFF&quot;</span>
+                        <span class="s1">android:shadowColor</span><span class="s2">=&quot;#000000&quot;</span>
+                        <span class="s1">android:shadowDx</span><span class="s2">=&quot;2&quot;</span>
+                        <span class="s1">android:shadowDy</span><span class="s2">=&quot;2&quot;</span>
+                        <span class="s1">android:shadowRadius</span><span class="s2">=&quot;4&quot;</span>
+                        <span class="s1">android:layout_marginBottom</span><span class="s2">=&quot;8dp&quot; </span><span class="s0">/&gt;</span>
+
+                    <span class="s0">&lt;TextView</span>
+                        <span class="s1">android:layout_width</span><span class="s2">=&quot;wrap_content&quot;</span>
+                        <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                        <span class="s1">android:text</span><span class="s2">=&quot;Aucun contact trouvé\nsur votre téléphone&quot;</span>
+                        <span class="s1">android:textSize</span><span class="s2">=&quot;16sp&quot;</span>
+                        <span class="s1">android:textColor</span><span class="s2">=&quot;#CCFFFFFF&quot;</span>
+                        <span class="s1">android:textAlignment</span><span class="s2">=&quot;center&quot;</span>
+                        <span class="s1">android:shadowColor</span><span class="s2">=&quot;#000000&quot;</span>
+                        <span class="s1">android:shadowDx</span><span class="s2">=&quot;1&quot;</span>
+                        <span class="s1">android:shadowDy</span><span class="s2">=&quot;1&quot;</span>
+                        <span class="s1">android:shadowRadius</span><span class="s2">=&quot;2&quot;</span>
+                        <span class="s1">android:lineSpacingExtra</span><span class="s2">=&quot;4dp&quot; </span><span class="s0">/&gt;</span>
+
+                <span class="s0">&lt;/LinearLayout&gt;</span>
+
+                <span class="s4">&lt;!-- Indicateur de chargement --&gt;</span>
+                <span class="s0">&lt;ProgressBar</span>
+                    <span class="s1">android:id</span><span class="s2">=&quot;@+id/progress_bar&quot;</span>
+                    <span class="s1">android:layout_width</span><span class="s2">=&quot;wrap_content&quot;</span>
+                    <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                    <span class="s1">android:layout_gravity</span><span class="s2">=&quot;center&quot;</span>
+                    <span class="s1">android:visibility</span><span class="s2">=&quot;gone&quot; </span><span class="s0">/&gt;</span>
+
+            <span class="s0">&lt;/FrameLayout&gt;</span>
+
+        <span class="s0">&lt;/LinearLayout&gt;</span>
+
+        <span class="s4">&lt;!-- CLAVIER COMPLET FONCTIONNEL --&gt;</span>
+        <span class="s0">&lt;LinearLayout</span>
+            <span class="s1">android:id</span><span class="s2">=&quot;@+id/keypad_tab_content&quot;</span>
+            <span class="s1">android:layout_width</span><span class="s2">=&quot;match_parent&quot;</span>
+            <span class="s1">android:layout_height</span><span class="s2">=&quot;match_parent&quot;</span>
+            <span class="s1">android:orientation</span><span class="s2">=&quot;vertical&quot;</span>
+            <span class="s1">android:background</span><span class="s2">=&quot;#44000000&quot;</span>
+            <span class="s1">android:padding</span><span class="s2">=&quot;16dp&quot;</span>
+            <span class="s1">android:visibility</span><span class="s2">=&quot;gone&quot;</span><span class="s0">&gt;</span>
+
+            <span class="s4">&lt;!-- Zone d'affichage du numéro - RÉDUITE --&gt;</span>
+            <span class="s0">&lt;androidx.cardview.widget.CardView</span>
+                <span class="s1">android:layout_width</span><span class="s2">=&quot;match_parent&quot;</span>
+                <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                <span class="s1">android:layout_marginBottom</span><span class="s2">=&quot;16dp&quot;</span>
+                <span class="s1">app:cardCornerRadius</span><span class="s2">=&quot;12dp&quot;</span>
+                <span class="s1">app:cardElevation</span><span class="s2">=&quot;4dp&quot;</span><span class="s0">&gt;</span>
+
+                <span class="s0">&lt;LinearLayout</span>
+                    <span class="s1">android:layout_width</span><span class="s2">=&quot;match_parent&quot;</span>
+                    <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                    <span class="s1">android:orientation</span><span class="s2">=&quot;vertical&quot;</span>
+                    <span class="s1">android:padding</span><span class="s2">=&quot;12dp&quot;</span><span class="s0">&gt;</span>
+
+                    <span class="s4">&lt;!-- Champ d'affichage du numéro - PLUS COMPACT --&gt;</span>
+                    <span class="s0">&lt;EditText</span>
+                        <span class="s1">android:id</span><span class="s2">=&quot;@+id/et_phone_number&quot;</span>
+                        <span class="s1">android:layout_width</span><span class="s2">=&quot;match_parent&quot;</span>
+                        <span class="s1">android:layout_height</span><span class="s2">=&quot;45dp&quot;</span>
+                        <span class="s1">android:textSize</span><span class="s2">=&quot;20sp&quot;</span>
+                        <span class="s1">android:textStyle</span><span class="s2">=&quot;bold&quot;</span>
+                        <span class="s1">android:gravity</span><span class="s2">=&quot;center&quot;</span>
+                        <span class="s1">android:hint</span><span class="s2">=&quot;Composez un numéro&quot;</span>
+                        <span class="s1">android:background</span><span class="s2">=&quot;@android:color/transparent&quot;</span>
+                        <span class="s1">android:inputType</span><span class="s2">=&quot;phone&quot;</span>
+                        <span class="s1">android:textColor</span><span class="s2">=&quot;#000000&quot;</span>
+                        <span class="s1">android:textColorHint</span><span class="s2">=&quot;#666666&quot; </span><span class="s0">/&gt;</span>
+
+                    <span class="s4">&lt;!-- Nom du contact si reconnu - PLUS COMPACT --&gt;</span>
+                    <span class="s0">&lt;TextView</span>
+                        <span class="s1">android:id</span><span class="s2">=&quot;@+id/tv_contact_name&quot;</span>
+                        <span class="s1">android:layout_width</span><span class="s2">=&quot;match_parent&quot;</span>
+                        <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                        <span class="s1">android:textSize</span><span class="s2">=&quot;14sp&quot;</span>
+                        <span class="s1">android:gravity</span><span class="s2">=&quot;center&quot;</span>
+                        <span class="s1">android:textColor</span><span class="s2">=&quot;#666666&quot;</span>
+                        <span class="s1">android:visibility</span><span class="s2">=&quot;gone&quot; </span><span class="s0">/&gt;</span>
+
+                <span class="s0">&lt;/LinearLayout&gt;</span>
+
+            <span class="s0">&lt;/androidx.cardview.widget.CardView&gt;</span>
+
+            <span class="s4">&lt;!-- Grille du clavier numérique - ALIGNEMENT CORRIGÉ --&gt;</span>
+            <span class="s0">&lt;GridLayout</span>
+                <span class="s1">android:layout_width</span><span class="s2">=&quot;match_parent&quot;</span>
+                <span class="s1">android:layout_height</span><span class="s2">=&quot;0dp&quot;</span>
+                <span class="s1">android:layout_weight</span><span class="s2">=&quot;1&quot;</span>
+                <span class="s1">android:columnCount</span><span class="s2">=&quot;3&quot;</span>
+                <span class="s1">android:rowCount</span><span class="s2">=&quot;4&quot;</span>
+                <span class="s1">android:layout_marginBottom</span><span class="s2">=&quot;8dp&quot;</span>
+                <span class="s1">android:layout_marginStart</span><span class="s2">=&quot;8dp&quot;</span>
+                <span class="s1">android:layout_marginEnd</span><span class="s2">=&quot;8dp&quot;</span><span class="s0">&gt;</span>
+
+                <span class="s4">&lt;!-- Première ligne : 1, 2, 3 --&gt;</span>
+                <span class="s0">&lt;Button</span>
+                    <span class="s1">android:id</span><span class="s2">=&quot;@+id/btn_1&quot;</span>
+                    <span class="s1">android:layout_width</span><span class="s2">=&quot;0dp&quot;</span>
+                    <span class="s1">android:layout_height</span><span class="s2">=&quot;70dp&quot;</span>
+                    <span class="s1">android:layout_margin</span><span class="s2">=&quot;3dp&quot;</span>
+                    <span class="s1">android:layout_columnWeight</span><span class="s2">=&quot;1&quot;</span>
+                    <span class="s1">android:layout_row</span><span class="s2">=&quot;0&quot;</span>
+                    <span class="s1">android:layout_column</span><span class="s2">=&quot;0&quot;</span>
+                    <span class="s1">android:text</span><span class="s2">=&quot;1&quot;</span>
+                    <span class="s1">android:textSize</span><span class="s2">=&quot;20sp&quot;</span>
+                    <span class="s1">android:textStyle</span><span class="s2">=&quot;bold&quot;</span>
+                    <span class="s1">android:textColor</span><span class="s2">=&quot;#FFFFFF&quot;</span>
+                    <span class="s1">android:background</span><span class="s2">=&quot;#66FFFFFF&quot;</span>
+                    <span class="s1">android:elevation</span><span class="s2">=&quot;2dp&quot; </span><span class="s0">/&gt;</span>
+
+                <span class="s0">&lt;Button</span>
+                    <span class="s1">android:id</span><span class="s2">=&quot;@+id/btn_2&quot;</span>
+                    <span class="s1">android:layout_width</span><span class="s2">=&quot;0dp&quot;</span>
+                    <span class="s1">android:layout_height</span><span class="s2">=&quot;70dp&quot;</span>
+                    <span class="s1">android:layout_margin</span><span class="s2">=&quot;3dp&quot;</span>
+                    <span class="s1">android:layout_columnWeight</span><span class="s2">=&quot;1&quot;</span>
+                    <span class="s1">android:layout_row</span><span class="s2">=&quot;0&quot;</span>
+                    <span class="s1">android:layout_column</span><span class="s2">=&quot;1&quot;</span>
+                    <span class="s1">android:text</span><span class="s2">=&quot;2\nABC&quot;</span>
+                    <span class="s1">android:textSize</span><span class="s2">=&quot;16sp&quot;</span>
+                    <span class="s1">android:textStyle</span><span class="s2">=&quot;bold&quot;</span>
+                    <span class="s1">android:textColor</span><span class="s2">=&quot;#FFFFFF&quot;</span>
+                    <span class="s1">android:background</span><span class="s2">=&quot;#66FFFFFF&quot;</span>
+                    <span class="s1">android:elevation</span><span class="s2">=&quot;2dp&quot; </span><span class="s0">/&gt;</span>
+
+                <span class="s0">&lt;Button</span>
+                    <span class="s1">android:id</span><span class="s2">=&quot;@+id/btn_3&quot;</span>
+                    <span class="s1">android:layout_width</span><span class="s2">=&quot;0dp&quot;</span>
+                    <span class="s1">android:layout_height</span><span class="s2">=&quot;70dp&quot;</span>
+                    <span class="s1">android:layout_margin</span><span class="s2">=&quot;3dp&quot;</span>
+                    <span class="s1">android:layout_columnWeight</span><span class="s2">=&quot;1&quot;</span>
+                    <span class="s1">android:layout_row</span><span class="s2">=&quot;0&quot;</span>
+                    <span class="s1">android:layout_column</span><span class="s2">=&quot;2&quot;</span>
+                    <span class="s1">android:text</span><span class="s2">=&quot;3\nDEF&quot;</span>
+                    <span class="s1">android:textSize</span><span class="s2">=&quot;16sp&quot;</span>
+                    <span class="s1">android:textStyle</span><span class="s2">=&quot;bold&quot;</span>
+                    <span class="s1">android:textColor</span><span class="s2">=&quot;#FFFFFF&quot;</span>
+                    <span class="s1">android:background</span><span class="s2">=&quot;#66FFFFFF&quot;</span>
+                    <span class="s1">android:elevation</span><span class="s2">=&quot;2dp&quot; </span><span class="s0">/&gt;</span>
+
+                <span class="s4">&lt;!-- Deuxième ligne : 4, 5, 6 --&gt;</span>
+                <span class="s0">&lt;Button</span>
+                    <span class="s1">android:id</span><span class="s2">=&quot;@+id/btn_4&quot;</span>
+                    <span class="s1">android:layout_width</span><span class="s2">=&quot;0dp&quot;</span>
+                    <span class="s1">android:layout_height</span><span class="s2">=&quot;70dp&quot;</span>
+                    <span class="s1">android:layout_margin</span><span class="s2">=&quot;3dp&quot;</span>
+                    <span class="s1">android:layout_columnWeight</span><span class="s2">=&quot;1&quot;</span>
+                    <span class="s1">android:layout_row</span><span class="s2">=&quot;1&quot;</span>
+                    <span class="s1">android:layout_column</span><span class="s2">=&quot;0&quot;</span>
+                    <span class="s1">android:text</span><span class="s2">=&quot;4\nGHI&quot;</span>
+                    <span class="s1">android:textSize</span><span class="s2">=&quot;16sp&quot;</span>
+                    <span class="s1">android:textStyle</span><span class="s2">=&quot;bold&quot;</span>
+                    <span class="s1">android:textColor</span><span class="s2">=&quot;#FFFFFF&quot;</span>
+                    <span class="s1">android:background</span><span class="s2">=&quot;#66FFFFFF&quot;</span>
+                    <span class="s1">android:elevation</span><span class="s2">=&quot;2dp&quot; </span><span class="s0">/&gt;</span>
+
+                <span class="s0">&lt;Button</span>
+                    <span class="s1">android:id</span><span class="s2">=&quot;@+id/btn_5&quot;</span>
+                    <span class="s1">android:layout_width</span><span class="s2">=&quot;0dp&quot;</span>
+                    <span class="s1">android:layout_height</span><span class="s2">=&quot;70dp&quot;</span>
+                    <span class="s1">android:layout_margin</span><span class="s2">=&quot;3dp&quot;</span>
+                    <span class="s1">android:layout_columnWeight</span><span class="s2">=&quot;1&quot;</span>
+                    <span class="s1">android:layout_row</span><span class="s2">=&quot;1&quot;</span>
+                    <span class="s1">android:layout_column</span><span class="s2">=&quot;1&quot;</span>
+                    <span class="s1">android:text</span><span class="s2">=&quot;5\nJKL&quot;</span>
+                    <span class="s1">android:textSize</span><span class="s2">=&quot;16sp&quot;</span>
+                    <span class="s1">android:textStyle</span><span class="s2">=&quot;bold&quot;</span>
+                    <span class="s1">android:textColor</span><span class="s2">=&quot;#FFFFFF&quot;</span>
+                    <span class="s1">android:background</span><span class="s2">=&quot;#66FFFFFF&quot;</span>
+                    <span class="s1">android:elevation</span><span class="s2">=&quot;2dp&quot; </span><span class="s0">/&gt;</span>
+
+                <span class="s0">&lt;Button</span>
+                    <span class="s1">android:id</span><span class="s2">=&quot;@+id/btn_6&quot;</span>
+                    <span class="s1">android:layout_width</span><span class="s2">=&quot;0dp&quot;</span>
+                    <span class="s1">android:layout_height</span><span class="s2">=&quot;70dp&quot;</span>
+                    <span class="s1">android:layout_margin</span><span class="s2">=&quot;3dp&quot;</span>
+                    <span class="s1">android:layout_columnWeight</span><span class="s2">=&quot;1&quot;</span>
+                    <span class="s1">android:layout_row</span><span class="s2">=&quot;1&quot;</span>
+                    <span class="s1">android:layout_column</span><span class="s2">=&quot;2&quot;</span>
+                    <span class="s1">android:text</span><span class="s2">=&quot;6\nMNO&quot;</span>
+                    <span class="s1">android:textSize</span><span class="s2">=&quot;16sp&quot;</span>
+                    <span class="s1">android:textStyle</span><span class="s2">=&quot;bold&quot;</span>
+                    <span class="s1">android:textColor</span><span class="s2">=&quot;#FFFFFF&quot;</span>
+                    <span class="s1">android:background</span><span class="s2">=&quot;#66FFFFFF&quot;</span>
+                    <span class="s1">android:elevation</span><span class="s2">=&quot;2dp&quot; </span><span class="s0">/&gt;</span>
+
+                <span class="s4">&lt;!-- Troisième ligne : 7, 8, 9 --&gt;</span>
+                <span class="s0">&lt;Button</span>
+                    <span class="s1">android:id</span><span class="s2">=&quot;@+id/btn_7&quot;</span>
+                    <span class="s1">android:layout_width</span><span class="s2">=&quot;0dp&quot;</span>
+                    <span class="s1">android:layout_height</span><span class="s2">=&quot;70dp&quot;</span>
+                    <span class="s1">android:layout_margin</span><span class="s2">=&quot;3dp&quot;</span>
+                    <span class="s1">android:layout_columnWeight</span><span class="s2">=&quot;1&quot;</span>
+                    <span class="s1">android:layout_row</span><span class="s2">=&quot;2&quot;</span>
+                    <span class="s1">android:layout_column</span><span class="s2">=&quot;0&quot;</span>
+                    <span class="s1">android:text</span><span class="s2">=&quot;7\nPQRS&quot;</span>
+                    <span class="s1">android:textSize</span><span class="s2">=&quot;16sp&quot;</span>
+                    <span class="s1">android:textStyle</span><span class="s2">=&quot;bold&quot;</span>
+                    <span class="s1">android:textColor</span><span class="s2">=&quot;#FFFFFF&quot;</span>
+                    <span class="s1">android:background</span><span class="s2">=&quot;#66FFFFFF&quot;</span>
+                    <span class="s1">android:elevation</span><span class="s2">=&quot;2dp&quot; </span><span class="s0">/&gt;</span>
+
+                <span class="s0">&lt;Button</span>
+                    <span class="s1">android:id</span><span class="s2">=&quot;@+id/btn_8&quot;</span>
+                    <span class="s1">android:layout_width</span><span class="s2">=&quot;0dp&quot;</span>
+                    <span class="s1">android:layout_height</span><span class="s2">=&quot;70dp&quot;</span>
+                    <span class="s1">android:layout_margin</span><span class="s2">=&quot;3dp&quot;</span>
+                    <span class="s1">android:layout_columnWeight</span><span class="s2">=&quot;1&quot;</span>
+                    <span class="s1">android:layout_row</span><span class="s2">=&quot;2&quot;</span>
+                    <span class="s1">android:layout_column</span><span class="s2">=&quot;1&quot;</span>
+                    <span class="s1">android:text</span><span class="s2">=&quot;8\nTUV&quot;</span>
+                    <span class="s1">android:textSize</span><span class="s2">=&quot;16sp&quot;</span>
+                    <span class="s1">android:textStyle</span><span class="s2">=&quot;bold&quot;</span>
+                    <span class="s1">android:textColor</span><span class="s2">=&quot;#FFFFFF&quot;</span>
+                    <span class="s1">android:background</span><span class="s2">=&quot;#66FFFFFF&quot;</span>
+                    <span class="s1">android:elevation</span><span class="s2">=&quot;2dp&quot; </span><span class="s0">/&gt;</span>
+
+                <span class="s0">&lt;Button</span>
+                    <span class="s1">android:id</span><span class="s2">=&quot;@+id/btn_9&quot;</span>
+                    <span class="s1">android:layout_width</span><span class="s2">=&quot;0dp&quot;</span>
+                    <span class="s1">android:layout_height</span><span class="s2">=&quot;70dp&quot;</span>
+                    <span class="s1">android:layout_margin</span><span class="s2">=&quot;3dp&quot;</span>
+                    <span class="s1">android:layout_columnWeight</span><span class="s2">=&quot;1&quot;</span>
+                    <span class="s1">android:layout_row</span><span class="s2">=&quot;2&quot;</span>
+                    <span class="s1">android:layout_column</span><span class="s2">=&quot;2&quot;</span>
+                    <span class="s1">android:text</span><span class="s2">=&quot;9\nWXYZ&quot;</span>
+                    <span class="s1">android:textSize</span><span class="s2">=&quot;16sp&quot;</span>
+                    <span class="s1">android:textStyle</span><span class="s2">=&quot;bold&quot;</span>
+                    <span class="s1">android:textColor</span><span class="s2">=&quot;#FFFFFF&quot;</span>
+                    <span class="s1">android:background</span><span class="s2">=&quot;#66FFFFFF&quot;</span>
+                    <span class="s1">android:elevation</span><span class="s2">=&quot;2dp&quot; </span><span class="s0">/&gt;</span>
+
+                <span class="s4">&lt;!-- Quatrième ligne : *, 0, # --&gt;</span>
+                <span class="s0">&lt;Button</span>
+                    <span class="s1">android:id</span><span class="s2">=&quot;@+id/btn_star&quot;</span>
+                    <span class="s1">android:layout_width</span><span class="s2">=&quot;0dp&quot;</span>
+                    <span class="s1">android:layout_height</span><span class="s2">=&quot;70dp&quot;</span>
+                    <span class="s1">android:layout_margin</span><span class="s2">=&quot;3dp&quot;</span>
+                    <span class="s1">android:layout_columnWeight</span><span class="s2">=&quot;1&quot;</span>
+                    <span class="s1">android:layout_row</span><span class="s2">=&quot;3&quot;</span>
+                    <span class="s1">android:layout_column</span><span class="s2">=&quot;0&quot;</span>
+                    <span class="s1">android:text</span><span class="s2">=&quot;*&quot;</span>
+                    <span class="s1">android:textSize</span><span class="s2">=&quot;20sp&quot;</span>
+                    <span class="s1">android:textStyle</span><span class="s2">=&quot;bold&quot;</span>
+                    <span class="s1">android:textColor</span><span class="s2">=&quot;#FFFFFF&quot;</span>
+                    <span class="s1">android:background</span><span class="s2">=&quot;#66FFFFFF&quot;</span>
+                    <span class="s1">android:elevation</span><span class="s2">=&quot;2dp&quot; </span><span class="s0">/&gt;</span>
+
+                <span class="s0">&lt;Button</span>
+                    <span class="s1">android:id</span><span class="s2">=&quot;@+id/btn_0&quot;</span>
+                    <span class="s1">android:layout_width</span><span class="s2">=&quot;0dp&quot;</span>
+                    <span class="s1">android:layout_height</span><span class="s2">=&quot;70dp&quot;</span>
+                    <span class="s1">android:layout_margin</span><span class="s2">=&quot;3dp&quot;</span>
+                    <span class="s1">android:layout_columnWeight</span><span class="s2">=&quot;1&quot;</span>
+                    <span class="s1">android:layout_row</span><span class="s2">=&quot;3&quot;</span>
+                    <span class="s1">android:layout_column</span><span class="s2">=&quot;1&quot;</span>
+                    <span class="s1">android:text</span><span class="s2">=&quot;0\n+&quot;</span>
+                    <span class="s1">android:textSize</span><span class="s2">=&quot;16sp&quot;</span>
+                    <span class="s1">android:textStyle</span><span class="s2">=&quot;bold&quot;</span>
+                    <span class="s1">android:textColor</span><span class="s2">=&quot;#FFFFFF&quot;</span>
+                    <span class="s1">android:background</span><span class="s2">=&quot;#66FFFFFF&quot;</span>
+                    <span class="s1">android:elevation</span><span class="s2">=&quot;2dp&quot; </span><span class="s0">/&gt;</span>
+
+                <span class="s0">&lt;Button</span>
+                    <span class="s1">android:id</span><span class="s2">=&quot;@+id/btn_hash&quot;</span>
+                    <span class="s1">android:layout_width</span><span class="s2">=&quot;0dp&quot;</span>
+                    <span class="s1">android:layout_height</span><span class="s2">=&quot;70dp&quot;</span>
+                    <span class="s1">android:layout_margin</span><span class="s2">=&quot;3dp&quot;</span>
+                    <span class="s1">android:layout_columnWeight</span><span class="s2">=&quot;1&quot;</span>
+                    <span class="s1">android:layout_row</span><span class="s2">=&quot;3&quot;</span>
+                    <span class="s1">android:layout_column</span><span class="s2">=&quot;2&quot;</span>
+                    <span class="s1">android:text</span><span class="s2">=&quot;#&quot;</span>
+                    <span class="s1">android:textSize</span><span class="s2">=&quot;20sp&quot;</span>
+                    <span class="s1">android:textStyle</span><span class="s2">=&quot;bold&quot;</span>
+                    <span class="s1">android:textColor</span><span class="s2">=&quot;#FFFFFF&quot;</span>
+                    <span class="s1">android:background</span><span class="s2">=&quot;#66FFFFFF&quot;</span>
+                    <span class="s1">android:elevation</span><span class="s2">=&quot;2dp&quot; </span><span class="s0">/&gt;</span>
+
+            <span class="s0">&lt;/GridLayout&gt;</span>
+
+            <span class="s4">&lt;!-- Boutons d'action --&gt;</span>
+            <span class="s0">&lt;LinearLayout</span>
+                <span class="s1">android:layout_width</span><span class="s2">=&quot;match_parent&quot;</span>
+                <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                <span class="s1">android:orientation</span><span class="s2">=&quot;horizontal&quot;</span>
+                <span class="s1">android:gravity</span><span class="s2">=&quot;center&quot;</span>
+                <span class="s1">android:layout_marginTop</span><span class="s2">=&quot;16dp&quot;</span><span class="s0">&gt;</span>
+
+                <span class="s4">&lt;!-- Bouton Effacer --&gt;</span>
+                <span class="s0">&lt;Button</span>
+                    <span class="s1">android:id</span><span class="s2">=&quot;@+id/btn_delete&quot;</span>
+                    <span class="s1">android:layout_width</span><span class="s2">=&quot;0dp&quot;</span>
+                    <span class="s1">android:layout_height</span><span class="s2">=&quot;56dp&quot;</span>
+                    <span class="s1">android:layout_weight</span><span class="s2">=&quot;1&quot;</span>
+                    <span class="s1">android:layout_marginEnd</span><span class="s2">=&quot;8dp&quot;</span>
+                    <span class="s1">android:text</span><span class="s2">=&quot;Effacer&quot;</span>
+                    <span class="s1">android:textColor</span><span class="s2">=&quot;#FFFFFF&quot;</span>
+                    <span class="s1">android:background</span><span class="s2">=&quot;#66FF5722&quot;</span>
+                    <span class="s1">android:textStyle</span><span class="s2">=&quot;bold&quot; </span><span class="s0">/&gt;</span>
+
+                <span class="s4">&lt;!-- Bouton Appeler --&gt;</span>
+                <span class="s0">&lt;com.google.android.material.button.MaterialButton</span>
+                    <span class="s1">android:id</span><span class="s2">=&quot;@+id/btn_call&quot;</span>
+                    <span class="s1">android:layout_width</span><span class="s2">=&quot;0dp&quot;</span>
+                    <span class="s1">android:layout_height</span><span class="s2">=&quot;56dp&quot;</span>
+                    <span class="s1">android:layout_weight</span><span class="s2">=&quot;2&quot;</span>
+                    <span class="s1">android:layout_marginStart</span><span class="s2">=&quot;8dp&quot;</span>
+                    <span class="s1">android:text</span><span class="s2">=&quot;Appeler&quot;</span>
+                    <span class="s1">android:textColor</span><span class="s2">=&quot;#FFFFFF&quot;</span>
+                    <span class="s1">android:backgroundTint</span><span class="s2">=&quot;#4CAF50&quot;</span>
+                    <span class="s1">android:textStyle</span><span class="s2">=&quot;bold&quot; </span><span class="s0">/&gt;</span>
+
+            <span class="s0">&lt;/LinearLayout&gt;</span>
+
+            <span class="s4">&lt;!-- Boutons supplémentaires - REMONTÉS DE 2CM --&gt;</span>
+            <span class="s0">&lt;LinearLayout</span>
+                <span class="s1">android:layout_width</span><span class="s2">=&quot;match_parent&quot;</span>
+                <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+                <span class="s1">android:orientation</span><span class="s2">=&quot;horizontal&quot;</span>
+                <span class="s1">android:layout_marginTop</span><span class="s2">=&quot;4dp&quot;</span>
+                <span class="s1">android:layout_marginBottom</span><span class="s2">=&quot;60dp&quot;</span><span class="s0">&gt;</span>
+
+                <span class="s4">&lt;!-- Bouton Ajouter aux contacts --&gt;</span>
+                <span class="s0">&lt;com.google.android.material.button.MaterialButton</span>
+                    <span class="s1">android:id</span><span class="s2">=&quot;@+id/btn_add_contact&quot;</span>
+                    <span class="s1">android:layout_width</span><span class="s2">=&quot;0dp&quot;</span>
+                    <span class="s1">android:layout_height</span><span class="s2">=&quot;48dp&quot;</span>
+                    <span class="s1">android:layout_weight</span><span class="s2">=&quot;1&quot;</span>
+                    <span class="s1">android:layout_marginEnd</span><span class="s2">=&quot;4dp&quot;</span>
+                    <span class="s1">android:text</span><span class="s2">=&quot;Ajouter&quot;</span>
+                    <span class="s1">android:textColor</span><span class="s2">=&quot;#FFFFFF&quot;</span>
+                    <span class="s1">android:backgroundTint</span><span class="s2">=&quot;#2196F3&quot;</span>
+                    <span class="s1">android:textSize</span><span class="s2">=&quot;12sp&quot; </span><span class="s0">/&gt;</span>
+
+                <span class="s4">&lt;!-- Bouton SMS --&gt;</span>
+                <span class="s0">&lt;com.google.android.material.button.MaterialButton</span>
+                    <span class="s1">android:id</span><span class="s2">=&quot;@+id/btn_sms&quot;</span>
+                    <span class="s1">android:layout_width</span><span class="s2">=&quot;0dp&quot;</span>
+                    <span class="s1">android:layout_height</span><span class="s2">=&quot;48dp&quot;</span>
+                    <span class="s1">android:layout_weight</span><span class="s2">=&quot;1&quot;</span>
+                    <span class="s1">android:layout_marginStart</span><span class="s2">=&quot;2dp&quot;</span>
+                    <span class="s1">android:layout_marginEnd</span><span class="s2">=&quot;2dp&quot;</span>
+                    <span class="s1">android:text</span><span class="s2">=&quot;SMS&quot;</span>
+                    <span class="s1">android:textColor</span><span class="s2">=&quot;#FFFFFF&quot;</span>
+                    <span class="s1">android:backgroundTint</span><span class="s2">=&quot;#FF9800&quot;</span>
+                    <span class="s1">android:textSize</span><span class="s2">=&quot;12sp&quot; </span><span class="s0">/&gt;</span>
+
+                <span class="s4">&lt;!-- Bouton Historique --&gt;</span>
+                <span class="s0">&lt;com.google.android.material.button.MaterialButton</span>
+                    <span class="s1">android:id</span><span class="s2">=&quot;@+id/btn_history&quot;</span>
+                    <span class="s1">android:layout_width</span><span class="s2">=&quot;0dp&quot;</span>
+                    <span class="s1">android:layout_height</span><span class="s2">=&quot;48dp&quot;</span>
+                    <span class="s1">android:layout_weight</span><span class="s2">=&quot;1&quot;</span>
+                    <span class="s1">android:layout_marginStart</span><span class="s2">=&quot;4dp&quot;</span>
+                    <span class="s1">android:text</span><span class="s2">=&quot;Historique&quot;</span>
+                    <span class="s1">android:textColor</span><span class="s2">=&quot;#FFFFFF&quot;</span>
+                    <span class="s1">android:backgroundTint</span><span class="s2">=&quot;#9C27B0&quot;</span>
+                    <span class="s1">android:textSize</span><span class="s2">=&quot;12sp&quot; </span><span class="s0">/&gt;</span>
+
+            <span class="s0">&lt;/LinearLayout&gt;</span>
+
+        <span class="s0">&lt;/LinearLayout&gt;</span>
+
+    <span class="s0">&lt;/FrameLayout&gt;</span>
+
+    <span class="s4">&lt;!-- Texte état vide --&gt;</span>
+    <span class="s0">&lt;TextView</span>
+        <span class="s1">android:id</span><span class="s2">=&quot;@+id/empty_state_text&quot;</span>
+        <span class="s1">android:layout_width</span><span class="s2">=&quot;match_parent&quot;</span>
+        <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+        <span class="s1">android:text</span><span class="s2">=&quot;Aucun appel dans l'historique\n\nPassez un appel pour voir les données ici&quot;</span>
+        <span class="s1">android:textAlignment</span><span class="s2">=&quot;center&quot;</span>
+        <span class="s1">android:textSize</span><span class="s2">=&quot;18sp&quot;</span>
+        <span class="s1">android:textColor</span><span class="s2">=&quot;#FFFFFF&quot;</span>
+        <span class="s1">android:textStyle</span><span class="s2">=&quot;bold&quot;</span>
+        <span class="s1">android:shadowColor</span><span class="s2">=&quot;#000000&quot;</span>
+        <span class="s1">android:shadowDx</span><span class="s2">=&quot;2&quot;</span>
+        <span class="s1">android:shadowDy</span><span class="s2">=&quot;2&quot;</span>
+        <span class="s1">android:shadowRadius</span><span class="s2">=&quot;4&quot;</span>
+        <span class="s1">android:padding</span><span class="s2">=&quot;32dp&quot;</span>
+        <span class="s1">android:background</span><span class="s2">=&quot;#66000000&quot;</span>
+        <span class="s1">android:visibility</span><span class="s2">=&quot;gone&quot;</span>
+        <span class="s1">app:layout_constraintTop_toBottomOf</span><span class="s2">=&quot;@id/tabs_container&quot;</span>
+        <span class="s1">app:layout_constraintBottom_toBottomOf</span><span class="s2">=&quot;parent&quot;</span>
+        <span class="s1">app:layout_constraintStart_toStartOf</span><span class="s2">=&quot;parent&quot;</span>
+        <span class="s1">app:layout_constraintEnd_toEndOf</span><span class="s2">=&quot;parent&quot; </span><span class="s0">/&gt;</span>
+
+    <span class="s4">&lt;!-- FAB principal - Appel/Numéroteur --&gt;</span>
+
+
+    <span class="s4">&lt;!-- FAB secondaire - Nettoyage des doublons --&gt;</span>
+    <span class="s0">&lt;com.google.android.material.floatingactionbutton.FloatingActionButton</span>
+        <span class="s1">android:id</span><span class="s2">=&quot;@+id/fab_clean_duplicates&quot;</span>
+        <span class="s1">android:layout_width</span><span class="s2">=&quot;wrap_content&quot;</span>
+        <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+        <span class="s1">android:layout_marginBottom</span><span class="s2">=&quot;150dp&quot;</span>
+        <span class="s1">android:layout_marginEnd</span><span class="s2">=&quot;16dp&quot;</span>
+        <span class="s1">android:src</span><span class="s2">=&quot;@android:drawable/ic_menu_manage&quot;</span>
+        <span class="s1">android:backgroundTint</span><span class="s2">=&quot;@android:color/holo_orange_dark&quot;</span>
+        <span class="s1">android:visibility</span><span class="s2">=&quot;gone&quot;</span>
+        <span class="s1">app:fabSize</span><span class="s2">=&quot;mini&quot;</span>
+        <span class="s1">app:layout_constraintBottom_toBottomOf</span><span class="s2">=&quot;parent&quot;</span>
+        <span class="s1">app:layout_constraintEnd_toEndOf</span><span class="s2">=&quot;parent&quot; </span><span class="s0">/&gt;</span>
+
+<span class="s0">&lt;/androidx.constraintlayout.widget.ConstraintLayout&gt;</span></pre>
+</body>
+</html>

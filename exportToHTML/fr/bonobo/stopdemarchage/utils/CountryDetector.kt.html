@@ -1,0 +1,146 @@
+<html>
+<head>
+<title>CountryDetector.kt</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #6aab73;}
+.s4 { color: #5f826b; font-style: italic;}
+.s5 { color: #67a37c; font-style: italic;}
+.s6 { color: #7a7e85;}
+.s7 { color: #2aacb8;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+CountryDetector.kt</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">fr</span><span class="s2">.</span><span class="s1">bonobo</span><span class="s2">.</span><span class="s1">stopdemarchage</span><span class="s2">.</span><span class="s1">utils</span>
+
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">content</span><span class="s2">.</span><span class="s1">Context</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">telephony</span><span class="s2">.</span><span class="s1">TelephonyManager</span>
+<span class="s1">import java</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">Locale</span>
+
+<span class="s0">class </span><span class="s1">CountryDetector</span><span class="s2">(</span><span class="s1">private </span><span class="s0">val </span><span class="s1">context: Context</span><span class="s2">) {</span>
+
+    <span class="s1">companion </span><span class="s0">object </span><span class="s2">{</span>
+        <span class="s1">const </span><span class="s0">val </span><span class="s1">COUNTRY_FRANCE </span><span class="s2">= </span><span class="s3">&quot;FR&quot;</span>
+        <span class="s1">const </span><span class="s0">val </span><span class="s1">COUNTRY_BELGIUM </span><span class="s2">= </span><span class="s3">&quot;BE&quot;</span>
+        <span class="s1">const </span><span class="s0">val </span><span class="s1">DEFAULT_COUNTRY </span><span class="s2">= </span><span class="s1">COUNTRY_FRANCE</span>
+    <span class="s2">}</span>
+
+    <span class="s4">/**</span>
+     <span class="s4">* Détecte automatiquement le pays de l'utilisateur</span>
+     <span class="s4">* </span><span class="s5">@return </span><span class="s4">Code pays ISO (FR ou BE)</span>
+     <span class="s4">*/</span>
+    <span class="s0">fun </span><span class="s1">detectCountry</span><span class="s2">()</span><span class="s1">: String </span><span class="s2">{</span>
+        <span class="s6">// Priorité 1: Réseau mobile (plus fiable)</span>
+        <span class="s0">val </span><span class="s1">networkCountry </span><span class="s2">= </span><span class="s1">getNetworkCountry</span><span class="s2">()</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">networkCountry </span><span class="s2">!= </span><span class="s0">null</span><span class="s2">) {</span>
+            <span class="s0">return </span><span class="s1">networkCountry</span>
+        <span class="s2">}</span>
+
+        <span class="s6">// Priorité 2: SIM card</span>
+        <span class="s0">val </span><span class="s1">simCountry </span><span class="s2">= </span><span class="s1">getSimCountry</span><span class="s2">()</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">simCountry </span><span class="s2">!= </span><span class="s0">null</span><span class="s2">) {</span>
+            <span class="s0">return </span><span class="s1">simCountry</span>
+        <span class="s2">}</span>
+
+        <span class="s6">// Priorité 3: Locale système</span>
+        <span class="s0">val </span><span class="s1">localeCountry </span><span class="s2">= </span><span class="s1">getLocaleCountry</span><span class="s2">()</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">localeCountry </span><span class="s2">!= </span><span class="s0">null</span><span class="s2">) {</span>
+            <span class="s0">return </span><span class="s1">localeCountry</span>
+        <span class="s2">}</span>
+
+        <span class="s6">// Par défaut: France</span>
+        <span class="s0">return </span><span class="s1">DEFAULT_COUNTRY</span>
+    <span class="s2">}</span>
+
+    <span class="s4">/**</span>
+     <span class="s4">* Détecte le pays via le réseau mobile</span>
+     <span class="s4">*/</span>
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">getNetworkCountry</span><span class="s2">()</span><span class="s1">: String? </span><span class="s2">{</span>
+        <span class="s0">return try </span><span class="s2">{</span>
+            <span class="s0">val </span><span class="s1">telephonyManager </span><span class="s2">= </span><span class="s1">context</span><span class="s2">.</span><span class="s1">getSystemService</span><span class="s2">(</span><span class="s1">Context</span><span class="s2">.</span><span class="s1">TELEPHONY_SERVICE</span><span class="s2">) </span><span class="s0">as </span><span class="s1">TelephonyManager</span>
+            <span class="s0">val </span><span class="s1">countryCode </span><span class="s2">= </span><span class="s1">telephonyManager</span><span class="s2">.</span><span class="s1">networkCountryIso?</span><span class="s2">.</span><span class="s1">uppercase</span><span class="s2">()</span>
+
+            <span class="s0">when </span><span class="s2">(</span><span class="s1">countryCode</span><span class="s2">) {</span>
+                <span class="s3">&quot;BE&quot; </span><span class="s2">-&gt; </span><span class="s1">COUNTRY_BELGIUM</span>
+                <span class="s3">&quot;FR&quot; </span><span class="s2">-&gt; </span><span class="s1">COUNTRY_FRANCE</span>
+                <span class="s0">else </span><span class="s2">-&gt; </span><span class="s0">null</span>
+            <span class="s2">}</span>
+        <span class="s2">} </span><span class="s1">catch </span><span class="s2">(</span><span class="s1">e: Exception</span><span class="s2">) {</span>
+            <span class="s0">null</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s4">/**</span>
+     <span class="s4">* Détecte le pays via la carte SIM</span>
+     <span class="s4">*/</span>
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">getSimCountry</span><span class="s2">()</span><span class="s1">: String? </span><span class="s2">{</span>
+        <span class="s0">return try </span><span class="s2">{</span>
+            <span class="s0">val </span><span class="s1">telephonyManager </span><span class="s2">= </span><span class="s1">context</span><span class="s2">.</span><span class="s1">getSystemService</span><span class="s2">(</span><span class="s1">Context</span><span class="s2">.</span><span class="s1">TELEPHONY_SERVICE</span><span class="s2">) </span><span class="s0">as </span><span class="s1">TelephonyManager</span>
+            <span class="s0">val </span><span class="s1">countryCode </span><span class="s2">= </span><span class="s1">telephonyManager</span><span class="s2">.</span><span class="s1">simCountryIso?</span><span class="s2">.</span><span class="s1">uppercase</span><span class="s2">()</span>
+
+            <span class="s0">when </span><span class="s2">(</span><span class="s1">countryCode</span><span class="s2">) {</span>
+                <span class="s3">&quot;BE&quot; </span><span class="s2">-&gt; </span><span class="s1">COUNTRY_BELGIUM</span>
+                <span class="s3">&quot;FR&quot; </span><span class="s2">-&gt; </span><span class="s1">COUNTRY_FRANCE</span>
+                <span class="s0">else </span><span class="s2">-&gt; </span><span class="s0">null</span>
+            <span class="s2">}</span>
+        <span class="s2">} </span><span class="s1">catch </span><span class="s2">(</span><span class="s1">e: Exception</span><span class="s2">) {</span>
+            <span class="s0">null</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s4">/**</span>
+     <span class="s4">* Détecte le pays via la locale système</span>
+     <span class="s4">*/</span>
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">getLocaleCountry</span><span class="s2">()</span><span class="s1">: String? </span><span class="s2">{</span>
+        <span class="s0">val </span><span class="s1">countryCode </span><span class="s2">= </span><span class="s1">Locale</span><span class="s2">.</span><span class="s1">getDefault</span><span class="s2">().</span><span class="s1">country</span><span class="s2">.</span><span class="s1">uppercase</span><span class="s2">()</span>
+
+        <span class="s0">return when </span><span class="s2">(</span><span class="s1">countryCode</span><span class="s2">) {</span>
+            <span class="s3">&quot;BE&quot; </span><span class="s2">-&gt; </span><span class="s1">COUNTRY_BELGIUM</span>
+            <span class="s3">&quot;FR&quot; </span><span class="s2">-&gt; </span><span class="s1">COUNTRY_FRANCE</span>
+            <span class="s0">else </span><span class="s2">-&gt; </span><span class="s0">null</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s4">/**</span>
+     <span class="s4">* Vérifie si un numéro de téléphone est belge</span>
+     <span class="s4">*/</span>
+    <span class="s0">fun </span><span class="s1">isBelgianNumber</span><span class="s2">(</span><span class="s1">phoneNumber: String</span><span class="s2">)</span><span class="s1">: Boolean </span><span class="s2">{</span>
+        <span class="s0">val </span><span class="s1">cleanNumber </span><span class="s2">= </span><span class="s1">phoneNumber</span><span class="s2">.</span><span class="s1">replace</span><span class="s2">(</span><span class="s1">Regex</span><span class="s2">(</span><span class="s3">&quot;[^0-9+]&quot;</span><span class="s2">), </span><span class="s3">&quot;&quot;</span><span class="s2">)</span>
+
+        <span class="s0">return </span><span class="s1">cleanNumber</span><span class="s2">.</span><span class="s1">startsWith</span><span class="s2">(</span><span class="s3">&quot;+32&quot;</span><span class="s2">) ||</span>
+                <span class="s1">cleanNumber</span><span class="s2">.</span><span class="s1">startsWith</span><span class="s2">(</span><span class="s3">&quot;0032&quot;</span><span class="s2">) ||</span>
+                <span class="s2">(</span><span class="s1">cleanNumber</span><span class="s2">.</span><span class="s1">startsWith</span><span class="s2">(</span><span class="s3">&quot;0&quot;</span><span class="s2">) &amp;&amp; </span><span class="s1">cleanNumber</span><span class="s2">.</span><span class="s1">length </span><span class="s2">== </span><span class="s7">10</span><span class="s2">)</span>
+    <span class="s2">}</span>
+
+    <span class="s4">/**</span>
+     <span class="s4">* Vérifie si un numéro de téléphone est français</span>
+     <span class="s4">*/</span>
+    <span class="s0">fun </span><span class="s1">isFrenchNumber</span><span class="s2">(</span><span class="s1">phoneNumber: String</span><span class="s2">)</span><span class="s1">: Boolean </span><span class="s2">{</span>
+        <span class="s0">val </span><span class="s1">cleanNumber </span><span class="s2">= </span><span class="s1">phoneNumber</span><span class="s2">.</span><span class="s1">replace</span><span class="s2">(</span><span class="s1">Regex</span><span class="s2">(</span><span class="s3">&quot;[^0-9+]&quot;</span><span class="s2">), </span><span class="s3">&quot;&quot;</span><span class="s2">)</span>
+
+        <span class="s0">return </span><span class="s1">cleanNumber</span><span class="s2">.</span><span class="s1">startsWith</span><span class="s2">(</span><span class="s3">&quot;+33&quot;</span><span class="s2">) ||</span>
+                <span class="s1">cleanNumber</span><span class="s2">.</span><span class="s1">startsWith</span><span class="s2">(</span><span class="s3">&quot;0033&quot;</span><span class="s2">) ||</span>
+                <span class="s2">(</span><span class="s1">cleanNumber</span><span class="s2">.</span><span class="s1">startsWith</span><span class="s2">(</span><span class="s3">&quot;0&quot;</span><span class="s2">) &amp;&amp; </span><span class="s1">cleanNumber</span><span class="s2">.</span><span class="s1">length </span><span class="s2">== </span><span class="s7">10</span><span class="s2">)</span>
+    <span class="s2">}</span>
+
+    <span class="s4">/**</span>
+     <span class="s4">* Détermine le pays basé sur le numéro de téléphone</span>
+     <span class="s4">*/</span>
+    <span class="s0">fun </span><span class="s1">getCountryFromPhoneNumber</span><span class="s2">(</span><span class="s1">phoneNumber: String</span><span class="s2">)</span><span class="s1">: String </span><span class="s2">{</span>
+        <span class="s0">return when </span><span class="s2">{</span>
+            <span class="s1">isBelgianNumber</span><span class="s2">(</span><span class="s1">phoneNumber</span><span class="s2">) -&gt; </span><span class="s1">COUNTRY_BELGIUM</span>
+            <span class="s1">isFrenchNumber</span><span class="s2">(</span><span class="s1">phoneNumber</span><span class="s2">) -&gt; </span><span class="s1">COUNTRY_FRANCE</span>
+            <span class="s0">else </span><span class="s2">-&gt; </span><span class="s1">detectCountry</span><span class="s2">()</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+<span class="s2">}</span></pre>
+</body>
+</html>

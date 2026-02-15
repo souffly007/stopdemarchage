@@ -1,0 +1,145 @@
+<html>
+<head>
+<title>CallScreening.kt</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #6aab73;}
+.s4 { color: #7a7e85;}
+.s5 { color: #2aacb8;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+CallScreening.kt</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">fr</span><span class="s2">.</span><span class="s1">bonobo</span><span class="s2">.</span><span class="s1">stopdemarchage</span>
+
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">app</span><span class="s2">.</span><span class="s1">NotificationChannel</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">app</span><span class="s2">.</span><span class="s1">NotificationManager</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">content</span><span class="s2">.</span><span class="s1">Context</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">telecom</span><span class="s2">.</span><span class="s1">Call</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">telecom</span><span class="s2">.</span><span class="s1">CallScreeningService</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">Log</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">core</span><span class="s2">.</span><span class="s1">app</span><span class="s2">.</span><span class="s1">NotificationCompat</span>
+<span class="s1">import org</span><span class="s2">.</span><span class="s1">json</span><span class="s2">.</span><span class="s1">JSONArray</span>
+<span class="s1">import java</span><span class="s2">.</span><span class="s1">io</span><span class="s2">.</span><span class="s1">BufferedReader</span>
+<span class="s1">import java</span><span class="s2">.</span><span class="s1">io</span><span class="s2">.</span><span class="s1">InputStreamReader</span>
+
+<span class="s0">class </span><span class="s1">CallScreening : CallScreeningService</span><span class="s2">() {</span>
+
+    <span class="s1">private </span><span class="s0">val </span><span class="s1">TAG </span><span class="s2">= </span><span class="s3">&quot;CallScreeningService&quot;</span>
+
+    <span class="s4">// Hardcoded + JSON préfixes</span>
+    <span class="s1">private </span><span class="s0">val </span><span class="s1">hardcodedBlockedPrefixes </span><span class="s2">= </span><span class="s1">setOf</span><span class="s2">(</span>
+        <span class="s3">&quot;+33162&quot;</span><span class="s2">, </span><span class="s3">&quot;+33163&quot;</span><span class="s2">, </span><span class="s3">&quot;+33270&quot;</span><span class="s2">, </span><span class="s3">&quot;+33271&quot;</span><span class="s2">, </span><span class="s3">&quot;+33377&quot;</span><span class="s2">, </span><span class="s3">&quot;+33378&quot;</span><span class="s2">,</span>
+        <span class="s3">&quot;+33424&quot;</span><span class="s2">, </span><span class="s3">&quot;+33425&quot;</span><span class="s2">, </span><span class="s3">&quot;+33568&quot;</span><span class="s2">, </span><span class="s3">&quot;+33569&quot;</span><span class="s2">, </span><span class="s3">&quot;+33948&quot;</span><span class="s2">, </span><span class="s3">&quot;+33949&quot;</span>
+    <span class="s2">)</span>
+
+    <span class="s1">private </span><span class="s0">var </span><span class="s1">jsonBlockedPrefixes: Set</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">&gt; = </span><span class="s1">emptySet</span><span class="s2">()</span>
+
+    <span class="s1">override </span><span class="s0">fun </span><span class="s1">onCreate</span><span class="s2">() {</span>
+        <span class="s0">super</span><span class="s2">.</span><span class="s1">onCreate</span><span class="s2">()</span>
+        <span class="s1">createNotificationChannel</span><span class="s2">()</span>
+        <span class="s1">loadBlockedPrefixesFromJson</span><span class="s2">()</span>
+    <span class="s2">}</span>
+
+    <span class="s4">// Charger les préfixes depuis prefixes_blocked_fr.json</span>
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">loadBlockedPrefixesFromJson</span><span class="s2">() {</span>
+        <span class="s0">try </span><span class="s2">{</span>
+            <span class="s0">val </span><span class="s1">inputStream </span><span class="s2">= </span><span class="s1">assets</span><span class="s2">.</span><span class="s1">open</span><span class="s2">(</span><span class="s3">&quot;prefixes_blocked_fr.json&quot;</span><span class="s2">)</span>
+            <span class="s0">val </span><span class="s1">bufferedReader </span><span class="s2">= </span><span class="s1">BufferedReader</span><span class="s2">(</span><span class="s1">InputStreamReader</span><span class="s2">(</span><span class="s1">inputStream</span><span class="s2">))</span>
+            <span class="s0">val </span><span class="s1">jsonText </span><span class="s2">= </span><span class="s1">bufferedReader</span><span class="s2">.</span><span class="s1">use </span><span class="s2">{ </span><span class="s1">it</span><span class="s2">.</span><span class="s1">readText</span><span class="s2">() }</span>
+            <span class="s0">val </span><span class="s1">jsonArray </span><span class="s2">= </span><span class="s1">JSONArray</span><span class="s2">(</span><span class="s1">jsonText</span><span class="s2">)</span>
+            <span class="s0">val </span><span class="s1">prefixes </span><span class="s2">= </span><span class="s1">mutableSetOf</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">&gt;()</span>
+            <span class="s0">for </span><span class="s2">(</span><span class="s1">i </span><span class="s0">in </span><span class="s5">0 </span><span class="s1">until jsonArray</span><span class="s2">.</span><span class="s1">length</span><span class="s2">()) {</span>
+                <span class="s0">val </span><span class="s1">prefix </span><span class="s2">= </span><span class="s1">jsonArray</span><span class="s2">.</span><span class="s1">getString</span><span class="s2">(</span><span class="s1">i</span><span class="s2">)</span>
+                <span class="s1">prefixes</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s1">normalizePhoneNumber</span><span class="s2">(</span><span class="s1">prefix</span><span class="s2">))</span>
+            <span class="s2">}</span>
+            <span class="s1">jsonBlockedPrefixes </span><span class="s2">= </span><span class="s1">prefixes</span>
+            <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Préfixes JSON chargés : </span><span class="s0">$</span><span class="s1">jsonBlockedPrefixes</span><span class="s3">&quot;</span><span class="s2">)</span>
+        <span class="s2">} </span><span class="s1">catch </span><span class="s2">(</span><span class="s1">e: Exception</span><span class="s2">) {</span>
+            <span class="s1">Log</span><span class="s2">.</span><span class="s1">e</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Erreur lors du chargement de prefixes_blocked_fr.json&quot;</span><span class="s2">, </span><span class="s1">e</span><span class="s2">)</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">override </span><span class="s0">fun </span><span class="s1">onScreenCall</span><span class="s2">(</span><span class="s1">callDetails: Call</span><span class="s2">.</span><span class="s1">Details</span><span class="s2">) {</span>
+        <span class="s0">val </span><span class="s1">handle </span><span class="s2">= </span><span class="s1">callDetails</span><span class="s2">.</span><span class="s1">handle</span>
+        <span class="s0">val </span><span class="s1">rawIncomingNumber </span><span class="s2">= </span><span class="s1">handle?</span><span class="s2">.</span><span class="s1">schemeSpecificPart</span>
+        <span class="s0">val </span><span class="s1">isPrivateNumber </span><span class="s2">= </span><span class="s1">handle </span><span class="s2">== </span><span class="s0">null </span><span class="s2">|| </span><span class="s1">rawIncomingNumber</span><span class="s2">.</span><span class="s1">isNullOrBlank</span><span class="s2">()</span>
+
+        <span class="s0">val </span><span class="s1">sharedPrefs </span><span class="s2">= </span><span class="s1">getSharedPreferences</span><span class="s2">(</span><span class="s3">&quot;StopDemarchagePrefs&quot;</span><span class="s2">, </span><span class="s1">MODE_PRIVATE</span><span class="s2">)</span>
+        <span class="s0">val </span><span class="s1">blockPrivateNumbersEnabled </span><span class="s2">= </span><span class="s1">sharedPrefs</span><span class="s2">.</span><span class="s1">getBoolean</span><span class="s2">(</span><span class="s3">&quot;block_private_numbers&quot;</span><span class="s2">, </span><span class="s0">false</span><span class="s2">)</span>
+        <span class="s0">val </span><span class="s1">userBlockedNumbersSet </span><span class="s2">= </span><span class="s1">sharedPrefs</span><span class="s2">.</span><span class="s1">getStringSet</span><span class="s2">(</span><span class="s3">&quot;blocked_numbers&quot;</span><span class="s2">, </span><span class="s1">emptySet</span><span class="s2">()) </span><span class="s1">?: emptySet</span><span class="s2">()</span>
+
+        <span class="s0">val </span><span class="s1">combinedBlockedNumbers </span><span class="s2">= </span><span class="s1">hardcodedBlockedPrefixes </span><span class="s2">+ </span><span class="s1">userBlockedNumbersSet </span><span class="s2">+ </span><span class="s1">jsonBlockedPrefixes</span>
+
+        <span class="s0">val </span><span class="s1">normalizedIncomingNumber </span><span class="s2">= </span><span class="s1">rawIncomingNumber?</span><span class="s2">.</span><span class="s1">let </span><span class="s2">{ </span><span class="s1">normalizePhoneNumber</span><span class="s2">(</span><span class="s1">it</span><span class="s2">) }</span>
+
+        <span class="s0">var </span><span class="s1">shouldBlock </span><span class="s2">= </span><span class="s0">false</span>
+        <span class="s0">var </span><span class="s1">blockReason </span><span class="s2">= </span><span class="s3">&quot;&quot;</span>
+
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">isPrivateNumber </span><span class="s2">&amp;&amp; </span><span class="s1">blockPrivateNumbersEnabled</span><span class="s2">) {</span>
+            <span class="s1">shouldBlock </span><span class="s2">= </span><span class="s0">true</span>
+            <span class="s1">blockReason </span><span class="s2">= </span><span class="s3">&quot;Numéro masqué/privé&quot;</span>
+        <span class="s2">} </span><span class="s0">else if </span><span class="s2">(!</span><span class="s1">normalizedIncomingNumber</span><span class="s2">.</span><span class="s1">isNullOrEmpty</span><span class="s2">()) {</span>
+            <span class="s0">val </span><span class="s1">matchedEntry </span><span class="s2">= </span><span class="s1">combinedBlockedNumbers</span><span class="s2">.</span><span class="s1">firstOrNull </span><span class="s2">{</span>
+                <span class="s1">normalizedIncomingNumber </span><span class="s2">== </span><span class="s1">it </span><span class="s2">|| </span><span class="s1">normalizedIncomingNumber</span><span class="s2">.</span><span class="s1">startsWith</span><span class="s2">(</span><span class="s1">it</span><span class="s2">)</span>
+            <span class="s2">}</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">matchedEntry </span><span class="s2">!= </span><span class="s0">null</span><span class="s2">) {</span>
+                <span class="s1">shouldBlock </span><span class="s2">= </span><span class="s0">true</span>
+                <span class="s1">blockReason </span><span class="s2">= </span><span class="s0">if </span><span class="s2">(</span><span class="s1">normalizedIncomingNumber </span><span class="s2">== </span><span class="s1">matchedEntry</span><span class="s2">) </span><span class="s3">&quot;Numéro dans la liste noire&quot;</span>
+                <span class="s0">else </span><span class="s3">&quot;Préfixe suspect : </span><span class="s0">$</span><span class="s1">matchedEntry</span><span class="s3">...&quot;</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+
+        <span class="s0">val </span><span class="s1">response </span><span class="s2">= </span><span class="s0">if </span><span class="s2">(</span><span class="s1">shouldBlock</span><span class="s2">) {</span>
+            <span class="s1">CallResponse</span><span class="s2">.</span><span class="s1">Builder</span><span class="s2">()</span>
+                <span class="s2">.</span><span class="s1">setDisallowCall</span><span class="s2">(</span><span class="s0">true</span><span class="s2">)</span>
+                <span class="s2">.</span><span class="s1">setRejectCall</span><span class="s2">(</span><span class="s0">true</span><span class="s2">)</span>
+                <span class="s2">.</span><span class="s1">setSkipCallLog</span><span class="s2">(</span><span class="s0">true</span><span class="s2">)</span>
+                <span class="s2">.</span><span class="s1">setSkipNotification</span><span class="s2">(</span><span class="s0">true</span><span class="s2">)</span>
+                <span class="s2">.</span><span class="s1">build</span><span class="s2">()</span>
+        <span class="s2">} </span><span class="s0">else </span><span class="s1">CallResponse</span><span class="s2">.</span><span class="s1">Builder</span><span class="s2">().</span><span class="s1">build</span><span class="s2">()</span>
+
+        <span class="s1">respondToCall</span><span class="s2">(</span><span class="s1">callDetails</span><span class="s2">, </span><span class="s1">response</span><span class="s2">)</span>
+
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">shouldBlock</span><span class="s2">) </span><span class="s1">showBlockedCallNotification</span><span class="s2">(</span><span class="s1">rawIncomingNumber ?: </span><span class="s3">&quot;Numéro inconnu&quot;</span><span class="s2">, </span><span class="s1">blockReason</span><span class="s2">)</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">createNotificationChannel</span><span class="s2">() {</span>
+        <span class="s0">val </span><span class="s1">channelId </span><span class="s2">= </span><span class="s3">&quot;call_blocking_channel&quot;</span>
+        <span class="s0">val </span><span class="s1">channelName </span><span class="s2">= </span><span class="s3">&quot;Blocage d'appels&quot;</span>
+        <span class="s0">val </span><span class="s1">manager </span><span class="s2">= </span><span class="s1">getSystemService</span><span class="s2">(</span><span class="s1">NOTIFICATION_SERVICE</span><span class="s2">) </span><span class="s0">as </span><span class="s1">NotificationManager</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">android</span><span class="s2">.</span><span class="s1">os</span><span class="s2">.</span><span class="s1">Build</span><span class="s2">.</span><span class="s1">VERSION</span><span class="s2">.</span><span class="s1">SDK_INT </span><span class="s2">&gt;= </span><span class="s1">android</span><span class="s2">.</span><span class="s1">os</span><span class="s2">.</span><span class="s1">Build</span><span class="s2">.</span><span class="s1">VERSION_CODES</span><span class="s2">.</span><span class="s1">O</span><span class="s2">) {</span>
+            <span class="s0">val </span><span class="s1">channel </span><span class="s2">= </span><span class="s1">NotificationChannel</span><span class="s2">(</span><span class="s1">channelId</span><span class="s2">, </span><span class="s1">channelName</span><span class="s2">, </span><span class="s1">NotificationManager</span><span class="s2">.</span><span class="s1">IMPORTANCE_LOW</span><span class="s2">)</span>
+            <span class="s1">manager</span><span class="s2">.</span><span class="s1">createNotificationChannel</span><span class="s2">(</span><span class="s1">channel</span><span class="s2">)</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">showBlockedCallNotification</span><span class="s2">(</span><span class="s1">number: String</span><span class="s2">, </span><span class="s1">reason: String</span><span class="s2">) {</span>
+        <span class="s0">val </span><span class="s1">manager </span><span class="s2">= </span><span class="s1">getSystemService</span><span class="s2">(</span><span class="s1">NOTIFICATION_SERVICE</span><span class="s2">) </span><span class="s0">as </span><span class="s1">NotificationManager</span>
+        <span class="s0">val </span><span class="s1">notification </span><span class="s2">= </span><span class="s1">NotificationCompat</span><span class="s2">.</span><span class="s1">Builder</span><span class="s2">(</span><span class="s0">this</span><span class="s2">, </span><span class="s3">&quot;call_blocking_channel&quot;</span><span class="s2">)</span>
+            <span class="s2">.</span><span class="s1">setSmallIcon</span><span class="s2">(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">drawable</span><span class="s2">.</span><span class="s1">ic_launcher_foreground</span><span class="s2">)</span>
+            <span class="s2">.</span><span class="s1">setContentTitle</span><span class="s2">(</span><span class="s3">&quot;Appel bloqué&quot;</span><span class="s2">)</span>
+            <span class="s2">.</span><span class="s1">setContentText</span><span class="s2">(</span><span class="s3">&quot;</span><span class="s0">$</span><span class="s1">number </span><span class="s3">: </span><span class="s0">$</span><span class="s1">reason</span><span class="s3">&quot;</span><span class="s2">)</span>
+            <span class="s2">.</span><span class="s1">setPriority</span><span class="s2">(</span><span class="s1">NotificationCompat</span><span class="s2">.</span><span class="s1">PRIORITY_LOW</span><span class="s2">)</span>
+            <span class="s2">.</span><span class="s1">setAutoCancel</span><span class="s2">(</span><span class="s0">true</span><span class="s2">)</span>
+            <span class="s2">.</span><span class="s1">build</span><span class="s2">()</span>
+        <span class="s1">manager</span><span class="s2">.</span><span class="s1">notify</span><span class="s2">(</span><span class="s1">System</span><span class="s2">.</span><span class="s1">currentTimeMillis</span><span class="s2">().</span><span class="s1">toInt</span><span class="s2">(), </span><span class="s1">notification</span><span class="s2">)</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">normalizePhoneNumber</span><span class="s2">(</span><span class="s1">number: String</span><span class="s2">)</span><span class="s1">: String </span><span class="s2">{</span>
+        <span class="s0">var </span><span class="s1">n </span><span class="s2">= </span><span class="s1">number</span><span class="s2">.</span><span class="s1">trim</span><span class="s2">().</span><span class="s1">replace</span><span class="s2">(</span><span class="s3">&quot; &quot;</span><span class="s2">, </span><span class="s3">&quot;&quot;</span><span class="s2">).</span><span class="s1">replace</span><span class="s2">(</span><span class="s3">&quot;-&quot;</span><span class="s2">, </span><span class="s3">&quot;&quot;</span><span class="s2">).</span><span class="s1">replace</span><span class="s2">(</span><span class="s3">&quot;(&quot;</span><span class="s2">, </span><span class="s3">&quot;&quot;</span><span class="s2">).</span><span class="s1">replace</span><span class="s2">(</span><span class="s3">&quot;)&quot;</span><span class="s2">, </span><span class="s3">&quot;&quot;</span><span class="s2">)</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">n</span><span class="s2">.</span><span class="s1">startsWith</span><span class="s2">(</span><span class="s3">&quot;00&quot;</span><span class="s2">)) </span><span class="s1">n </span><span class="s2">= </span><span class="s3">&quot;+&quot; </span><span class="s2">+ </span><span class="s1">n</span><span class="s2">.</span><span class="s1">substring</span><span class="s2">(</span><span class="s5">2</span><span class="s2">)</span>
+        <span class="s0">else if </span><span class="s2">(</span><span class="s1">n</span><span class="s2">.</span><span class="s1">startsWith</span><span class="s2">(</span><span class="s3">&quot;0&quot;</span><span class="s2">) &amp;&amp; !</span><span class="s1">n</span><span class="s2">.</span><span class="s1">startsWith</span><span class="s2">(</span><span class="s3">&quot;+&quot;</span><span class="s2">)) </span><span class="s1">n </span><span class="s2">= </span><span class="s3">&quot;+33&quot; </span><span class="s2">+ </span><span class="s1">n</span><span class="s2">.</span><span class="s1">substring</span><span class="s2">(</span><span class="s5">1</span><span class="s2">)</span>
+        <span class="s0">return </span><span class="s1">n</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+</pre>
+</body>
+</html>

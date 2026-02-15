@@ -1,0 +1,83 @@
+<html>
+<head>
+<title>fragment_dialpad.xml</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #d5b778;}
+.s1 { color: #bcbec4;}
+.s2 { color: #6aab73;}
+.s3 { color: #bcbec4;}
+.s4 { color: #7a7e85;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+fragment_dialpad.xml</font>
+</center></td></tr></table>
+<pre><span class="s0">&lt;LinearLayout </span><span class="s1">xmlns:android</span><span class="s2">=&quot;http://schemas.android.com/apk/res/android&quot;</span>
+    <span class="s1">android:layout_width</span><span class="s2">=&quot;match_parent&quot;</span>
+    <span class="s1">android:layout_height</span><span class="s2">=&quot;match_parent&quot;</span>
+    <span class="s1">android:orientation</span><span class="s2">=&quot;vertical&quot;</span><span class="s0">&gt;</span>
+
+    <span class="s4">&lt;!-- Affichage du numéro --&gt;</span>
+    <span class="s0">&lt;EditText</span>
+        <span class="s1">android:id</span><span class="s2">=&quot;@+id/phone_number_display&quot;</span>
+        <span class="s1">android:layout_width</span><span class="s2">=&quot;match_parent&quot;</span>
+        <span class="s1">android:layout_height</span><span class="s2">=&quot;60dp&quot;</span>
+        <span class="s1">android:textSize</span><span class="s2">=&quot;24sp&quot;</span>
+        <span class="s1">android:gravity</span><span class="s2">=&quot;center&quot;</span>
+        <span class="s1">android:inputType</span><span class="s2">=&quot;phone&quot;</span>
+        <span class="s1">android:focusable</span><span class="s2">=&quot;false&quot;</span>
+        <span class="s1">android:background</span><span class="s2">=&quot;@android:color/white&quot; </span><span class="s0">/&gt;</span>
+
+    <span class="s4">&lt;!-- Grille des boutons --&gt;</span>
+    <span class="s0">&lt;GridLayout</span>
+        <span class="s1">android:layout_width</span><span class="s2">=&quot;match_parent&quot;</span>
+        <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+        <span class="s1">android:columnCount</span><span class="s2">=&quot;3&quot;</span>
+        <span class="s1">android:layout_marginTop</span><span class="s2">=&quot;20dp&quot;</span><span class="s0">&gt;</span>
+
+        <span class="s4">&lt;!-- Ligne 1: 1, 2, 3 --&gt;</span>
+        <span class="s0">&lt;fr.bonobo.stopdemarchage.DialpadButton</span>
+            <span class="s1">android:id</span><span class="s2">=&quot;@+id/button_1&quot;</span>
+            <span class="s1">android:layout_width</span><span class="s2">=&quot;0dp&quot;</span>
+            <span class="s1">android:layout_height</span><span class="s2">=&quot;80dp&quot;</span>
+            <span class="s1">android:layout_columnWeight</span><span class="s2">=&quot;1&quot;</span>
+            <span class="s1">android:text</span><span class="s2">=&quot;1&quot;</span>
+            <span class="s1">android:textSize</span><span class="s2">=&quot;24sp&quot;</span>
+            <span class="s1">android:layout_margin</span><span class="s2">=&quot;2dp&quot; </span><span class="s0">/&gt;</span>
+
+        <span class="s4">&lt;!-- Répéter pour tous les boutons 0-9, *, # --&gt;</span>
+
+    <span class="s0">&lt;/GridLayout&gt;</span>
+
+    <span class="s4">&lt;!-- Boutons d'action --&gt;</span>
+    <span class="s0">&lt;LinearLayout</span>
+        <span class="s1">android:layout_width</span><span class="s2">=&quot;match_parent&quot;</span>
+        <span class="s1">android:layout_height</span><span class="s2">=&quot;wrap_content&quot;</span>
+        <span class="s1">android:orientation</span><span class="s2">=&quot;horizontal&quot;</span>
+        <span class="s1">android:layout_marginTop</span><span class="s2">=&quot;20dp&quot;</span><span class="s0">&gt;</span>
+
+        <span class="s0">&lt;ImageButton</span>
+            <span class="s1">android:id</span><span class="s2">=&quot;@+id/button_call&quot;</span>
+            <span class="s1">android:layout_width</span><span class="s2">=&quot;0dp&quot;</span>
+            <span class="s1">android:layout_height</span><span class="s2">=&quot;60dp&quot;</span>
+            <span class="s1">android:layout_weight</span><span class="s2">=&quot;1&quot;</span>
+            <span class="s1">android:src</span><span class="s2">=&quot;@drawable/ic_call&quot;</span>
+            <span class="s1">android:background</span><span class="s2">=&quot;@drawable/call_button_background&quot; </span><span class="s0">/&gt;</span>
+
+        <span class="s0">&lt;ImageButton</span>
+            <span class="s1">android:id</span><span class="s2">=&quot;@+id/button_delete&quot;</span>
+            <span class="s1">android:layout_width</span><span class="s2">=&quot;0dp&quot;</span>
+            <span class="s1">android:layout_height</span><span class="s2">=&quot;60dp&quot;</span>
+            <span class="s1">android:layout_weight</span><span class="s2">=&quot;1&quot;</span>
+            <span class="s1">android:src</span><span class="s2">=&quot;@drawable/ic_backspace&quot;</span>
+            <span class="s1">android:background</span><span class="s2">=&quot;@drawable/delete_button_background&quot; </span><span class="s0">/&gt;</span>
+
+    <span class="s0">&lt;/LinearLayout&gt;</span>
+
+<span class="s0">&lt;/LinearLayout&gt;</span></pre>
+</body>
+</html>

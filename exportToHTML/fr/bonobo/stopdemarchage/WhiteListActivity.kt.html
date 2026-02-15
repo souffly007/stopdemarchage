@@ -1,0 +1,124 @@
+<html>
+<head>
+<title>WhiteListActivity.kt</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #7a7e85;}
+.s4 { color: #2aacb8;}
+.s5 { color: #6aab73;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+WhiteListActivity.kt</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">fr</span><span class="s2">.</span><span class="s1">bonobo</span><span class="s2">.</span><span class="s1">stopdemarchage</span>
+
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">content</span><span class="s2">.</span><span class="s1">Intent</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">os</span><span class="s2">.</span><span class="s1">Bundle</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">provider</span><span class="s2">.</span><span class="s1">ContactsContract</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">appcompat</span><span class="s2">.</span><span class="s1">app</span><span class="s2">.</span><span class="s1">AppCompatActivity</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">recyclerview</span><span class="s2">.</span><span class="s1">widget</span><span class="s2">.</span><span class="s1">LinearLayoutManager</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">google</span><span class="s2">.</span><span class="s1">android</span><span class="s2">.</span><span class="s1">material</span><span class="s2">.</span><span class="s1">floatingactionbutton</span><span class="s2">.</span><span class="s1">FloatingActionButton</span>
+<span class="s1">import fr</span><span class="s2">.</span><span class="s1">bonobo</span><span class="s2">.</span><span class="s1">stopdemarchage</span><span class="s2">.</span><span class="s1">adapters</span><span class="s2">.</span><span class="s1">WhiteListAdapter</span>
+<span class="s1">import fr</span><span class="s2">.</span><span class="s1">bonobo</span><span class="s2">.</span><span class="s1">stopdemarchage</span><span class="s2">.</span><span class="s1">data</span><span class="s2">.</span><span class="s1">WhiteListContact</span>
+<span class="s1">import fr</span><span class="s2">.</span><span class="s1">bonobo</span><span class="s2">.</span><span class="s1">stopdemarchage</span><span class="s2">.</span><span class="s1">databinding</span><span class="s2">.</span><span class="s1">ActivityWhiteListBinding</span>
+
+
+<span class="s0">class </span><span class="s1">WhiteListActivity : AppCompatActivity</span><span class="s2">() {</span>
+
+    <span class="s1">private lateinit </span><span class="s0">var </span><span class="s1">binding: ActivityWhiteListBinding</span>
+    <span class="s1">private </span><span class="s0">val </span><span class="s1">whiteListContacts </span><span class="s2">= </span><span class="s1">mutableListOf</span><span class="s2">&lt;</span><span class="s1">WhiteListContact</span><span class="s2">&gt;()</span>
+    <span class="s1">private lateinit </span><span class="s0">var </span><span class="s1">adapter: WhiteListAdapter</span>
+
+    <span class="s1">override </span><span class="s0">fun </span><span class="s1">onCreate</span><span class="s2">(</span><span class="s1">savedInstanceState: Bundle?</span><span class="s2">) {</span>
+        <span class="s0">super</span><span class="s2">.</span><span class="s1">onCreate</span><span class="s2">(</span><span class="s1">savedInstanceState</span><span class="s2">)</span>
+        <span class="s1">binding </span><span class="s2">= </span><span class="s1">ActivityWhiteListBinding</span><span class="s2">.</span><span class="s1">inflate</span><span class="s2">(</span><span class="s1">layoutInflater</span><span class="s2">)</span>
+        <span class="s1">setContentView</span><span class="s2">(</span><span class="s1">binding</span><span class="s2">.</span><span class="s1">root</span><span class="s2">)</span>
+
+        <span class="s0">val </span><span class="s1">recyclerView </span><span class="s2">= </span><span class="s1">binding</span><span class="s2">.</span><span class="s1">recyclerViewWhiteList</span>
+        <span class="s1">recyclerView</span><span class="s2">.</span><span class="s1">layoutManager </span><span class="s2">= </span><span class="s1">LinearLayoutManager</span><span class="s2">(</span><span class="s0">this</span><span class="s2">)</span>
+
+        <span class="s1">whiteListContacts</span><span class="s2">.</span><span class="s1">addAll</span><span class="s2">(</span><span class="s1">loadWhiteListContacts</span><span class="s2">())</span>
+        <span class="s1">adapter </span><span class="s2">= </span><span class="s1">WhiteListAdapter</span><span class="s2">(</span><span class="s1">whiteListContacts</span><span class="s2">) { </span><span class="s1">index </span><span class="s2">-&gt;</span>
+            <span class="s1">whiteListContacts</span><span class="s2">.</span><span class="s1">removeAt</span><span class="s2">(</span><span class="s1">index</span><span class="s2">)</span>
+            <span class="s1">adapter</span><span class="s2">.</span><span class="s1">notifyItemRemoved</span><span class="s2">(</span><span class="s1">index</span><span class="s2">)</span>
+            <span class="s1">saveWhiteListContacts</span><span class="s2">()</span>
+        <span class="s2">}</span>
+        <span class="s1">recyclerView</span><span class="s2">.</span><span class="s1">adapter </span><span class="s2">= </span><span class="s1">adapter</span>
+
+        <span class="s3">// Bouton pour ajouter un contact</span>
+        <span class="s1">findViewById</span><span class="s2">&lt;</span><span class="s1">FloatingActionButton?</span><span class="s2">&gt;(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">fabAddContact</span><span class="s2">)</span><span class="s1">?</span><span class="s2">.</span><span class="s1">setOnClickListener </span><span class="s2">{</span>
+            <span class="s1">pickContact</span><span class="s2">()</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">pickContact</span><span class="s2">() {</span>
+        <span class="s0">val </span><span class="s1">intent </span><span class="s2">= </span><span class="s1">Intent</span><span class="s2">(</span><span class="s1">Intent</span><span class="s2">.</span><span class="s1">ACTION_PICK</span><span class="s2">).</span><span class="s1">apply </span><span class="s2">{</span>
+            <span class="s1">type </span><span class="s2">= </span><span class="s1">ContactsContract</span><span class="s2">.</span><span class="s1">CommonDataKinds</span><span class="s2">.</span><span class="s1">Phone</span><span class="s2">.</span><span class="s1">CONTENT_TYPE</span>
+        <span class="s2">}</span>
+        <span class="s1">startActivityForResult</span><span class="s2">(</span><span class="s1">intent</span><span class="s2">, </span><span class="s1">REQUEST_PICK_CONTACT</span><span class="s2">)</span>
+    <span class="s2">}</span>
+
+    <span class="s1">override </span><span class="s0">fun </span><span class="s1">onActivityResult</span><span class="s2">(</span><span class="s1">requestCode: Int</span><span class="s2">, </span><span class="s1">resultCode: Int</span><span class="s2">, </span><span class="s1">data: Intent?</span><span class="s2">) {</span>
+        <span class="s0">super</span><span class="s2">.</span><span class="s1">onActivityResult</span><span class="s2">(</span><span class="s1">requestCode</span><span class="s2">, </span><span class="s1">resultCode</span><span class="s2">, </span><span class="s1">data</span><span class="s2">)</span>
+
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">requestCode </span><span class="s2">== </span><span class="s1">REQUEST_PICK_CONTACT </span><span class="s2">&amp;&amp; </span><span class="s1">resultCode </span><span class="s2">== </span><span class="s1">RESULT_OK</span><span class="s2">) {</span>
+            <span class="s1">data?</span><span class="s2">.</span><span class="s1">data?</span><span class="s2">.</span><span class="s1">let </span><span class="s2">{ </span><span class="s1">contactUri </span><span class="s2">-&gt;</span>
+                <span class="s0">val </span><span class="s1">cursor </span><span class="s2">= </span><span class="s1">contentResolver</span><span class="s2">.</span><span class="s1">query</span><span class="s2">(</span><span class="s1">contactUri</span><span class="s2">, </span><span class="s0">null</span><span class="s2">, </span><span class="s0">null</span><span class="s2">, </span><span class="s0">null</span><span class="s2">, </span><span class="s0">null</span><span class="s2">)</span>
+                <span class="s1">cursor?</span><span class="s2">.</span><span class="s1">use </span><span class="s2">{</span>
+                    <span class="s0">if </span><span class="s2">(</span><span class="s1">it</span><span class="s2">.</span><span class="s1">moveToFirst</span><span class="s2">()) {</span>
+                        <span class="s0">val </span><span class="s1">nameIndex </span><span class="s2">= </span><span class="s1">it</span><span class="s2">.</span><span class="s1">getColumnIndex</span><span class="s2">(</span><span class="s1">ContactsContract</span><span class="s2">.</span><span class="s1">CommonDataKinds</span><span class="s2">.</span><span class="s1">Phone</span><span class="s2">.</span><span class="s1">DISPLAY_NAME</span><span class="s2">)</span>
+                        <span class="s0">val </span><span class="s1">phoneIndex </span><span class="s2">= </span><span class="s1">it</span><span class="s2">.</span><span class="s1">getColumnIndex</span><span class="s2">(</span><span class="s1">ContactsContract</span><span class="s2">.</span><span class="s1">CommonDataKinds</span><span class="s2">.</span><span class="s1">Phone</span><span class="s2">.</span><span class="s1">NUMBER</span><span class="s2">)</span>
+                        <span class="s0">val </span><span class="s1">name </span><span class="s2">= </span><span class="s1">it</span><span class="s2">.</span><span class="s1">getString</span><span class="s2">(</span><span class="s1">nameIndex</span><span class="s2">)</span>
+                        <span class="s0">val </span><span class="s1">number </span><span class="s2">= </span><span class="s1">it</span><span class="s2">.</span><span class="s1">getString</span><span class="s2">(</span><span class="s1">phoneIndex</span><span class="s2">)</span>
+                        <span class="s1">addToWhiteList</span><span class="s2">(</span><span class="s1">name</span><span class="s2">, </span><span class="s1">number</span><span class="s2">)</span>
+                    <span class="s2">}</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">addToWhiteList</span><span class="s2">(</span><span class="s1">name: String</span><span class="s2">, </span><span class="s1">number: String</span><span class="s2">) {</span>
+        <span class="s0">val </span><span class="s1">contact </span><span class="s2">= </span><span class="s1">WhiteListContact</span><span class="s2">(</span><span class="s1">name </span><span class="s2">= </span><span class="s1">name</span><span class="s2">, </span><span class="s1">number </span><span class="s2">= </span><span class="s1">number</span><span class="s2">)</span>
+        <span class="s1">whiteListContacts</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s1">contact</span><span class="s2">)</span>
+        <span class="s1">adapter</span><span class="s2">.</span><span class="s1">notifyItemInserted</span><span class="s2">(</span><span class="s1">whiteListContacts</span><span class="s2">.</span><span class="s1">size </span><span class="s2">- </span><span class="s4">1</span><span class="s2">)</span>
+        <span class="s1">saveWhiteListContacts</span><span class="s2">()</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">loadWhiteListContacts</span><span class="s2">()</span><span class="s1">: List</span><span class="s2">&lt;</span><span class="s1">WhiteListContact</span><span class="s2">&gt; {</span>
+        <span class="s0">val </span><span class="s1">prefs </span><span class="s2">= </span><span class="s1">getSharedPreferences</span><span class="s2">(</span><span class="s5">&quot;StopDemarchagePrefs&quot;</span><span class="s2">, </span><span class="s1">MODE_PRIVATE</span><span class="s2">)</span>
+        <span class="s0">val </span><span class="s1">contactsString </span><span class="s2">= </span><span class="s1">prefs</span><span class="s2">.</span><span class="s1">getString</span><span class="s2">(</span><span class="s5">&quot;white_list_contacts&quot;</span><span class="s2">, </span><span class="s5">&quot;&quot;</span><span class="s2">)</span>
+        <span class="s0">return if </span><span class="s2">(</span><span class="s1">contactsString</span><span class="s2">.</span><span class="s1">isNullOrEmpty</span><span class="s2">()) {</span>
+            <span class="s1">emptyList</span><span class="s2">()</span>
+        <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+            <span class="s1">contactsString</span><span class="s2">.</span><span class="s1">split</span><span class="s2">(</span><span class="s5">&quot;;&quot;</span><span class="s2">).</span><span class="s1">mapNotNull </span><span class="s2">{ </span><span class="s1">contactData </span><span class="s2">-&gt;</span>
+                <span class="s0">val </span><span class="s1">parts </span><span class="s2">= </span><span class="s1">contactData</span><span class="s2">.</span><span class="s1">split</span><span class="s2">(</span><span class="s5">&quot;|&quot;</span><span class="s2">)</span>
+                <span class="s0">if </span><span class="s2">(</span><span class="s1">parts</span><span class="s2">.</span><span class="s1">size </span><span class="s2">== </span><span class="s4">2</span><span class="s2">) {</span>
+                    <span class="s1">WhiteListContact</span><span class="s2">(</span><span class="s1">name </span><span class="s2">= </span><span class="s1">parts</span><span class="s2">[</span><span class="s4">0</span><span class="s2">], </span><span class="s1">number </span><span class="s2">= </span><span class="s1">parts</span><span class="s2">[</span><span class="s4">1</span><span class="s2">])</span>
+                <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+                    <span class="s0">null</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">saveWhiteListContacts</span><span class="s2">() {</span>
+        <span class="s0">val </span><span class="s1">contactsString </span><span class="s2">= </span><span class="s1">whiteListContacts</span><span class="s2">.</span><span class="s1">joinToString</span><span class="s2">(</span><span class="s5">&quot;;&quot;</span><span class="s2">) { </span><span class="s5">&quot;</span><span class="s0">${</span><span class="s1">it</span><span class="s2">.</span><span class="s1">name</span><span class="s0">}</span><span class="s5">|</span><span class="s0">${</span><span class="s1">it</span><span class="s2">.</span><span class="s1">number</span><span class="s0">}</span><span class="s5">&quot; </span><span class="s2">}</span>
+        <span class="s1">getSharedPreferences</span><span class="s2">(</span><span class="s5">&quot;StopDemarchagePrefs&quot;</span><span class="s2">, </span><span class="s1">MODE_PRIVATE</span><span class="s2">)</span>
+            <span class="s2">.</span><span class="s1">edit</span><span class="s2">()</span>
+            <span class="s2">.</span><span class="s1">putString</span><span class="s2">(</span><span class="s5">&quot;white_list_contacts&quot;</span><span class="s2">, </span><span class="s1">contactsString</span><span class="s2">)</span>
+            <span class="s2">.</span><span class="s1">apply</span><span class="s2">()</span>
+    <span class="s2">}</span>
+
+    <span class="s1">companion </span><span class="s0">object </span><span class="s2">{</span>
+        <span class="s1">private const </span><span class="s0">val </span><span class="s1">REQUEST_PICK_CONTACT </span><span class="s2">= </span><span class="s4">1001</span>
+    <span class="s2">}</span>
+<span class="s2">}</span></pre>
+</body>
+</html>

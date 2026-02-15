@@ -1,0 +1,275 @@
+<html>
+<head>
+<title>PrefixFilterManager.kt</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #6aab73;}
+.s4 { color: #5f826b; font-style: italic;}
+.s5 { color: #7a7e85;}
+.s6 { color: #2aacb8;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+PrefixFilterManager.kt</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">fr</span><span class="s2">.</span><span class="s1">bonobo</span><span class="s2">.</span><span class="s1">stopdemarchage</span><span class="s2">.</span><span class="s1">filter</span>
+
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">content</span><span class="s2">.</span><span class="s1">Context</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">google</span><span class="s2">.</span><span class="s1">gson</span><span class="s2">.</span><span class="s1">Gson</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">google</span><span class="s2">.</span><span class="s1">gson</span><span class="s2">.</span><span class="s1">annotations</span><span class="s2">.</span><span class="s1">SerializedName</span>
+<span class="s1">import java</span><span class="s2">.</span><span class="s1">io</span><span class="s2">.</span><span class="s1">InputStreamReader</span>
+
+<span class="s1">data </span><span class="s0">class </span><span class="s1">PrefixConfig</span><span class="s2">(</span>
+    <span class="s0">val </span><span class="s1">version: String</span><span class="s2">,</span>
+    <span class="s0">val </span><span class="s1">country: String</span><span class="s2">,</span>
+    <span class="s1">@SerializedName</span><span class="s2">(</span><span class="s3">&quot;last_updated&quot;</span><span class="s2">) </span><span class="s0">val </span><span class="s1">lastUpdated: String</span><span class="s2">,</span>
+    <span class="s0">val </span><span class="s1">description: String</span><span class="s2">,</span>
+    <span class="s1">@SerializedName</span><span class="s2">(</span><span class="s3">&quot;blocked_prefixes&quot;</span><span class="s2">) </span><span class="s0">val </span><span class="s1">blockedPrefixes: Map</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">, </span><span class="s1">PrefixCategory</span><span class="s2">&gt;,</span>
+    <span class="s1">@SerializedName</span><span class="s2">(</span><span class="s3">&quot;trusted_prefixes&quot;</span><span class="s2">) </span><span class="s0">val </span><span class="s1">trustedPrefixes: TrustedPrefixes</span><span class="s2">,</span>
+    <span class="s1">@SerializedName</span><span class="s2">(</span><span class="s3">&quot;operator_prefixes&quot;</span><span class="s2">) </span><span class="s0">val </span><span class="s1">operatorPrefixes: Map</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">, </span><span class="s1">List</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">&gt;&gt;</span><span class="s1">? </span><span class="s2">= </span><span class="s0">null</span><span class="s2">,</span>
+    <span class="s1">@SerializedName</span><span class="s2">(</span><span class="s3">&quot;validation_rules&quot;</span><span class="s2">) </span><span class="s0">val </span><span class="s1">validationRules: ValidationRules? </span><span class="s2">= </span><span class="s0">null</span>
+<span class="s2">)</span>
+
+<span class="s1">data </span><span class="s0">class </span><span class="s1">PrefixCategory</span><span class="s2">(</span>
+    <span class="s0">val </span><span class="s1">description: String</span><span class="s2">,</span>
+    <span class="s0">val </span><span class="s1">prefixes: List</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">&gt;,</span>
+    <span class="s1">@SerializedName</span><span class="s2">(</span><span class="s3">&quot;block_by_default&quot;</span><span class="s2">) </span><span class="s0">val </span><span class="s1">blockByDefault: Boolean</span><span class="s2">,</span>
+    <span class="s1">@SerializedName</span><span class="s2">(</span><span class="s3">&quot;never_block&quot;</span><span class="s2">) </span><span class="s0">val </span><span class="s1">neverBlock: Boolean? </span><span class="s2">= </span><span class="s0">false</span><span class="s2">,</span>
+    <span class="s0">val </span><span class="s1">note: String? </span><span class="s2">= </span><span class="s0">null</span>
+<span class="s2">)</span>
+
+<span class="s1">data </span><span class="s0">class </span><span class="s1">TrustedPrefixes</span><span class="s2">(</span>
+    <span class="s0">val </span><span class="s1">description: String</span><span class="s2">,</span>
+    <span class="s0">val </span><span class="s1">prefixes: List</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">&gt;</span>
+<span class="s2">)</span>
+
+<span class="s1">data </span><span class="s0">class </span><span class="s1">ValidationRules</span><span class="s2">(</span>
+    <span class="s1">@SerializedName</span><span class="s2">(</span><span class="s3">&quot;belgian_mobile_length&quot;</span><span class="s2">) </span><span class="s0">val </span><span class="s1">belgianMobileLength: Int</span><span class="s2">,</span>
+    <span class="s1">@SerializedName</span><span class="s2">(</span><span class="s3">&quot;belgian_fixed_length&quot;</span><span class="s2">) </span><span class="s0">val </span><span class="s1">belgianFixedLength: Int</span><span class="s2">,</span>
+    <span class="s1">@SerializedName</span><span class="s2">(</span><span class="s3">&quot;international_prefix&quot;</span><span class="s2">) </span><span class="s0">val </span><span class="s1">internationalPrefix: List</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">&gt;,</span>
+    <span class="s1">@SerializedName</span><span class="s2">(</span><span class="s3">&quot;national_prefix&quot;</span><span class="s2">) </span><span class="s0">val </span><span class="s1">nationalPrefix: String</span>
+<span class="s2">)</span>
+
+<span class="s0">class </span><span class="s1">PrefixFilterManager</span><span class="s2">(</span><span class="s1">private </span><span class="s0">val </span><span class="s1">context: Context</span><span class="s2">) {</span>
+
+    <span class="s1">private </span><span class="s0">val </span><span class="s1">gson </span><span class="s2">= </span><span class="s1">Gson</span><span class="s2">()</span>
+    <span class="s1">private </span><span class="s0">var </span><span class="s1">cachedConfig: PrefixConfig? </span><span class="s2">= </span><span class="s0">null</span>
+
+    <span class="s4">/**</span>
+     <span class="s4">* Charge la configuration des préfixes pour le pays donné</span>
+     <span class="s4">*/</span>
+    <span class="s0">fun </span><span class="s1">loadPrefixConfig</span><span class="s2">(</span><span class="s1">country: String</span><span class="s2">)</span><span class="s1">: PrefixConfig </span><span class="s2">{</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">cachedConfig?</span><span class="s2">.</span><span class="s1">country </span><span class="s2">== </span><span class="s1">country</span><span class="s2">) {</span>
+            <span class="s0">return </span><span class="s1">cachedConfig</span><span class="s2">!!</span>
+        <span class="s2">}</span>
+
+        <span class="s0">val </span><span class="s1">fileName </span><span class="s2">= </span><span class="s0">when </span><span class="s2">(</span><span class="s1">country</span><span class="s2">) {</span>
+            <span class="s3">&quot;BE&quot; </span><span class="s2">-&gt; </span><span class="s3">&quot;prefixes_blocked_be.json&quot;</span>
+            <span class="s3">&quot;FR&quot; </span><span class="s2">-&gt; </span><span class="s3">&quot;prefixes_blocked_fr.json&quot;</span>
+            <span class="s0">else </span><span class="s2">-&gt; </span><span class="s3">&quot;prefixes_blocked_fr.json&quot;</span>
+        <span class="s2">}</span>
+
+        <span class="s0">return try </span><span class="s2">{</span>
+            <span class="s0">val </span><span class="s1">inputStream </span><span class="s2">= </span><span class="s1">context</span><span class="s2">.</span><span class="s1">assets</span><span class="s2">.</span><span class="s1">open</span><span class="s2">(</span><span class="s1">fileName</span><span class="s2">)</span>
+            <span class="s0">val </span><span class="s1">reader </span><span class="s2">= </span><span class="s1">InputStreamReader</span><span class="s2">(</span><span class="s1">inputStream</span><span class="s2">)</span>
+            <span class="s0">val </span><span class="s1">config </span><span class="s2">= </span><span class="s1">gson</span><span class="s2">.</span><span class="s1">fromJson</span><span class="s2">(</span><span class="s1">reader</span><span class="s2">, </span><span class="s1">PrefixConfig::</span><span class="s0">class</span><span class="s2">.</span><span class="s1">java</span><span class="s2">)</span>
+            <span class="s1">cachedConfig </span><span class="s2">= </span><span class="s1">config</span>
+            <span class="s1">config</span>
+        <span class="s2">} </span><span class="s1">catch </span><span class="s2">(</span><span class="s1">e: Exception</span><span class="s2">) {</span>
+            <span class="s5">// Configuration par défaut en cas d'erreur</span>
+            <span class="s1">PrefixConfig</span><span class="s2">(</span>
+                <span class="s1">version </span><span class="s2">= </span><span class="s3">&quot;1.0&quot;</span><span class="s2">,</span>
+                <span class="s1">country </span><span class="s2">= </span><span class="s1">country</span><span class="s2">,</span>
+                <span class="s1">lastUpdated </span><span class="s2">= </span><span class="s3">&quot;&quot;</span><span class="s2">,</span>
+                <span class="s1">description </span><span class="s2">= </span><span class="s3">&quot;Configuration par défaut&quot;</span><span class="s2">,</span>
+                <span class="s1">blockedPrefixes </span><span class="s2">= </span><span class="s1">emptyMap</span><span class="s2">(),</span>
+                <span class="s1">trustedPrefixes </span><span class="s2">= </span><span class="s1">TrustedPrefixes</span><span class="s2">(</span><span class="s3">&quot;&quot;</span><span class="s2">, </span><span class="s1">emptyList</span><span class="s2">())</span>
+            <span class="s2">)</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s4">/**</span>
+     <span class="s4">* Normalise un numéro de téléphone belge</span>
+     <span class="s4">*/</span>
+    <span class="s0">fun </span><span class="s1">normalizePhoneNumber</span><span class="s2">(</span><span class="s1">phoneNumber: String</span><span class="s2">)</span><span class="s1">: String </span><span class="s2">{</span>
+        <span class="s0">var </span><span class="s1">normalized </span><span class="s2">= </span><span class="s1">phoneNumber</span><span class="s2">.</span><span class="s1">replace</span><span class="s2">(</span><span class="s1">Regex</span><span class="s2">(</span><span class="s3">&quot;[^0-9+]&quot;</span><span class="s2">), </span><span class="s3">&quot;&quot;</span><span class="s2">)</span>
+
+        <span class="s5">// Convertir format international en format national</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">normalized</span><span class="s2">.</span><span class="s1">startsWith</span><span class="s2">(</span><span class="s3">&quot;+32&quot;</span><span class="s2">)) {</span>
+            <span class="s1">normalized </span><span class="s2">= </span><span class="s3">&quot;0&quot; </span><span class="s2">+ </span><span class="s1">normalized</span><span class="s2">.</span><span class="s1">substring</span><span class="s2">(</span><span class="s6">3</span><span class="s2">)</span>
+        <span class="s2">} </span><span class="s0">else if </span><span class="s2">(</span><span class="s1">normalized</span><span class="s2">.</span><span class="s1">startsWith</span><span class="s2">(</span><span class="s3">&quot;0032&quot;</span><span class="s2">)) {</span>
+            <span class="s1">normalized </span><span class="s2">= </span><span class="s3">&quot;0&quot; </span><span class="s2">+ </span><span class="s1">normalized</span><span class="s2">.</span><span class="s1">substring</span><span class="s2">(</span><span class="s6">4</span><span class="s2">)</span>
+        <span class="s2">}</span>
+
+        <span class="s0">return </span><span class="s1">normalized</span>
+    <span class="s2">}</span>
+
+    <span class="s4">/**</span>
+     <span class="s4">* Vérifie si un numéro correspond à un préfixe bloqué</span>
+     <span class="s4">*/</span>
+    <span class="s0">fun </span><span class="s1">shouldBlockByPrefix</span><span class="s2">(</span><span class="s1">phoneNumber: String</span><span class="s2">, </span><span class="s1">country: String </span><span class="s2">= </span><span class="s3">&quot;BE&quot;</span><span class="s2">)</span><span class="s1">: BlockResult </span><span class="s2">{</span>
+        <span class="s0">val </span><span class="s1">config </span><span class="s2">= </span><span class="s1">loadPrefixConfig</span><span class="s2">(</span><span class="s1">country</span><span class="s2">)</span>
+        <span class="s0">val </span><span class="s1">normalized </span><span class="s2">= </span><span class="s1">normalizePhoneNumber</span><span class="s2">(</span><span class="s1">phoneNumber</span><span class="s2">)</span>
+
+        <span class="s5">// Vérifier d'abord les préfixes de confiance (ne jamais bloquer)</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">isTrustedPrefix</span><span class="s2">(</span><span class="s1">normalized</span><span class="s2">, </span><span class="s1">config</span><span class="s2">)) {</span>
+            <span class="s0">return </span><span class="s1">BlockResult</span><span class="s2">(</span>
+                <span class="s1">shouldBlock </span><span class="s2">= </span><span class="s0">false</span><span class="s2">,</span>
+                <span class="s1">reason </span><span class="s2">= </span><span class="s3">&quot;Numéro de confiance&quot;</span><span class="s2">,</span>
+                <span class="s1">category </span><span class="s2">= </span><span class="s3">&quot;trusted&quot;</span>
+            <span class="s2">)</span>
+        <span class="s2">}</span>
+
+        <span class="s5">// Vérifier les préfixes d'urgence</span>
+        <span class="s0">val </span><span class="s1">emergencyCategory </span><span class="s2">= </span><span class="s1">config</span><span class="s2">.</span><span class="s1">blockedPrefixes</span><span class="s2">[</span><span class="s3">&quot;emergency&quot;</span><span class="s2">]</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">emergencyCategory?</span><span class="s2">.</span><span class="s1">neverBlock </span><span class="s2">== </span><span class="s0">true</span><span class="s2">) {</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">matchesAnyPrefix</span><span class="s2">(</span><span class="s1">normalized</span><span class="s2">, </span><span class="s1">emergencyCategory</span><span class="s2">.</span><span class="s1">prefixes</span><span class="s2">)) {</span>
+                <span class="s0">return </span><span class="s1">BlockResult</span><span class="s2">(</span>
+                    <span class="s1">shouldBlock </span><span class="s2">= </span><span class="s0">false</span><span class="s2">,</span>
+                    <span class="s1">reason </span><span class="s2">= </span><span class="s3">&quot;Numéro d'urgence&quot;</span><span class="s2">,</span>
+                    <span class="s1">category </span><span class="s2">= </span><span class="s3">&quot;emergency&quot;</span>
+                <span class="s2">)</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+
+        <span class="s5">// Vérifier chaque catégorie de préfixes bloqués</span>
+        <span class="s1">config</span><span class="s2">.</span><span class="s1">blockedPrefixes</span><span class="s2">.</span><span class="s1">forEach </span><span class="s2">{ (</span><span class="s1">categoryName</span><span class="s2">, </span><span class="s1">category</span><span class="s2">) -&gt;</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">category</span><span class="s2">.</span><span class="s1">blockByDefault </span><span class="s2">&amp;&amp; </span><span class="s1">matchesAnyPrefix</span><span class="s2">(</span><span class="s1">normalized</span><span class="s2">, </span><span class="s1">category</span><span class="s2">.</span><span class="s1">prefixes</span><span class="s2">)) {</span>
+                <span class="s0">return </span><span class="s1">BlockResult</span><span class="s2">(</span>
+                    <span class="s1">shouldBlock </span><span class="s2">= </span><span class="s0">true</span><span class="s2">,</span>
+                    <span class="s1">reason </span><span class="s2">= </span><span class="s1">category</span><span class="s2">.</span><span class="s1">description</span><span class="s2">,</span>
+                    <span class="s1">category </span><span class="s2">= </span><span class="s1">categoryName</span><span class="s2">,</span>
+                    <span class="s1">matchedPrefix </span><span class="s2">= </span><span class="s1">findMatchingPrefix</span><span class="s2">(</span><span class="s1">normalized</span><span class="s2">, </span><span class="s1">category</span><span class="s2">.</span><span class="s1">prefixes</span><span class="s2">)</span>
+                <span class="s2">)</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+
+        <span class="s0">return </span><span class="s1">BlockResult</span><span class="s2">(</span>
+            <span class="s1">shouldBlock </span><span class="s2">= </span><span class="s0">false</span><span class="s2">,</span>
+            <span class="s1">reason </span><span class="s2">= </span><span class="s3">&quot;Aucune règle de blocage&quot;</span><span class="s2">,</span>
+            <span class="s1">category </span><span class="s2">= </span><span class="s3">&quot;none&quot;</span>
+        <span class="s2">)</span>
+    <span class="s2">}</span>
+
+    <span class="s4">/**</span>
+     <span class="s4">* Vérifie si un numéro est dans les préfixes de confiance</span>
+     <span class="s4">*/</span>
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">isTrustedPrefix</span><span class="s2">(</span><span class="s1">phoneNumber: String</span><span class="s2">, </span><span class="s1">config: PrefixConfig</span><span class="s2">)</span><span class="s1">: Boolean </span><span class="s2">{</span>
+        <span class="s0">return </span><span class="s1">matchesAnyPrefix</span><span class="s2">(</span><span class="s1">phoneNumber</span><span class="s2">, </span><span class="s1">config</span><span class="s2">.</span><span class="s1">trustedPrefixes</span><span class="s2">.</span><span class="s1">prefixes</span><span class="s2">)</span>
+    <span class="s2">}</span>
+
+    <span class="s4">/**</span>
+     <span class="s4">* Vérifie si un numéro correspond à l'un des préfixes donnés</span>
+     <span class="s4">*/</span>
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">matchesAnyPrefix</span><span class="s2">(</span><span class="s1">phoneNumber: String</span><span class="s2">, </span><span class="s1">prefixes: List</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">&gt;)</span><span class="s1">: Boolean </span><span class="s2">{</span>
+        <span class="s0">return </span><span class="s1">prefixes</span><span class="s2">.</span><span class="s1">any </span><span class="s2">{ </span><span class="s1">prefix </span><span class="s2">-&gt; </span><span class="s1">phoneNumber</span><span class="s2">.</span><span class="s1">startsWith</span><span class="s2">(</span><span class="s1">prefix</span><span class="s2">) }</span>
+    <span class="s2">}</span>
+
+    <span class="s4">/**</span>
+     <span class="s4">* Trouve le préfixe correspondant</span>
+     <span class="s4">*/</span>
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">findMatchingPrefix</span><span class="s2">(</span><span class="s1">phoneNumber: String</span><span class="s2">, </span><span class="s1">prefixes: List</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">&gt;)</span><span class="s1">: String? </span><span class="s2">{</span>
+        <span class="s0">return </span><span class="s1">prefixes</span><span class="s2">.</span><span class="s1">find </span><span class="s2">{ </span><span class="s1">prefix </span><span class="s2">-&gt; </span><span class="s1">phoneNumber</span><span class="s2">.</span><span class="s1">startsWith</span><span class="s2">(</span><span class="s1">prefix</span><span class="s2">) }</span>
+    <span class="s2">}</span>
+
+    <span class="s4">/**</span>
+     <span class="s4">* Obtient la catégorie d'un numéro</span>
+     <span class="s4">*/</span>
+    <span class="s0">fun </span><span class="s1">getNumberCategory</span><span class="s2">(</span><span class="s1">phoneNumber: String</span><span class="s2">, </span><span class="s1">country: String </span><span class="s2">= </span><span class="s3">&quot;BE&quot;</span><span class="s2">)</span><span class="s1">: String? </span><span class="s2">{</span>
+        <span class="s0">val </span><span class="s1">config </span><span class="s2">= </span><span class="s1">loadPrefixConfig</span><span class="s2">(</span><span class="s1">country</span><span class="s2">)</span>
+        <span class="s0">val </span><span class="s1">normalized </span><span class="s2">= </span><span class="s1">normalizePhoneNumber</span><span class="s2">(</span><span class="s1">phoneNumber</span><span class="s2">)</span>
+
+        <span class="s1">config</span><span class="s2">.</span><span class="s1">blockedPrefixes</span><span class="s2">.</span><span class="s1">forEach </span><span class="s2">{ (</span><span class="s1">categoryName</span><span class="s2">, </span><span class="s1">category</span><span class="s2">) -&gt;</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">matchesAnyPrefix</span><span class="s2">(</span><span class="s1">normalized</span><span class="s2">, </span><span class="s1">category</span><span class="s2">.</span><span class="s1">prefixes</span><span class="s2">)) {</span>
+                <span class="s0">return </span><span class="s1">categoryName</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+
+        <span class="s0">return null</span>
+    <span class="s2">}</span>
+
+    <span class="s4">/**</span>
+     <span class="s4">* Obtient l'opérateur d'un numéro mobile belge</span>
+     <span class="s4">*/</span>
+    <span class="s0">fun </span><span class="s1">getOperator</span><span class="s2">(</span><span class="s1">phoneNumber: String</span><span class="s2">, </span><span class="s1">country: String </span><span class="s2">= </span><span class="s3">&quot;BE&quot;</span><span class="s2">)</span><span class="s1">: String? </span><span class="s2">{</span>
+        <span class="s0">val </span><span class="s1">config </span><span class="s2">= </span><span class="s1">loadPrefixConfig</span><span class="s2">(</span><span class="s1">country</span><span class="s2">)</span>
+        <span class="s0">val </span><span class="s1">normalized </span><span class="s2">= </span><span class="s1">normalizePhoneNumber</span><span class="s2">(</span><span class="s1">phoneNumber</span><span class="s2">)</span>
+
+        <span class="s1">config</span><span class="s2">.</span><span class="s1">operatorPrefixes?</span><span class="s2">.</span><span class="s1">forEach </span><span class="s2">{ (</span><span class="s1">operator</span><span class="s2">, </span><span class="s1">prefixes</span><span class="s2">) -&gt;</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">matchesAnyPrefix</span><span class="s2">(</span><span class="s1">normalized</span><span class="s2">, </span><span class="s1">prefixes</span><span class="s2">)) {</span>
+                <span class="s0">return </span><span class="s1">operator</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+
+        <span class="s0">return null</span>
+    <span class="s2">}</span>
+
+    <span class="s4">/**</span>
+     <span class="s4">* Valide le format d'un numéro belge</span>
+     <span class="s4">*/</span>
+    <span class="s0">fun </span><span class="s1">isValidBelgianNumber</span><span class="s2">(</span><span class="s1">phoneNumber: String</span><span class="s2">)</span><span class="s1">: Boolean </span><span class="s2">{</span>
+        <span class="s0">val </span><span class="s1">config </span><span class="s2">= </span><span class="s1">loadPrefixConfig</span><span class="s2">(</span><span class="s3">&quot;BE&quot;</span><span class="s2">)</span>
+        <span class="s0">val </span><span class="s1">normalized </span><span class="s2">= </span><span class="s1">normalizePhoneNumber</span><span class="s2">(</span><span class="s1">phoneNumber</span><span class="s2">)</span>
+
+        <span class="s0">val </span><span class="s1">rules </span><span class="s2">= </span><span class="s1">config</span><span class="s2">.</span><span class="s1">validationRules ?: </span><span class="s0">return true</span>
+
+        <span class="s5">// Vérifier si c'est un mobile (commence par 04)</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">normalized</span><span class="s2">.</span><span class="s1">startsWith</span><span class="s2">(</span><span class="s3">&quot;04&quot;</span><span class="s2">)) {</span>
+            <span class="s0">return </span><span class="s1">normalized</span><span class="s2">.</span><span class="s1">length </span><span class="s2">== </span><span class="s1">rules</span><span class="s2">.</span><span class="s1">belgianMobileLength</span>
+        <span class="s2">}</span>
+
+        <span class="s5">// Vérifier si c'est une ligne fixe</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">normalized</span><span class="s2">.</span><span class="s1">startsWith</span><span class="s2">(</span><span class="s3">&quot;0&quot;</span><span class="s2">) &amp;&amp; </span><span class="s1">normalized</span><span class="s2">[</span><span class="s6">1</span><span class="s2">] </span><span class="s0">in </span><span class="s3">'2'</span><span class="s2">..</span><span class="s3">'9'</span><span class="s2">) {</span>
+            <span class="s0">return </span><span class="s1">normalized</span><span class="s2">.</span><span class="s1">length </span><span class="s2">== </span><span class="s1">rules</span><span class="s2">.</span><span class="s1">belgianFixedLength </span><span class="s2">||</span>
+                    <span class="s1">normalized</span><span class="s2">.</span><span class="s1">length </span><span class="s2">== </span><span class="s1">rules</span><span class="s2">.</span><span class="s1">belgianMobileLength</span>
+        <span class="s2">}</span>
+
+        <span class="s0">return true </span><span class="s5">// Laisser passer les formats spéciaux</span>
+    <span class="s2">}</span>
+
+    <span class="s4">/**</span>
+     <span class="s4">* Obtient des informations détaillées sur un numéro</span>
+     <span class="s4">*/</span>
+    <span class="s0">fun </span><span class="s1">getNumberInfo</span><span class="s2">(</span><span class="s1">phoneNumber: String</span><span class="s2">, </span><span class="s1">country: String </span><span class="s2">= </span><span class="s3">&quot;BE&quot;</span><span class="s2">)</span><span class="s1">: NumberInfo </span><span class="s2">{</span>
+        <span class="s0">val </span><span class="s1">normalized </span><span class="s2">= </span><span class="s1">normalizePhoneNumber</span><span class="s2">(</span><span class="s1">phoneNumber</span><span class="s2">)</span>
+        <span class="s0">val </span><span class="s1">category </span><span class="s2">= </span><span class="s1">getNumberCategory</span><span class="s2">(</span><span class="s1">normalized</span><span class="s2">, </span><span class="s1">country</span><span class="s2">)</span>
+        <span class="s0">val </span><span class="s1">operator </span><span class="s2">= </span><span class="s1">getOperator</span><span class="s2">(</span><span class="s1">normalized</span><span class="s2">, </span><span class="s1">country</span><span class="s2">)</span>
+        <span class="s0">val </span><span class="s1">blockResult </span><span class="s2">= </span><span class="s1">shouldBlockByPrefix</span><span class="s2">(</span><span class="s1">normalized</span><span class="s2">, </span><span class="s1">country</span><span class="s2">)</span>
+        <span class="s0">val </span><span class="s1">isValid </span><span class="s2">= </span><span class="s1">isValidBelgianNumber</span><span class="s2">(</span><span class="s1">normalized</span><span class="s2">)</span>
+
+        <span class="s0">return </span><span class="s1">NumberInfo</span><span class="s2">(</span>
+            <span class="s1">originalNumber </span><span class="s2">= </span><span class="s1">phoneNumber</span><span class="s2">,</span>
+            <span class="s1">normalizedNumber </span><span class="s2">= </span><span class="s1">normalized</span><span class="s2">,</span>
+            <span class="s1">category </span><span class="s2">= </span><span class="s1">category</span><span class="s2">,</span>
+            <span class="s1">operator </span><span class="s2">= </span><span class="s1">operator</span><span class="s2">,</span>
+            <span class="s1">shouldBlock </span><span class="s2">= </span><span class="s1">blockResult</span><span class="s2">.</span><span class="s1">shouldBlock</span><span class="s2">,</span>
+            <span class="s1">blockReason </span><span class="s2">= </span><span class="s1">blockResult</span><span class="s2">.</span><span class="s1">reason</span><span class="s2">,</span>
+            <span class="s1">isValid </span><span class="s2">= </span><span class="s1">isValid</span>
+        <span class="s2">)</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+
+<span class="s1">data </span><span class="s0">class </span><span class="s1">BlockResult</span><span class="s2">(</span>
+    <span class="s0">val </span><span class="s1">shouldBlock: Boolean</span><span class="s2">,</span>
+    <span class="s0">val </span><span class="s1">reason: String</span><span class="s2">,</span>
+    <span class="s0">val </span><span class="s1">category: String</span><span class="s2">,</span>
+    <span class="s0">val </span><span class="s1">matchedPrefix: String? </span><span class="s2">= </span><span class="s0">null</span>
+<span class="s2">)</span>
+
+<span class="s1">data </span><span class="s0">class </span><span class="s1">NumberInfo</span><span class="s2">(</span>
+    <span class="s0">val </span><span class="s1">originalNumber: String</span><span class="s2">,</span>
+    <span class="s0">val </span><span class="s1">normalizedNumber: String</span><span class="s2">,</span>
+    <span class="s0">val </span><span class="s1">category: String?</span><span class="s2">,</span>
+    <span class="s0">val </span><span class="s1">operator: String?</span><span class="s2">,</span>
+    <span class="s0">val </span><span class="s1">shouldBlock: Boolean</span><span class="s2">,</span>
+    <span class="s0">val </span><span class="s1">blockReason: String</span><span class="s2">,</span>
+    <span class="s0">val </span><span class="s1">isValid: Boolean</span>
+<span class="s2">)</span></pre>
+</body>
+</html>

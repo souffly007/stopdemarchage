@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardSmsLog"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="4dp"
+    android:layout_marginBottom="4dp"
+    android:layout_marginStart="8dp"
+    android:layout_marginEnd="8dp"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="4dp"
+    app:cardBackgroundColor="#BB0B373E"> <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="12dp"> <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:layout_marginBottom="4dp">
+
+    <TextView
+        android:id="@+id/textSmsAddress"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Expéditeur (ou Numéro)"
+        android:textStyle="bold"
+        android:textColor="#FFFFFF" android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/textSmsDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="01/01/2025 12:00"
+        android:textColor="#00BCD4" android:textSize="12sp" />
+</LinearLayout>
+
+    <TextView
+        android:id="@+id/textSmsReason"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="[BLOQUÉ : Mot-clé suspect]"
+        android:textColor="#F44336" android:textSize="12sp"
+        android:textStyle="italic"
+        android:layout_marginBottom="4dp" />
+
+    <TextView
+        android:id="@+id/textSmsBody"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Contenu du SMS tronqué..."
+        android:textColor="#CCCCCC" android:textSize="14sp"
+        android:maxLines="2"
+        android:ellipsize="end" />
+
+</LinearLayout>
+</androidx.cardview.widget.CardView>

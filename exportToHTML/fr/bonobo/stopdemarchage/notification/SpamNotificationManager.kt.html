@@ -1,0 +1,179 @@
+<html>
+<head>
+<title>SpamNotificationManager.kt</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #6aab73;}
+.s4 { color: #2aacb8;}
+.s5 { color: #5f826b; font-style: italic;}
+.s6 { color: #7a7e85;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+SpamNotificationManager.kt</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com</span><span class="s2">.</span><span class="s1">stopdemarche</span><span class="s2">.</span><span class="s1">notification</span>
+
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">app</span><span class="s2">.</span><span class="s1">NotificationChannel</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">app</span><span class="s2">.</span><span class="s1">NotificationManager</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">app</span><span class="s2">.</span><span class="s1">PendingIntent</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">content</span><span class="s2">.</span><span class="s1">Context</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">content</span><span class="s2">.</span><span class="s1">Intent</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">os</span><span class="s2">.</span><span class="s1">Build</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">core</span><span class="s2">.</span><span class="s1">app</span><span class="s2">.</span><span class="s1">NotificationCompat</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">core</span><span class="s2">.</span><span class="s1">app</span><span class="s2">.</span><span class="s1">NotificationManagerCompat</span>
+<span class="s1">import fr</span><span class="s2">.</span><span class="s1">bonobo</span><span class="s2">.</span><span class="s1">stopdemarchage</span><span class="s2">.</span><span class="s1">MainActivity</span>
+<span class="s1">import fr</span><span class="s2">.</span><span class="s1">bonobo</span><span class="s2">.</span><span class="s1">stopdemarchage</span><span class="s2">.</span><span class="s1">R</span>
+
+<span class="s0">class </span><span class="s1">SpamNotificationManager</span><span class="s2">(</span><span class="s1">private </span><span class="s0">val </span><span class="s1">context: Context</span><span class="s2">) {</span>
+
+    <span class="s1">companion </span><span class="s0">object </span><span class="s2">{</span>
+        <span class="s1">private const </span><span class="s0">val </span><span class="s1">CHANNEL_ID </span><span class="s2">= </span><span class="s3">&quot;spam_alerts&quot;</span>
+        <span class="s1">private const </span><span class="s0">val </span><span class="s1">CHANNEL_NAME </span><span class="s2">= </span><span class="s3">&quot;Alertes Spam&quot;</span>
+        <span class="s1">private const </span><span class="s0">val </span><span class="s1">NOTIFICATION_ID </span><span class="s2">= </span><span class="s4">1001</span>
+    <span class="s2">}</span>
+
+    <span class="s1">init </span><span class="s2">{</span>
+        <span class="s1">createNotificationChannel</span><span class="s2">()</span>
+    <span class="s2">}</span>
+
+    <span class="s5">/**</span>
+     <span class="s5">* Crée le canal de notification pour Android O+</span>
+     <span class="s5">*/</span>
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">createNotificationChannel</span><span class="s2">() {</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">Build</span><span class="s2">.</span><span class="s1">VERSION</span><span class="s2">.</span><span class="s1">SDK_INT </span><span class="s2">&gt;= </span><span class="s1">Build</span><span class="s2">.</span><span class="s1">VERSION_CODES</span><span class="s2">.</span><span class="s1">O</span><span class="s2">) {</span>
+            <span class="s0">val </span><span class="s1">channel </span><span class="s2">= </span><span class="s1">NotificationChannel</span><span class="s2">(</span>
+                <span class="s1">CHANNEL_ID</span><span class="s2">,</span>
+                <span class="s1">CHANNEL_NAME</span><span class="s2">,</span>
+                <span class="s1">NotificationManager</span><span class="s2">.</span><span class="s1">IMPORTANCE_DEFAULT</span>
+            <span class="s2">).</span><span class="s1">apply </span><span class="s2">{</span>
+                <span class="s1">description </span><span class="s2">= </span><span class="s3">&quot;Notifications pour les SMS spam bloqués&quot;</span>
+                <span class="s1">enableVibration</span><span class="s2">(</span><span class="s0">false</span><span class="s2">)</span>
+                <span class="s1">setShowBadge</span><span class="s2">(</span><span class="s0">true</span><span class="s2">)</span>
+            <span class="s2">}</span>
+
+            <span class="s0">val </span><span class="s1">notificationManager </span><span class="s2">= </span><span class="s1">context</span><span class="s2">.</span><span class="s1">getSystemService</span><span class="s2">(</span><span class="s1">Context</span><span class="s2">.</span><span class="s1">NOTIFICATION_SERVICE</span><span class="s2">) </span><span class="s0">as </span><span class="s1">NotificationManager</span>
+            <span class="s1">notificationManager</span><span class="s2">.</span><span class="s1">createNotificationChannel</span><span class="s2">(</span><span class="s1">channel</span><span class="s2">)</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s5">/**</span>
+     <span class="s5">* Affiche une notification pour un SMS spam bloqué</span>
+     <span class="s5">*/</span>
+    <span class="s0">fun </span><span class="s1">showSpamBlockedNotification</span><span class="s2">(</span>
+        <span class="s1">sender: String</span><span class="s2">,</span>
+        <span class="s1">message: String</span><span class="s2">,</span>
+        <span class="s1">reason: String</span><span class="s2">,</span>
+        <span class="s1">confidence: Double</span>
+    <span class="s2">) {</span>
+        <span class="s6">// Intent pour ouvrir l'application</span>
+        <span class="s0">val </span><span class="s1">intent </span><span class="s2">= </span><span class="s1">Intent</span><span class="s2">(</span><span class="s1">context</span><span class="s2">, </span><span class="s1">MainActivity::</span><span class="s0">class</span><span class="s2">.</span><span class="s1">java</span><span class="s2">).</span><span class="s1">apply </span><span class="s2">{</span>
+            <span class="s1">flags </span><span class="s2">= </span><span class="s1">Intent</span><span class="s2">.</span><span class="s1">FLAG_ACTIVITY_NEW_TASK or Intent</span><span class="s2">.</span><span class="s1">FLAG_ACTIVITY_CLEAR_TASK</span>
+            <span class="s1">putExtra</span><span class="s2">(</span><span class="s3">&quot;show_blocked_list&quot;</span><span class="s2">, </span><span class="s0">true</span><span class="s2">)</span>
+        <span class="s2">}</span>
+
+        <span class="s0">val </span><span class="s1">pendingIntent </span><span class="s2">= </span><span class="s1">PendingIntent</span><span class="s2">.</span><span class="s1">getActivity</span><span class="s2">(</span>
+            <span class="s1">context</span><span class="s2">,</span>
+            <span class="s4">0</span><span class="s2">,</span>
+            <span class="s1">intent</span><span class="s2">,</span>
+            <span class="s1">PendingIntent</span><span class="s2">.</span><span class="s1">FLAG_UPDATE_CURRENT or PendingIntent</span><span class="s2">.</span><span class="s1">FLAG_IMMUTABLE</span>
+        <span class="s2">)</span>
+
+        <span class="s6">// Créer la notification</span>
+        <span class="s0">val </span><span class="s1">builder </span><span class="s2">= </span><span class="s1">NotificationCompat</span><span class="s2">.</span><span class="s1">Builder</span><span class="s2">(</span><span class="s1">context</span><span class="s2">, </span><span class="s1">CHANNEL_ID</span><span class="s2">)</span>
+            <span class="s2">.</span><span class="s1">setSmallIcon</span><span class="s2">(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">drawable</span><span class="s2">.</span><span class="s1">ic_block_24dp</span><span class="s2">)</span>
+            <span class="s2">.</span><span class="s1">setContentTitle</span><span class="s2">(</span><span class="s3">&quot;SMS spam bloqué&quot;</span><span class="s2">)</span>
+            <span class="s2">.</span><span class="s1">setContentText</span><span class="s2">(</span><span class="s3">&quot;De: </span><span class="s0">$</span><span class="s1">sender</span><span class="s3">&quot;</span><span class="s2">)</span>
+            <span class="s2">.</span><span class="s1">setStyle</span><span class="s2">(</span><span class="s1">NotificationCompat</span><span class="s2">.</span><span class="s1">BigTextStyle</span><span class="s2">()</span>
+                <span class="s2">.</span><span class="s1">bigText</span><span class="s2">(</span><span class="s1">buildString </span><span class="s2">{</span>
+                    <span class="s1">append</span><span class="s2">(</span><span class="s3">&quot;De: </span><span class="s0">$</span><span class="s1">sender</span><span class="s0">\n</span><span class="s3">&quot;</span><span class="s2">)</span>
+                    <span class="s1">append</span><span class="s2">(</span><span class="s3">&quot;Raison: </span><span class="s0">$</span><span class="s1">reason</span><span class="s0">\n</span><span class="s3">&quot;</span><span class="s2">)</span>
+                    <span class="s1">append</span><span class="s2">(</span><span class="s3">&quot;Confiance: </span><span class="s0">${</span><span class="s2">(</span><span class="s1">confidence </span><span class="s2">* </span><span class="s4">100</span><span class="s2">).</span><span class="s1">toInt</span><span class="s2">()</span><span class="s0">}</span><span class="s3">%</span><span class="s0">\n</span><span class="s3">&quot;</span><span class="s2">)</span>
+                    <span class="s1">append</span><span class="s2">(</span><span class="s3">&quot;Message: </span><span class="s0">${</span><span class="s1">message</span><span class="s2">.</span><span class="s1">take</span><span class="s2">(</span><span class="s4">100</span><span class="s2">)</span><span class="s0">}</span><span class="s3">&quot;</span><span class="s2">)</span>
+                    <span class="s0">if </span><span class="s2">(</span><span class="s1">message</span><span class="s2">.</span><span class="s1">length </span><span class="s2">&gt; </span><span class="s4">100</span><span class="s2">) </span><span class="s1">append</span><span class="s2">(</span><span class="s3">&quot;...&quot;</span><span class="s2">)</span>
+                <span class="s2">})</span>
+            <span class="s2">)</span>
+            <span class="s2">.</span><span class="s1">setPriority</span><span class="s2">(</span><span class="s1">NotificationCompat</span><span class="s2">.</span><span class="s1">PRIORITY_DEFAULT</span><span class="s2">)</span>
+            <span class="s2">.</span><span class="s1">setContentIntent</span><span class="s2">(</span><span class="s1">pendingIntent</span><span class="s2">)</span>
+            <span class="s2">.</span><span class="s1">setAutoCancel</span><span class="s2">(</span><span class="s0">true</span><span class="s2">)</span>
+            <span class="s2">.</span><span class="s1">setColor</span><span class="s2">(</span><span class="s1">context</span><span class="s2">.</span><span class="s1">getColor</span><span class="s2">(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">color</span><span class="s2">.</span><span class="s1">red_500</span><span class="s2">))</span>
+            <span class="s2">.</span><span class="s1">addAction</span><span class="s2">(</span>
+                <span class="s1">R</span><span class="s2">.</span><span class="s1">drawable</span><span class="s2">.</span><span class="s1">ic_visibility</span><span class="s2">,</span>
+                <span class="s3">&quot;Voir détails&quot;</span><span class="s2">,</span>
+                <span class="s1">pendingIntent</span>
+            <span class="s2">)</span>
+
+        <span class="s6">// Afficher la notification</span>
+        <span class="s1">with</span><span class="s2">(</span><span class="s1">NotificationManagerCompat</span><span class="s2">.</span><span class="s1">from</span><span class="s2">(</span><span class="s1">context</span><span class="s2">)) {</span>
+            <span class="s1">notify</span><span class="s2">(</span><span class="s1">NOTIFICATION_ID</span><span class="s2">, </span><span class="s1">builder</span><span class="s2">.</span><span class="s1">build</span><span class="s2">())</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s5">/**</span>
+     <span class="s5">* Affiche une notification de résumé quotidien</span>
+     <span class="s5">*/</span>
+    <span class="s0">fun </span><span class="s1">showDailySummaryNotification</span><span class="s2">(</span><span class="s1">blockedCount: Int</span><span class="s2">, </span><span class="s1">topReasons: List</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">&gt;) {</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">blockedCount </span><span class="s2">== </span><span class="s4">0</span><span class="s2">) </span><span class="s0">return</span>
+
+        <span class="s6">// Intent pour ouvrir l'application</span>
+        <span class="s0">val </span><span class="s1">intent </span><span class="s2">= </span><span class="s1">Intent</span><span class="s2">(</span><span class="s1">context</span><span class="s2">, </span><span class="s1">MainActivity::</span><span class="s0">class</span><span class="s2">.</span><span class="s1">java</span><span class="s2">).</span><span class="s1">apply </span><span class="s2">{</span>
+            <span class="s1">flags </span><span class="s2">= </span><span class="s1">Intent</span><span class="s2">.</span><span class="s1">FLAG_ACTIVITY_NEW_TASK or Intent</span><span class="s2">.</span><span class="s1">FLAG_ACTIVITY_CLEAR_TASK</span>
+            <span class="s1">putExtra</span><span class="s2">(</span><span class="s3">&quot;show_statistics&quot;</span><span class="s2">, </span><span class="s0">true</span><span class="s2">)</span>
+        <span class="s2">}</span>
+
+        <span class="s0">val </span><span class="s1">pendingIntent </span><span class="s2">= </span><span class="s1">PendingIntent</span><span class="s2">.</span><span class="s1">getActivity</span><span class="s2">(</span>
+            <span class="s1">context</span><span class="s2">,</span>
+            <span class="s4">1</span><span class="s2">,</span>
+            <span class="s1">intent</span><span class="s2">,</span>
+            <span class="s1">PendingIntent</span><span class="s2">.</span><span class="s1">FLAG_UPDATE_CURRENT or PendingIntent</span><span class="s2">.</span><span class="s1">FLAG_IMMUTABLE</span>
+        <span class="s2">)</span>
+
+        <span class="s6">// Créer le message de résumé</span>
+        <span class="s0">val </span><span class="s1">summaryText </span><span class="s2">= </span><span class="s1">buildString </span><span class="s2">{</span>
+            <span class="s1">append</span><span class="s2">(</span><span class="s3">&quot;</span><span class="s0">$</span><span class="s1">blockedCount </span><span class="s3">SMS bloqué(s) aujourd'hui</span><span class="s0">\n\n</span><span class="s3">&quot;</span><span class="s2">)</span>
+            <span class="s1">append</span><span class="s2">(</span><span class="s3">&quot;Principales raisons:</span><span class="s0">\n</span><span class="s3">&quot;</span><span class="s2">)</span>
+            <span class="s1">topReasons</span><span class="s2">.</span><span class="s1">take</span><span class="s2">(</span><span class="s4">3</span><span class="s2">).</span><span class="s1">forEachIndexed </span><span class="s2">{ </span><span class="s1">index</span><span class="s2">, </span><span class="s1">reason </span><span class="s2">-&gt;</span>
+                <span class="s1">append</span><span class="s2">(</span><span class="s3">&quot;</span><span class="s0">${</span><span class="s1">index </span><span class="s2">+ </span><span class="s4">1</span><span class="s0">}</span><span class="s3">. </span><span class="s0">$</span><span class="s1">reason</span><span class="s0">\n</span><span class="s3">&quot;</span><span class="s2">)</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+
+        <span class="s0">val </span><span class="s1">builder </span><span class="s2">= </span><span class="s1">NotificationCompat</span><span class="s2">.</span><span class="s1">Builder</span><span class="s2">(</span><span class="s1">context</span><span class="s2">, </span><span class="s1">CHANNEL_ID</span><span class="s2">)</span>
+            <span class="s2">.</span><span class="s1">setSmallIcon</span><span class="s2">(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">drawable</span><span class="s2">.</span><span class="s1">ic_shield</span><span class="s2">)</span>
+            <span class="s2">.</span><span class="s1">setContentTitle</span><span class="s2">(</span><span class="s3">&quot;Résumé quotidien - StopDémarchage&quot;</span><span class="s2">)</span>
+            <span class="s2">.</span><span class="s1">setContentText</span><span class="s2">(</span><span class="s3">&quot;</span><span class="s0">$</span><span class="s1">blockedCount </span><span class="s3">SMS bloqués aujourd'hui&quot;</span><span class="s2">)</span>
+            <span class="s2">.</span><span class="s1">setStyle</span><span class="s2">(</span><span class="s1">NotificationCompat</span><span class="s2">.</span><span class="s1">BigTextStyle</span><span class="s2">().</span><span class="s1">bigText</span><span class="s2">(</span><span class="s1">summaryText</span><span class="s2">))</span>
+            <span class="s2">.</span><span class="s1">setPriority</span><span class="s2">(</span><span class="s1">NotificationCompat</span><span class="s2">.</span><span class="s1">PRIORITY_LOW</span><span class="s2">)</span>
+            <span class="s2">.</span><span class="s1">setContentIntent</span><span class="s2">(</span><span class="s1">pendingIntent</span><span class="s2">)</span>
+            <span class="s2">.</span><span class="s1">setAutoCancel</span><span class="s2">(</span><span class="s0">true</span><span class="s2">)</span>
+
+        <span class="s1">with</span><span class="s2">(</span><span class="s1">NotificationManagerCompat</span><span class="s2">.</span><span class="s1">from</span><span class="s2">(</span><span class="s1">context</span><span class="s2">)) {</span>
+            <span class="s1">notify</span><span class="s2">(</span><span class="s1">NOTIFICATION_ID </span><span class="s2">+ </span><span class="s4">1</span><span class="s2">, </span><span class="s1">builder</span><span class="s2">.</span><span class="s1">build</span><span class="s2">())</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s5">/**</span>
+     <span class="s5">* Annule toutes les notifications</span>
+     <span class="s5">*/</span>
+    <span class="s0">fun </span><span class="s1">cancelAll</span><span class="s2">() {</span>
+        <span class="s1">with</span><span class="s2">(</span><span class="s1">NotificationManagerCompat</span><span class="s2">.</span><span class="s1">from</span><span class="s2">(</span><span class="s1">context</span><span class="s2">)) {</span>
+            <span class="s1">cancelAll</span><span class="s2">()</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s5">/**</span>
+     <span class="s5">* Annule une notification spécifique</span>
+     <span class="s5">*/</span>
+    <span class="s0">fun </span><span class="s1">cancelNotification</span><span class="s2">(</span><span class="s1">notificationId: Int</span><span class="s2">) {</span>
+        <span class="s1">with</span><span class="s2">(</span><span class="s1">NotificationManagerCompat</span><span class="s2">.</span><span class="s1">from</span><span class="s2">(</span><span class="s1">context</span><span class="s2">)) {</span>
+            <span class="s1">cancel</span><span class="s2">(</span><span class="s1">notificationId</span><span class="s2">)</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+<span class="s2">}</span></pre>
+</body>
+</html>

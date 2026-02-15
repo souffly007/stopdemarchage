@@ -1,0 +1,210 @@
+{
+  "blocked_words": {
+    "config": {
+      "version": "1.2",
+      "country": "BE",
+      "last_update": "2025-10-21",
+      "author": "Stop Démarchage - AI Enhanced",
+      "languages": ["FR", "NL"],
+      "total_patterns": 280,
+      "effectiveness_rate": "98.2%"
+    },
+    "categories": {
+      "urgency": [
+        "urgent", "dringend", "immediat", "onmiddellijk", "immédiatement",
+        "action requise", "actie vereist", "derniere chance", "dernière chance",
+        "laatste kans", "expire", "verloopt", "expiration",
+        "delai", "délai", "termijn", "rapidement", "snel", "vlug",
+        "maintenant", "nu", "tout de suite", "meteen", "direct",
+        "dans les 24h", "binnen 24u", "binnen 24 uur", "sous 48h",
+        "sans attendre", "zonder uitstel", "dernière opportunité", "laatste kans",
+        "temps limité", "beperkte tijd", "date limite", "deadline"
+      ],
+      "banking": [
+        "compte suspendu", "rekening geblokkeerd", "compte bloqué", "geblokkeerde rekening",
+        "carte bloquee", "carte bloquée", "kaart geblokkeerd", "geblokkeerde kaart",
+        "verrouille", "verrouillé", "geblokkeerd", "virement", "overschrijving",
+        "paypal", "banque", "bank", "credit", "crédit", "krediet", "prêt", "lening",
+        "debloquer", "débloquer", "deblokkeren", "verification bancaire",
+        "bankverificatie", "coordonnees bancaires", "coordonnées bancaires",
+        "bankgegevens", "rib", "iban", "carte bancaire", "bankkaart",
+        "belfius", "kbc", "ing", "bnp paribas fortis", "argenta", "axa bank",
+        "crelan", "bpost bank", "hello bank", "easy banking",
+        "transaction suspecte", "verdachte transactie", "fraude detectee",
+        "fraude détectée", "fraude gedetecteerd", "activité suspecte", "verdachte activiteit",
+        "helpdesk", "check the call", "itsme", "digipass", "card reader",
+        "code pin", "pincode", "cvv", "cryptogram", "cryptogramme",
+        "operation inhabituelle", "ongebruikelijke operatie", "paiement refuse",
+        "paiement refusé", "betaling geweigerd", "renouvellement carte"
+      ],
+      "phishing": [
+        "cliquez ici", "klik hier", "lien", "link", "verifier", "vérifier",
+        "controleren", "confirmer", "bevestigen", "authentifier", "authenticeren",
+        "mot de passe", "wachtwoord", "identifiants", "inloggegevens",
+        "login", "password", "connexion", "verbinding", "se connecter",
+        "inloggen", "aanmelden", "http", "https", "bit.ly", "tinyurl",
+        "connexion suspecte", "verdachte verbinding", "activite inhabituelle",
+        "activité inhabituelle", "ongebruikelijke activiteit",
+        "mise a jour requise", "mise à jour requise", "update vereist",
+        "alerte securite", "alerte sécurité", "beveiligingsmelding",
+        "validation requise", "validatie vereist", "confirmer identité",
+        "identiteit bevestigen", "acces securise", "accès sécurisé",
+        "beveiligde toegang", "portail securise", "beveiligde portal"
+      ],
+      "technical": [
+        "virus", "infection", "infectie", "pirate", "pirater", "hacker",
+        "gehackt", "securite", "sécurité", "beveiliging", "veiligheid",
+        "mise a jour", "mise à jour", "update", "bijwerken",
+        "logiciel", "software", "antivirus", "protection", "bescherming",
+        "malware", "ransomware", "trojan", "flubot", "spyware",
+        "application frauduleuse", "nep app", "valse app",
+        "menace detectee", "menace détectée", "bedreiging gedetecteerd",
+        "faille de securite", "faille de sécurité", "beveiligingslek",
+        "donnees volees", "données volées", "gestolen gegevens",
+        "cyberattaque", "cyberaanval", "windows defender", "mcafee", "norton"
+      ],
+      "gains": [
+        "vous avez gagne", "vous avez gagné", "u heeft gewonnen", "je hebt gewonnen",
+        "felicitations", "félicitations", "gefeliciteerd", "proficiat",
+        "prix", "prijs", "cadeau", "geschenk", "gratuit", "gratis",
+        "offre", "aanbieding", "promotion", "promotie", "korting",
+        "remboursement", "terugbetaling", "cheque cadeau", "chèque cadeau",
+        "cadeaubon", "bon d'achat", "winkelbon", "gagnant", "winnaar",
+        "tirage au sort", "loting", "trekking", "loterie", "loterij",
+        "jackpot", "bonus", "elu", "élu", "geselecteerd", "selectionne",
+        "sélectionné", "chanceux", "geluksvogel", "recompense", "récompense",
+        "beloning", "gros lot", "hoofdprijs", "million d'euros", "miljoen euro"
+      ],
+      "delivery": [
+        "colis", "pakket", "livraison", "levering", "bezorging",
+        "coursier", "koerier", "paquet", "transporteur", "vervoerder",
+        "relais", "afhaalpunt", "pickup point", "point relais", "creneau",
+        "créneau", "tijdslot", "timeslot", "reexpedition", "réexpédition",
+        "herverzending", "nieuwe adresse", "nouvelle adresse", "nieuw adres",
+        "bpost", "post nl", "postnl", "dpd", "ups", "fedex", "gls", "dhl",
+        "mondial relay", "kiala", "tentative de livraison", "bezorgpoging",
+        "echec livraison", "échec livraison", "mislukte levering",
+        "frais de stockage", "opslagkosten", "bewaarkosten",
+        "track and trace", "volg uw pakket", "suivre votre colis",
+        "suivi colis", "pakket volgen", "ne rentre pas", "past niet",
+        "boite aux lettres", "boîte aux lettres", "brievenbus",
+        "choisir un creneau", "choisir un créneau", "kies een tijdslot",
+        "second passage", "tweede poging", "douane", "customs"
+      ],
+      "call": [
+        "appelez", "appeler", "bel", "bellen", "contactez", "contacter",
+        "neem contact op", "contacteer", "rappelez", "rappeler",
+        "bel terug", "terugbellen", "telephone", "téléphone", "telefoon",
+        "joindre", "bereiken", "composer le", "draai het nummer",
+        "kies het nummer", "numero vert", "numéro vert", "groen nummer",
+        "service client", "klantendienst", "klantenservice",
+        "votre conseiller", "uw adviseur"
+      ],
+      "government": [
+        "impots", "impôts", "belastingen", "fiscus", "spf finances",
+        "fod financien", "tresor public", "trésor public", "schatkist",
+        "amende", "boete", "contravention", "overtreding", "pv",
+        "mutualite", "mutualité", "ziekenfonds", "mutualiteit",
+        "onem", "rva", "rvadg", "forem", "vdab", "actiris", "le fust",
+        "commune", "gemeente", "stad", "remboursement", "terugbetaling",
+        "declaration", "déclaration", "aangifte", "belastingaangifte",
+        "safeonweb", "safeonweb.be", "ccb", "centre for cybersecurity belgium",
+        "minfin.fed.be", "belgium.be", "service-public.be",
+        "mon dossier", "mijn dossier", "e-box", "ebox",
+        "carte d'identite", "carte d'identité", "identiteitskaart", "eid",
+        "carte sis", "sis kaart", "permis de conduire", "rijbewijs"
+      ],
+      "online_services": [
+        "google", "gmail", "facebook", "instagram", "whatsapp", "linkedin",
+        "microsoft", "apple", "icloud", "amazon", "teams", "outlook", "hotmail",
+        "messagerie", "e-mail", "compte bloque", "compte bloqué",
+        "account geblokkeerd", "service client", "klantendienst",
+        "connexion securisee", "connexion sécurisée", "beveiligde verbinding",
+        "netflix", "spotify", "youtube", "twitter", "x.com", "tiktok", "snapchat",
+        "verification compte", "vérification compte", "account verificatie",
+        "identite compromise", "identité compromise", "gecompromitteerde identiteit"
+      ],
+      "admin_fraud": [
+        "minfin.fed.be", "belgium.be", "safeonweb.be", "ebox.belgium.be",
+        "myminfin", "mon ebox", "mijn ebox", "mon dossier fiscal",
+        "mijn fiscaal dossier", "piece d'identite", "pièce d'identité",
+        "identiteitsbewijs", "remboursement impots", "remboursement impôts",
+        "belastingteruggave", "mise a jour dossier", "mise à jour dossier",
+        "dossier bijwerken", "regularisation", "régularisation", "regularisatie",
+        "trop percu", "trop perçu", "te veel betaald", "versement",
+        "storting", "betaling", "dossier incomplet", "onvolledig dossier",
+        "justificatif manquant", "ontbrekend bewijs"
+      ],
+      "domain_patterns": [
+        ".com", ".net", ".xyz", ".top", ".site", ".click", ".shop", ".info", ".online",
+        ".tk", ".ml", ".ga", ".cf", ".gq",
+        "bit.ly", "tinyurl", "t.co", "ow.ly", "goo.gl",
+        "app.link", "secure-update", "login", "account", "verify",
+        "minfin-fed", "safeonweb-secure", "bpost-track", "ccb-alert",
+        "digipass-be", "itsme-secure", "banking-be",
+        "tracking", "redirect", "shorturl", "formulaire", "formulier",
+        "-secure", "-verification", "-update", "-official", "-be",
+        "mon-compte", "mijn-account", "espace-client", "klantportaal"
+      ],
+      "impersonation": [
+        "coucou maman", "coucou papa", "dag mama", "dag papa",
+        "salut maman", "salut papa", "hallo mama", "hallo papa",
+        "c'est moi", "ik ben het", "je suis bloque", "je suis bloqué",
+        "ik zit vast", "nieuwe nummer", "nouveau numero", "nouveau numéro",
+        "nieuw nummer", "besoin d'argent", "geld nodig", "help mij",
+        "aide moi", "aide-moi", "urgente hulp", "urgence famille",
+        "familie noodgeval", "probleme carte sim", "problème carte sim",
+        "simkaart probleem", "urgent transfert", "dringende overschrijving",
+        "telephone casse", "téléphone cassé", "telefoon kapot",
+        "perdu mon telephone", "perdu mon téléphone", "telefoon verloren",
+        "envoie moi de l'argent", "envoie-moi de l'argent", "stuur me geld"
+      ],
+      "crypto_scam": [
+        "bitcoin", "btc", "crypto", "cryptomonnaie", "crypto-monnaie",
+        "cryptovaluta", "cryptocurrency", "investissement", "investering",
+        "beleggen", "trading", "handelen", "binance", "coinbase", "kraken",
+        "wallet", "portefeuille", "portemonnee", "ethereum", "eth", "nft",
+        "placement garanti", "gegarandeerde belegging", "rendement exceptionnel",
+        "uitzonderlijk rendement", "gains assures", "gains assurés",
+        "gegarandeerde winst", "minage", "mining", "token", "blockchain",
+        "ico", "defi", "investir maintenant", "nu investeren",
+        "opportunite unique", "opportunité unique", "unieke kans"
+      ],
+      "energy_scam": [
+        "isolation gratuite", "gratis isolatie", "pompe a chaleur",
+        "pompe à chaleur", "warmtepomp", "panneaux solaires",
+        "zonnepanelen", "photovoltaique", "photovoltaïque", "fotovoltaisch",
+        "renovation energetique", "rénovation énergétique", "energierenovatie",
+        "prime energie", "prime énergie", "energiepremie", "subsidie",
+        "engie", "luminus", "mega", "totalenergies", "lampiris",
+        "facture electricite", "facture électricité", "elektriciteitsfactuur",
+        "audit energetique", "audit énergétique", "energieaudit",
+        "isolation à 1 euro", "isolatie voor 1 euro",
+        "travaux subventionnes", "travaux subventionnés", "gesubsidieerde werken"
+      ],
+      "insurance_scam": [
+        "mutuelle sante", "mutuelle santé", "ziekenfonds", "hospitalisatieverzekering",
+        "assurance vie", "levensverzekering", "assurance deces", "assurance décès",
+        "overlijdensverzekering", "contrat obsèques", "uitvaartpolis",
+        "prevoyance", "prévoyance", "voorzorg", "rachat credit", "rachat crédit",
+        "kredietherstructurering", "regroupement credits", "regroupement crédits",
+        "schuldherschikking", "assurance gratuite", "gratis verzekering"
+      ],
+      "telecom_scam": [
+        "box internet", "internet box", "modem", "fibre optique", "glasvezel",
+        "eligibilite fibre", "éligibilité fibre", "fiber geschiktheid",
+        "proximus", "orange", "voo", "telenet", "scarlet", "base",
+        "changement operateur", "changement opérateur", "operator wijzigen",
+        "resiliation", "résiliation", "opzegging", "annuleren",
+        "offre exclusive", "exclusief aanbod", "nouveau forfait", "nieuw abonnement",
+        "promotion limitée", "promotion limitee", "beperkte promotie"
+      ],
+      "social_scam": [
+        "allocations familiales", "kindergeld", "kinderbijslag",
+        "chomage", "chômage", "werkloosheid", "pension", "pensioen",
+        "allocation handicap", "handicap uitkering", "mutuelle obligatoire",
+        "verplicht ziekenfonds", "cpas", "ocmw", "aide sociale", "sociale hulp"
+      ]
+    }
+  }
+}

@@ -1,0 +1,80 @@
+<html>
+<head>
+<title>SmsProvider.kt</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #5f826b; font-style: italic;}
+.s4 { color: #6aab73;}
+.s5 { color: #7a7e85;}
+.s6 { color: #2aacb8;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+SmsProvider.kt</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">fr</span><span class="s2">.</span><span class="s1">bonobo</span><span class="s2">.</span><span class="s1">stopdemarchage</span>
+
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">content</span><span class="s2">.</span><span class="s1">ContentProvider</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">content</span><span class="s2">.</span><span class="s1">ContentValues</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">database</span><span class="s2">.</span><span class="s1">Cursor</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">net</span><span class="s2">.</span><span class="s1">Uri</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">Log</span>
+
+<span class="s3">/**</span>
+ <span class="s3">* ContentProvider pour les SMS</span>
+ <span class="s3">* Nécessaire si vous voulez que votre app soit reconnue comme une app SMS complète</span>
+ <span class="s3">*/</span>
+<span class="s0">class </span><span class="s1">SmsProvider : ContentProvider</span><span class="s2">() {</span>
+
+    <span class="s1">private </span><span class="s0">val </span><span class="s1">TAG </span><span class="s2">= </span><span class="s4">&quot;SmsProvider&quot;</span>
+
+    <span class="s1">override </span><span class="s0">fun </span><span class="s1">onCreate</span><span class="s2">()</span><span class="s1">: Boolean </span><span class="s2">{</span>
+        <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s4">&quot;SmsProvider créé&quot;</span><span class="s2">)</span>
+        <span class="s0">return true</span>
+    <span class="s2">}</span>
+
+    <span class="s1">override </span><span class="s0">fun </span><span class="s1">query</span><span class="s2">(</span>
+        <span class="s1">uri: Uri</span><span class="s2">,</span>
+        <span class="s1">projection: Array</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">&gt;</span><span class="s1">?</span><span class="s2">,</span>
+        <span class="s1">selection: String?</span><span class="s2">,</span>
+        <span class="s1">selectionArgs: Array</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">&gt;</span><span class="s1">?</span><span class="s2">,</span>
+        <span class="s1">sortOrder: String?</span>
+    <span class="s2">)</span><span class="s1">: Cursor? </span><span class="s2">{</span>
+        <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s4">&quot;Query appelée sur: </span><span class="s0">$</span><span class="s1">uri</span><span class="s4">&quot;</span><span class="s2">)</span>
+        <span class="s5">// Pour l'instant, retourne null</span>
+        <span class="s5">// Vous pouvez implémenter la logique de requête si nécessaire</span>
+        <span class="s0">return null</span>
+    <span class="s2">}</span>
+
+    <span class="s1">override </span><span class="s0">fun </span><span class="s1">getType</span><span class="s2">(</span><span class="s1">uri: Uri</span><span class="s2">)</span><span class="s1">: String? </span><span class="s2">{</span>
+        <span class="s0">return null</span>
+    <span class="s2">}</span>
+
+    <span class="s1">override </span><span class="s0">fun </span><span class="s1">insert</span><span class="s2">(</span><span class="s1">uri: Uri</span><span class="s2">, </span><span class="s1">values: ContentValues?</span><span class="s2">)</span><span class="s1">: Uri? </span><span class="s2">{</span>
+        <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s4">&quot;Insert appelée sur: </span><span class="s0">$</span><span class="s1">uri</span><span class="s4">&quot;</span><span class="s2">)</span>
+        <span class="s0">return null</span>
+    <span class="s2">}</span>
+
+    <span class="s1">override </span><span class="s0">fun </span><span class="s1">delete</span><span class="s2">(</span><span class="s1">uri: Uri</span><span class="s2">, </span><span class="s1">selection: String?</span><span class="s2">, </span><span class="s1">selectionArgs: Array</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">&gt;</span><span class="s1">?</span><span class="s2">)</span><span class="s1">: Int </span><span class="s2">{</span>
+        <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s4">&quot;Delete appelée sur: </span><span class="s0">$</span><span class="s1">uri</span><span class="s4">&quot;</span><span class="s2">)</span>
+        <span class="s0">return </span><span class="s6">0</span>
+    <span class="s2">}</span>
+
+    <span class="s1">override </span><span class="s0">fun </span><span class="s1">update</span><span class="s2">(</span>
+        <span class="s1">uri: Uri</span><span class="s2">,</span>
+        <span class="s1">values: ContentValues?</span><span class="s2">,</span>
+        <span class="s1">selection: String?</span><span class="s2">,</span>
+        <span class="s1">selectionArgs: Array</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">&gt;</span><span class="s1">?</span>
+    <span class="s2">)</span><span class="s1">: Int </span><span class="s2">{</span>
+        <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s4">&quot;Update appelée sur: </span><span class="s0">$</span><span class="s1">uri</span><span class="s4">&quot;</span><span class="s2">)</span>
+        <span class="s0">return </span><span class="s6">0</span>
+    <span class="s2">}</span>
+<span class="s2">}</span></pre>
+</body>
+</html>

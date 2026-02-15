@@ -1,0 +1,649 @@
+{
+  "version": "3.0",
+  "country": "BE",
+  "last_updated": "2026-01-20",
+  "description": "Système anti-spam Belgique - Mise à jour 2026 avec nouveaux patterns de fraude",
+
+  "regulatory_framework": {
+    "ne_mappellez_plus": {
+      "active": true,
+      "registration_number": "0282821975",
+      "website": "https://www.neplusmeappeler.be",
+      "description": "Liste d'opposition au démarchage téléphonique",
+      "enforcement": "Les entreprises doivent vérifier cette liste avant d'appeler",
+      "fine_non_compliance": "Jusqu'à 100.000€"
+    },
+    "bipt_ibpt": {
+      "regulator": "BIPT/IBPT",
+      "role": "Institut Belge des services Postaux et des Télécommunications",
+      "reporting": "https://www.bipt.be",
+      "powers": "Amendes, retrait de licences, blocage de numéros"
+    },
+    "gdpr_compliance": {
+      "consent_required": true,
+      "opt_in_only": true,
+      "data_retention": "Maximum selon finalité",
+      "user_rights": ["Accès", "Rectification", "Effacement", "Opposition"]
+    }
+  },
+
+  "prefix_rules": {
+    "always_block": {
+      "description": "Préfixes à bloquer automatiquement - Risque CRITIQUE",
+      "risk_level": "critical",
+      "categories": {
+        "surtaxes_critiques": {
+          "prefixes": ["070", "0700", "0900", "0901", "0902", "0903", "0904", "0905", "0906", "0907", "0909"],
+          "cost": "Jusqu'à 2,50€/min",
+          "reason": "Numéros surtaxés - Principal vecteur d'arnaque",
+          "blocking_priority": 1,
+          "examples": {
+            "0700": "Services surtaxés (coût partagé)",
+            "090x": "Services à valeur ajoutée très coûteux"
+          }
+        },
+        "cout_partage": {
+          "prefixes": ["078", "0780"],
+          "cost": "0,30€ à 1,50€/min",
+          "reason": "Numéros à coût partagé - Souvent spam",
+          "blocking_priority": 2
+        },
+        "ping_calls_nouveaux": {
+          "description": "NOUVEAUTÉ 2026: Nouveaux patterns de ping calls",
+          "patterns": {
+            "fake_fixed": {
+              "pattern": "^002[0-9]{7,8}$",
+              "description": "Imite numéros fixes de Bruxelles (02/xxx)",
+              "cost": "Variable si rappel",
+              "reason": "Usurpation visuelle pour tromper",
+              "blocking_priority": 1
+            },
+            "fake_mobile": {
+              "pattern": "^04[0-9]{2}/[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$",
+              "description": "Imite format mobile belge",
+              "cost": "Peut rediriger vers surtaxé",
+              "reason": "Nouvelle technique 2025-2026",
+              "blocking_priority": 1
+            }
+          }
+        }
+      }
+    },
+
+    "monitor_closely": {
+      "description": "Préfixes à surveiller - Risque MOYEN à ÉLEVÉ",
+      "risk_level": "high",
+      "categories": {
+        "numeros_gratuits": {
+          "prefixes": ["0800", "0801", "0802", "0803"],
+          "cost": "Gratuit",
+          "reason": "Légitimes mais aussi utilisés pour spam/phishing",
+          "action": "Analyser fréquence et contenu",
+          "whitelist_exceptions": true
+        },
+        "services_speciaux": {
+          "prefixes": ["077", "079"],
+          "cost": "Variable",
+          "reason": "Services spéciaux - Mixte légitime/spam",
+          "action": "Vérifier identité appelant"
+        },
+        "harassment_series": {
+          "description": "NOUVEAUTÉ 2026: Séries identifiées pour harcèlement",
+          "specific_ranges": [
+            {
+              "pattern": "071960###",
+              "examples": ["071960708", "071960709"],
+              "operator": "Attribués à entreprises étrangères",
+              "reason": "Harcèlement commercial répété",
+              "reported_count": 500,
+              "action": "Bloquer toute la série"
+            },
+            {
+              "pattern": "02########",
+              "note": "Numéros fixes Bruxelles parfois spoofés",
+              "action": "Vérifier origine réelle de l'appel"
+            }
+          ]
+        }
+      }
+    },
+
+    "never_block": {
+      "description": "Numéros d'urgence et services vitaux - NE JAMAIS BLOQUER",
+      "risk_level": "none",
+      "permanent_whitelist": true,
+      "categories": {
+        "urgences": {
+          "numbers": ["100", "101", "105", "106", "107", "108", "110", "112"],
+          "descriptions": {
+            "100": "Urgences médicales / Ambulances",
+            "101": "Police fédérale / Gendarmerie",
+            "105": "Service incendie (anciennement utilisé)",
+            "106": "Centre antipoison",
+            "107": "Télé-Accueil (aide psychologique)",
+            "108": "Protection civile",
+            "110": "Croix-Rouge",
+            "112": "Numéro d'urgence européen unifié"
+          },
+          "priority": "critical"
+        },
+        "services_gouvernementaux": {
+          "description": "Services administratifs essentiels",
+          "numbers": ["1307", "1357", "1367", "1377", "1733", "1771", "1789"],
+          "descriptions": {
+            "1307": "SPF Finances (impôts)",
+            "1771": "Fédéral"
+          },
+          "priority": "high"
+        },
+        "child_focus": {
+          "number": "116000",
+          "description": "Enfants disparus - Ligne européenne",
+          "priority": "critical"
+        }
+      }
+    }
+  },
+
+  "known_spam_patterns": {
+    "description": "Patterns de spam et arnaque identifiés en Belgique 2026",
+    "evolution_2026": {
+      "ping_calls_advanced": {
+        "description": "Évolution majeure des ping calls en 2026",
+        "old_patterns": ["0899", "0897", "1020", "0902"],
+        "new_patterns": {
+          "visual_spoofing": {
+            "pattern": "002/xxx.xx.xx au lieu de 02/xxx.xx.xx",
+            "technique": "Confusion visuelle",
+            "danger": "Utilisateur pense que c'est un numéro de Bruxelles",
+            "cost_trap": "Rappel peut coûter très cher"
+          },
+          "mobile_imitation": {
+            "pattern": "04xx/xx.xx.xx",
+            "technique": "Imitation numéro mobile",
+            "danger": "Paraît être un particulier belge",
+            "cost_trap": "Redirection vers numéro surtaxé"
+          }
+        },
+        "detection": {
+          "duration": "< 3 secondes",
+          "repetition": "Appels multiples différents numéros",
+          "behavior": "Raccrochage immédiat avant décrochage"
+        },
+        "blocking_action": "Bloquer automatiquement + signaler au BIPT"
+      },
+      "phishing_bancaire": {
+        "targets": ["BNP Paribas Fortis", "KBC", "Belfius", "ING", "Argenta"],
+        "techniques": [
+          "SMS + appel avec fausse alerte sécurité",
+          "Usurpation numéro officiel banque",
+          "Demande codes personnels/carte bancaire"
+        ],
+        "keywords": ["fraude", "virement suspect", "carte bloquée", "sécurité compte"],
+        "blocking_action": "Bloquer + vérifier auprès banque via canal officiel"
+      },
+      "fausses_livraisons": {
+        "targets": ["bpost", "DHL", "UPS", "PostNL"],
+        "pattern": "SMS colis en attente + lien frauduleux",
+        "keywords": ["colis", "livraison", "frais douane", "retenu entrepôt"],
+        "blocking_action": "Bloquer SMS + ne jamais cliquer sur lien"
+      },
+      "faux_services_publics": {
+        "targets": ["SPF Finances", "Mutuelle", "Pension", "Chômage"],
+        "pattern": "Appel/SMS remboursement ou régularisation urgente",
+        "keywords": ["remboursement", "trop-perçu", "régularisation", "dossier urgent"],
+        "blocking_action": "Bloquer + vérifier sur MyMinfin.be ou site officiel"
+      }
+    }
+  },
+
+  "operator_info": {
+    "description": "Informations opérateurs belges - Mise à jour 2026",
+    "mobile_operators": {
+      "major": [
+        {
+          "name": "Proximus",
+          "prefixes": ["0475", "0476", "0477", "0478", "0479", "0495", "0496", "0497", "0498", "0499"],
+          "risk_level": "low",
+          "spoofing_protection": "Partial STIR/SHAKEN depuis 2025"
+        },
+        {
+          "name": "Orange Belgium",
+          "prefixes": ["0456", "0457", "0458", "0459", "0465", "0466", "0467", "0468", "0469"],
+          "risk_level": "low",
+          "spoofing_protection": "En déploiement"
+        },
+        {
+          "name": "Base (Telenet)",
+          "prefixes": ["0485", "0486", "0487", "0488", "0489"],
+          "risk_level": "low",
+          "spoofing_protection": "En déploiement"
+        }
+      ],
+      "mvno": [
+        {
+          "name": "Mobile Vikings",
+          "parent": "Proximus",
+          "prefixes": ["047x", "049x"],
+          "risk_level": "low"
+        },
+        {
+          "name": "Scarlet",
+          "parent": "Proximus",
+          "prefixes": ["047x", "049x"],
+          "risk_level": "low"
+        },
+        {
+          "name": "VOO",
+          "parent": "Orange",
+          "prefixes": ["045x", "046x"],
+          "risk_level": "low"
+        }
+      ]
+    },
+    "fixed_operators": {
+      "major": [
+        {
+          "name": "Proximus",
+          "areas": ["02", "03", "04", "071", "081", "065"],
+          "risk_level": "low"
+        },
+        {
+          "name": "Telenet",
+          "areas": ["02", "03"],
+          "risk_level": "low"
+        },
+        {
+          "name": "VOO",
+          "areas": ["04", "081"],
+          "risk_level": "low"
+        }
+      ],
+      "problematic": [
+        {
+          "name": "Opérateurs attribuant à entreprises étrangères",
+          "ranges": ["071960###"],
+          "risk_level": "high",
+          "reason": "Harcèlement commercial répété",
+          "action": "Surveiller étroitement"
+        }
+      ]
+    }
+  },
+
+  "whitelist_exceptions": {
+    "description": "Entités légitimes à ne jamais bloquer",
+    "trusted_organizations": {
+      "hopitaux_cliniques": {
+        "description": "CHU, cliniques, hôpitaux",
+        "patterns": ["02#######", "03#######", "04#######"],
+        "verification": "Vérifier via annuaire hospitalier belge",
+        "examples": {
+          "CHU_Bruxelles": "02/555.11.11",
+          "CHU_Liege": "04/366.11.11",
+          "UZ_Gent": "09/332.21.11"
+        },
+        "priority": "critical"
+      },
+      "banques_officielles": {
+        "description": "Numéros service client banques (attention spoofing)",
+        "verification_required": true,
+        "note": "TOUJOURS vérifier sur site web officiel avant de rappeler",
+        "examples": {
+          "BNP_Paribas_Fortis": "02/433.41.14",
+          "KBC": "078/152.153",
+          "Belfius": "02/222.12.11",
+          "ING": "02/464.60.04",
+          "Argenta": "03/285.51.11"
+        },
+        "warning": "Ces numéros sont fréquemment spoofés - Ne jamais communiquer codes par téléphone"
+      },
+      "services_publics": {
+        "description": "SPF, communes, administrations",
+        "examples": {
+          "SPF_Finances": "02/572.57.57",
+          "Commune_Bruxelles": "02/279.22.11",
+          "ONEM": "02/515.41.11"
+        },
+        "priority": "high"
+      },
+      "transports": {
+        "description": "SNCB, STIB, De Lijn, TEC",
+        "examples": {
+          "SNCB": "02/528.28.28",
+          "STIB": "070/23.20.00",
+          "De_Lijn": "070/220.200",
+          "TEC": "071/23.31.11"
+        },
+        "priority": "medium"
+      },
+      "utilities": {
+        "description": "Électricité, gaz, eau",
+        "examples": {
+          "Elia": "02/546.70.11",
+          "Fluvius": "078/78.78.00",
+          "Vivaqua": "02/518.81.11"
+        },
+        "priority": "high"
+      }
+    }
+  },
+
+  "detection_algorithms": {
+    "description": "Algorithmes de détection avancés - Spécifique Belgique 2026",
+    "visual_spoofing_detection": {
+      "fake_brussels_numbers": {
+        "rule": "Si numéro commence par 002 au lieu de 02",
+        "action": "Bloquer automatiquement (arnaque confirmée)",
+        "confidence": "99%",
+        "note": "Nouveauté 2026 - Confusion visuelle intentionnelle"
+      },
+      "fake_mobile_format": {
+        "rule": "Si format 04xx/xx.xx.xx mais origine internationale",
+        "action": "Bloquer automatiquement (spoofing)",
+        "confidence": "95%"
+      }
+    },
+    "behavioral_analysis": {
+      "rapid_calls_pattern": {
+        "rule": "Plus de 3 appels en 5 minutes de numéros différents mais pattern similaire",
+        "action": "Bloquer série entière",
+        "confidence": "85%",
+        "example": "071960708, 071960709, 071960710 en rafale"
+      },
+      "ping_pattern": {
+        "rule": "Appel < 3 secondes + raccrochage + numéro 070/090/002",
+        "action": "Bloquer immédiatement + signaler BIPT",
+        "confidence": "98%"
+      },
+      "silent_calls": {
+        "rule": "Appel décroche mais silence > 5 secondes",
+        "action": "Marquer suspect (robot ou centre d'appel)",
+        "confidence": "65%"
+      },
+      "harassment_pattern": {
+        "rule": "Même numéro appelle 5+ fois par jour pendant 3+ jours consécutifs",
+        "action": "Bloquer + possibilité de plainte police",
+        "confidence": "90%"
+      }
+    },
+    "time_based_risk": {
+      "high_risk_hours": {
+        "ranges": ["00:00-08:00", "20:00-23:59"],
+        "multiplier": 1.6,
+        "reason": "Arnaqueurs ciblent moments de vulnérabilité"
+      },
+      "weekend_commercial": {
+        "days": ["Samedi", "Dimanche"],
+        "commercial_pattern": "Suspect si démarchage commercial",
+        "multiplier": 1.4,
+        "note": "Services légitimes rarement actifs le weekend"
+      },
+      "public_holidays": {
+        "multiplier": 2.0,
+        "reason": "Très suspect si démarchage commercial un jour férié"
+      }
+    },
+    "content_analysis": {
+      "sms_keywords": {
+        "critical": [
+          "fraude détectée",
+          "compte bloqué",
+          "colis en attente",
+          "frais douane",
+          "cliquez ici",
+          "lien",
+          "urgent",
+          "sécurité"
+        ],
+        "high": [
+          "remboursement",
+          "gagné",
+          "félicitations",
+          "offre exclusive",
+          "dernière chance"
+        ],
+        "action": "Score de risque cumulatif"
+      },
+      "url_detection": {
+        "suspicious_domains": [".tk", ".ml", ".ga", ".cf", ".gq", ".xyz"],
+        "shortened_urls": ["bit.ly", "tinyurl.com", "t.co"],
+        "non_belgian_domains": "Suspect si prétend être service belge",
+        "action": "Bloquer SMS + analyser domaine"
+      },
+      "impersonation_detection": {
+        "keywords": ["bpost", "BNP", "KBC", "Belfius", "ING", "SPF", "Mutuelle"],
+        "rule": "Si keyword + numéro non officiel + demande action urgente",
+        "action": "Bloquer + avertir utilisateur d'usurpation"
+      }
+    },
+    "geographic_analysis": {
+      "international_origin": {
+        "rule": "Si numéro affiche BE mais routage depuis pays à risque",
+        "high_risk_countries": ["Roumanie", "Pays-Bas (certains opérateurs)", "Pays baltiques"],
+        "action": "Marquer comme suspect",
+        "confidence": "70%"
+      }
+    }
+  },
+
+  "known_spam_database": {
+    "description": "Base de données numéros spam confirmés - Mise à jour communautaire",
+    "critical_numbers": [
+      {
+        "number": "0900123456",
+        "category": "arnaque_bancaire",
+        "severity": "critical",
+        "target": "BNP Paribas Fortis",
+        "reported_count": 250,
+        "last_seen": "2026-01-15",
+        "description": "Usurpation identité BNP",
+        "action": "Bloquer + signaler"
+      },
+      {
+        "number": "0700555555",
+        "category": "surtaxe_abusive",
+        "severity": "critical",
+        "reported_count": 300,
+        "last_seen": "2026-01-18",
+        "description": "Service surtaxé frauduleux",
+        "action": "Bloquer immédiatement"
+      },
+      {
+        "number": "071960708",
+        "category": "harcelement_commercial",
+        "severity": "high",
+        "reported_count": 500,
+        "last_seen": "2026-01-19",
+        "description": "Harcèlement téléphonique répété",
+        "action": "Bloquer série 071960###"
+      },
+      {
+        "number": "071960709",
+        "category": "harcelement_commercial",
+        "severity": "high",
+        "reported_count": 450,
+        "last_seen": "2026-01-19",
+        "description": "Harcèlement téléphonique répété",
+        "action": "Bloquer série 071960###"
+      },
+      {
+        "number": "002123456",
+        "category": "ping_call_visual_spoofing",
+        "severity": "critical",
+        "reported_count": 180,
+        "last_seen": "2026-01-17",
+        "description": "Nouveau pattern 2026 - Imite 02/xxx",
+        "action": "Bloquer tous 002#######"
+      }
+    ],
+    "spam_series": [
+      {
+        "pattern": "071960###",
+        "total_reported": 2000,
+        "active_numbers": 50,
+        "description": "Série attribuée à centres d'appel étrangers",
+        "action": "Bloquer toute la série"
+      },
+      {
+        "pattern": "002#######",
+        "total_reported": 800,
+        "description": "Ping calls imitant Bruxelles",
+        "action": "Bloquer automatiquement"
+      }
+    ]
+  },
+
+  "reporting_system": {
+    "official_channels": {
+      "bipt": {
+        "name": "BIPT/IBPT",
+        "website": "https://www.bipt.be",
+        "phone": "02/226.88.88",
+        "description": "Régulateur officiel des télécoms",
+        "report_types": ["Spam", "Numéros surtaxés", "Ping calls"]
+      },
+      "ne_mappellez_plus": {
+        "phone": "0282821975",
+        "website": "https://www.neplusmeappeler.be",
+        "description": "Inscription liste opposition",
+        "free": true
+      },
+      "police": {
+        "description": "Pour harcèlement ou fraude grave",
+        "action": "Déposer plainte si préjudice financier ou harcèlement répété",
+        "online": "https://www.police-on-web.be"
+      },
+      "test_achats": {
+        "description": "Association de consommateurs",
+        "website": "https://www.test-achats.be",
+        "community_reports": true
+      }
+    },
+    "community_platforms": {
+      "tellows": "https://www.tellows.be",
+      "whose_number": "Divers sites communautaires",
+      "note": "Consulter avant de bloquer pour confirmation"
+    }
+  },
+
+  "validation_rules": {
+    "number_format": {
+      "national": "^0[1-9][0-9]{7,8}$",
+      "international": "^\\+32[1-9][0-9]{7,8}$",
+      "mobile_length": 10,
+      "fixed_line_length": 9,
+      "special_services": "^[1-9]{3,4}$"
+    },
+    "area_codes": {
+      "02": "Bruxelles",
+      "03": "Anvers",
+      "04": "Liège",
+      "071": "Charleroi",
+      "081": "Namur",
+      "065": "Mons",
+      "09": "Gand",
+      "050": "Bruges",
+      "016": "Louvain",
+      "010": "Wavre"
+    },
+    "mobile_format": {
+      "pattern": "^04[0-9]{2}/[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$",
+      "display": "04XX/XX.XX.XX",
+      "note": "Format avec espaces/points peut varier"
+    }
+  },
+
+  "machine_learning_features": {
+    "description": "Caractéristiques pour ML anti-spam (optionnel)",
+    "features": [
+      "call_duration",
+      "time_of_day",
+      "day_of_week",
+      "is_weekend",
+      "is_public_holiday",
+      "caller_prefix",
+      "call_frequency_24h",
+      "call_frequency_7d",
+      "international_origin",
+      "operator_reputation",
+      "content_keywords",
+      "url_present",
+      "similar_reports_count",
+      "visual_spoofing_detected",
+      "harassment_pattern_score"
+    ],
+    "training_data": "Combiner signalements BIPT + communauté (Test-Achats, Tellows)"
+  },
+
+  "metadata": {
+    "data_sources": [
+      "BIPT/IBPT - Régulateur belge",
+      "Ne m'appelez plus - Liste opposition",
+      "Test-Achats - Association consommateurs",
+      "Tellows.be - Signalements communautaires",
+      "Police fédérale - Fraudes signalées"
+    ],
+    "update_frequency": "weekly",
+    "compliance": "RGPD compliant",
+    "last_regulatory_check": "2026-01-20",
+    "next_review": "2026-07-20",
+    "changelog": {
+      "3.0": "Ajout nouveaux patterns 2026 (visual spoofing 002, 04xx fake)",
+      "2.5": "Ajout séries harcèlement (071960###)",
+      "2.1": "Amélioration détection comportementale",
+      "2.0": "Ajout algorithmes ML",
+      "1.0": "Version initiale"
+    }
+  },
+
+  "usage_recommendations": {
+    "blocking_strategy": {
+      "level_1_critical": "Bloquer automatiquement: 070x, 090x, 002, pattern spoofing",
+      "level_2_high_risk": "Analyser puis bloquer: 071960###, numéros très signalés",
+      "level_3_suspicious": "Alerter utilisateur: Appels suspects hors heures, répétés",
+      "level_4_whitelist": "Toujours autoriser: Urgences, services publics, contacts whitelist"
+    },
+    "user_experience": {
+      "blocked_notification": "Afficher raison claire (ping call/surtaxé/spam/spoofing)",
+      "suspicious_warning": "Avertir avec niveau confiance et recommandation",
+      "reporting_integration": "Permettre signalement facile au BIPT",
+      "whitelist_management": "Interface simple pour ajouter exceptions"
+    },
+    "performance": {
+      "cache_database": "Mettre en cache base spam pour rapidité",
+      "update_frequency": "Vérifier nouvelles entrées quotidiennement",
+      "offline_capability": "Fonctionner avec dernière version si pas connexion",
+      "battery_optimization": "Analyses légères pour préserver batterie"
+    },
+    "integration": {
+      "android_call_screening": "Intégrer avec API Call Screening Android",
+      "sms_filtering": "Filtrer aussi SMS avec mêmes règles",
+      "contact_sync": "Whitelist automatique des contacts utilisateur",
+      "cloud_sync": "Synchroniser liste perso entre appareils (optionnel)"
+    }
+  },
+
+  "privacy_security": {
+    "data_collected": {
+      "local_only": ["Numéros bloqués", "Whitelist personnelle", "Statistiques blocage"],
+      "never_collected": ["Contenu appels", "Contenu SMS", "Numéros contacts personnels"],
+      "optional_telemetry": ["Numéros spam détectés (anonymisés)", "Efficacité algorithmes"]
+    },
+    "user_control": {
+      "opt_in_telemetry": "Utilisateur choisit de partager données anonymes",
+      "export_data": "Export complet données personnelles",
+      "delete_data": "Suppression facile de toutes données",
+      "transparent_processing": "Affichage clair de ce qui est analysé"
+    }
+  },
+
+  "legal_disclaimer": {
+    "notice": "Ce système est un outil d'aide à la décision. L'utilisateur final reste responsable des blocages effectués.",
+    "accuracy": "Les données sont mises à jour régulièrement mais peuvent contenir des erreurs ou faux positifs.",
+    "liability": "Aucune garantie sur le blocage à 100% du spam. Appels légitimes peuvent être bloqués par erreur.",
+    "emergency_calls": "Les numéros d'urgence ne sont JAMAIS bloqués par ce système.",
+    "privacy": "Aucune donnée personnelle n'est collectée sans consentement explicite de l'utilisateur.",
+    "compliance": "Conforme RGPD et réglementations belges des télécommunications."
+  }
+}

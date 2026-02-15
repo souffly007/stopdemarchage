@@ -1,0 +1,187 @@
+<html>
+<head>
+<title>BlockedNumbersActivity.kt</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #7a7e85;}
+.s4 { color: #6aab73;}
+.s5 { color: #2aacb8;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+BlockedNumbersActivity.kt</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">fr</span><span class="s2">.</span><span class="s1">bonobo</span><span class="s2">.</span><span class="s1">stopdemarchage</span>
+
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">app</span><span class="s2">.</span><span class="s1">AlertDialog</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">content</span><span class="s2">.</span><span class="s1">Context</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">content</span><span class="s2">.</span><span class="s1">SharedPreferences</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">os</span><span class="s2">.</span><span class="s1">Bundle</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">widget</span><span class="s2">.</span><span class="s1">Button</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">widget</span><span class="s2">.</span><span class="s1">EditText</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">widget</span><span class="s2">.</span><span class="s1">Toast</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">appcompat</span><span class="s2">.</span><span class="s1">app</span><span class="s2">.</span><span class="s1">AppCompatActivity</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">recyclerview</span><span class="s2">.</span><span class="s1">widget</span><span class="s2">.</span><span class="s1">LinearLayoutManager</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">recyclerview</span><span class="s2">.</span><span class="s1">widget</span><span class="s2">.</span><span class="s1">RecyclerView</span>
+<span class="s3">// Suppression de Gson et TypeToken, car nous allons utiliser putStringSet/getStringSet</span>
+
+<span class="s0">class </span><span class="s1">BlockedNumbersActivity : AppCompatActivity</span><span class="s2">() { </span><span class="s3">// Renommée ici</span>
+
+    <span class="s1">private lateinit </span><span class="s0">var </span><span class="s1">recyclerView: RecyclerView</span>
+    <span class="s1">private lateinit </span><span class="s0">var </span><span class="s1">adapter: BlockedNumberAdapter </span><span class="s3">// Nouvel adaptateur ou PrefixAdapter modifié</span>
+    <span class="s1">private lateinit </span><span class="s0">var </span><span class="s1">btnAddNumber: Button </span><span class="s3">// Renommé le bouton</span>
+    <span class="s1">private lateinit </span><span class="s0">var </span><span class="s1">sharedPreferences: SharedPreferences</span>
+
+    <span class="s3">// Clés SharedPreferences (DOIVENT CORRESPONDRE AUX AUTRES CLASSES)</span>
+    <span class="s1">private </span><span class="s0">val </span><span class="s1">PREFS_FILE_NAME </span><span class="s2">= </span><span class="s4">&quot;StopDemarchagePrefs&quot;</span>
+    <span class="s1">private </span><span class="s0">val </span><span class="s1">KEY_BLOCKED_NUMBERS </span><span class="s2">= </span><span class="s4">&quot;blocked_numbers&quot;</span>
+
+    <span class="s3">// La liste de travail contiendra des String (numéros ou préfixes normalisés)</span>
+    <span class="s1">private </span><span class="s0">val </span><span class="s1">blockedList </span><span class="s2">= </span><span class="s1">mutableListOf</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">&gt;()</span>
+
+    <span class="s1">override </span><span class="s0">fun </span><span class="s1">onCreate</span><span class="s2">(</span><span class="s1">savedInstanceState: Bundle?</span><span class="s2">) {</span>
+        <span class="s0">super</span><span class="s2">.</span><span class="s1">onCreate</span><span class="s2">(</span><span class="s1">savedInstanceState</span><span class="s2">)</span>
+        <span class="s1">setContentView</span><span class="s2">(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.</span><span class="s1">activity_blocked_numbers</span><span class="s2">) </span><span class="s3">// Renommé le layout</span>
+
+        <span class="s1">supportActionBar?</span><span class="s2">.</span><span class="s1">setDisplayHomeAsUpEnabled</span><span class="s2">(</span><span class="s0">true</span><span class="s2">)</span>
+        <span class="s1">supportActionBar?</span><span class="s2">.</span><span class="s1">title </span><span class="s2">= </span><span class="s4">&quot;Numéros Bloqués&quot; </span><span class="s3">// Nouveau titre</span>
+
+        <span class="s1">initViews</span><span class="s2">()</span>
+        <span class="s1">initSharedPreferences</span><span class="s2">()</span>
+        <span class="s1">loadBlockedNumbers</span><span class="s2">() </span><span class="s3">// Nouvelle fonction de chargement</span>
+        <span class="s1">setupRecyclerView</span><span class="s2">()</span>
+        <span class="s1">setupAddButton</span><span class="s2">()</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">initViews</span><span class="s2">() {</span>
+        <span class="s1">recyclerView </span><span class="s2">= </span><span class="s1">findViewById</span><span class="s2">(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">recyclerViewBlockedNumbers</span><span class="s2">) </span><span class="s3">// Nouvel ID de RecyclerView</span>
+        <span class="s1">btnAddNumber </span><span class="s2">= </span><span class="s1">findViewById</span><span class="s2">(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">btnAddBlockedNumber</span><span class="s2">) </span><span class="s3">// Nouvel ID de bouton</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">initSharedPreferences</span><span class="s2">() {</span>
+        <span class="s3">// Utiliser le nom du fichier SharedPreferences commun</span>
+        <span class="s1">sharedPreferences </span><span class="s2">= </span><span class="s1">getSharedPreferences</span><span class="s2">(</span><span class="s1">PREFS_FILE_NAME</span><span class="s2">, </span><span class="s1">MODE_PRIVATE</span><span class="s2">)</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">loadBlockedNumbers</span><span class="s2">() {</span>
+        <span class="s3">// Lire directement le Set&lt;String&gt; depuis SharedPreferences</span>
+        <span class="s0">val </span><span class="s1">savedNumbersSet </span><span class="s2">= </span><span class="s1">sharedPreferences</span><span class="s2">.</span><span class="s1">getStringSet</span><span class="s2">(</span><span class="s1">KEY_BLOCKED_NUMBERS</span><span class="s2">, </span><span class="s1">emptySet</span><span class="s2">()) </span><span class="s1">?: emptySet</span><span class="s2">()</span>
+        <span class="s1">blockedList</span><span class="s2">.</span><span class="s1">clear</span><span class="s2">()</span>
+        <span class="s1">blockedList</span><span class="s2">.</span><span class="s1">addAll</span><span class="s2">(</span><span class="s1">savedNumbersSet</span><span class="s2">.</span><span class="s1">sorted</span><span class="s2">()) </span><span class="s3">// Trier pour un affichage cohérent</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">setupRecyclerView</span><span class="s2">() {</span>
+        <span class="s1">adapter </span><span class="s2">= </span><span class="s1">BlockedNumberAdapter</span><span class="s2">(</span><span class="s1">blockedList</span><span class="s2">) { </span><span class="s1">number </span><span class="s2">-&gt; </span><span class="s3">// Passe la lambda de suppression</span>
+            <span class="s1">showDeleteConfirmation</span><span class="s2">(</span><span class="s1">number</span><span class="s2">)</span>
+        <span class="s2">}</span>
+        <span class="s1">recyclerView</span><span class="s2">.</span><span class="s1">layoutManager </span><span class="s2">= </span><span class="s1">LinearLayoutManager</span><span class="s2">(</span><span class="s0">this</span><span class="s2">)</span>
+        <span class="s1">recyclerView</span><span class="s2">.</span><span class="s1">adapter </span><span class="s2">= </span><span class="s1">adapter</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">setupAddButton</span><span class="s2">() {</span>
+        <span class="s1">btnAddNumber</span><span class="s2">.</span><span class="s1">setOnClickListener </span><span class="s2">{</span>
+            <span class="s1">showAddNumberDialog</span><span class="s2">()</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">showAddNumberDialog</span><span class="s2">() {</span>
+        <span class="s0">val </span><span class="s1">editText </span><span class="s2">= </span><span class="s1">EditText</span><span class="s2">(</span><span class="s0">this</span><span class="s2">)</span>
+        <span class="s1">editText</span><span class="s2">.</span><span class="s1">hint </span><span class="s2">= </span><span class="s4">&quot;Ex: +33612345678, 09475...&quot; </span><span class="s3">// Indication pour l'utilisateur</span>
+
+        <span class="s1">AlertDialog</span><span class="s2">.</span><span class="s1">Builder</span><span class="s2">(</span><span class="s0">this</span><span class="s2">)</span>
+            <span class="s2">.</span><span class="s1">setTitle</span><span class="s2">(</span><span class="s4">&quot;Ajouter un numéro ou préfixe&quot;</span><span class="s2">)</span>
+            <span class="s2">.</span><span class="s1">setMessage</span><span class="s2">(</span><span class="s4">&quot;Entrez le numéro ou préfixe à bloquer (avec ou sans '+' au début) :&quot;</span><span class="s2">)</span>
+            <span class="s2">.</span><span class="s1">setView</span><span class="s2">(</span><span class="s1">editText</span><span class="s2">)</span>
+            <span class="s2">.</span><span class="s1">setPositiveButton</span><span class="s2">(</span><span class="s4">&quot;Ajouter&quot;</span><span class="s2">) { </span><span class="s1">_</span><span class="s2">, </span><span class="s1">_ </span><span class="s2">-&gt;</span>
+                <span class="s0">val </span><span class="s1">rawInput </span><span class="s2">= </span><span class="s1">editText</span><span class="s2">.</span><span class="s1">text</span><span class="s2">.</span><span class="s1">toString</span><span class="s2">().</span><span class="s1">trim</span><span class="s2">()</span>
+                <span class="s1">addBlockedNumber</span><span class="s2">(</span><span class="s1">rawInput</span><span class="s2">)</span>
+            <span class="s2">}</span>
+            <span class="s2">.</span><span class="s1">setNegativeButton</span><span class="s2">(</span><span class="s4">&quot;Annuler&quot;</span><span class="s2">, </span><span class="s0">null</span><span class="s2">)</span>
+            <span class="s2">.</span><span class="s1">show</span><span class="s2">()</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">addBlockedNumber</span><span class="s2">(</span><span class="s1">input: String</span><span class="s2">) {</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">input</span><span class="s2">.</span><span class="s1">isEmpty</span><span class="s2">()) {</span>
+            <span class="s1">Toast</span><span class="s2">.</span><span class="s1">makeText</span><span class="s2">(</span><span class="s0">this</span><span class="s2">, </span><span class="s4">&quot;L'entrée ne peut pas être vide&quot;</span><span class="s2">, </span><span class="s1">Toast</span><span class="s2">.</span><span class="s1">LENGTH_SHORT</span><span class="s2">).</span><span class="s1">show</span><span class="s2">()</span>
+            <span class="s0">return</span>
+        <span class="s2">}</span>
+
+        <span class="s3">// &gt;&gt;&gt; Utiliser la même fonction de normalisation que CallLogManager et CallScreening</span>
+        <span class="s0">val </span><span class="s1">normalizedNumber </span><span class="s2">= </span><span class="s1">normalizePhoneNumber</span><span class="s2">(</span><span class="s1">input</span><span class="s2">)</span>
+
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">blockedList</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s1">normalizedNumber</span><span class="s2">)) {</span>
+            <span class="s1">Toast</span><span class="s2">.</span><span class="s1">makeText</span><span class="s2">(</span><span class="s0">this</span><span class="s2">, </span><span class="s4">&quot;Ce numéro/préfixe est déjà bloqué&quot;</span><span class="s2">, </span><span class="s1">Toast</span><span class="s2">.</span><span class="s1">LENGTH_SHORT</span><span class="s2">).</span><span class="s1">show</span><span class="s2">()</span>
+            <span class="s0">return</span>
+        <span class="s2">}</span>
+
+        <span class="s3">// Validation simple: doit contenir que des chiffres et potentiellement '+' au début</span>
+        <span class="s0">if </span><span class="s2">(!</span><span class="s1">normalizedNumber</span><span class="s2">.</span><span class="s1">matches</span><span class="s2">(</span><span class="s1">Regex</span><span class="s2">(</span><span class="s4">&quot;^[+][0-9]+$&quot;</span><span class="s2">)) &amp;&amp; !</span><span class="s1">normalizedNumber</span><span class="s2">.</span><span class="s1">matches</span><span class="s2">(</span><span class="s1">Regex</span><span class="s2">(</span><span class="s4">&quot;^[0-9]+$&quot;</span><span class="s2">))) {</span>
+            <span class="s1">Toast</span><span class="s2">.</span><span class="s1">makeText</span><span class="s2">(</span><span class="s0">this</span><span class="s2">, </span><span class="s4">&quot;Format invalide. Utilisez des chiffres (ex: 0612345678) ou '+XX...' (ex: +33612345678).&quot;</span><span class="s2">, </span><span class="s1">Toast</span><span class="s2">.</span><span class="s1">LENGTH_LONG</span><span class="s2">).</span><span class="s1">show</span><span class="s2">()</span>
+            <span class="s0">return</span>
+        <span class="s2">}</span>
+
+        <span class="s1">blockedList</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s1">normalizedNumber</span><span class="s2">)</span>
+        <span class="s1">blockedList</span><span class="s2">.</span><span class="s1">sort</span><span class="s2">() </span><span class="s3">// Trier après ajout</span>
+        <span class="s1">adapter</span><span class="s2">.</span><span class="s1">notifyDataSetChanged</span><span class="s2">()</span>
+        <span class="s1">saveBlockedNumbers</span><span class="s2">()</span>
+        <span class="s1">Toast</span><span class="s2">.</span><span class="s1">makeText</span><span class="s2">(</span><span class="s0">this</span><span class="s2">, </span><span class="s4">&quot;'</span><span class="s0">$</span><span class="s1">normalizedNumber</span><span class="s4">' ajouté à la liste noire&quot;</span><span class="s2">, </span><span class="s1">Toast</span><span class="s2">.</span><span class="s1">LENGTH_SHORT</span><span class="s2">).</span><span class="s1">show</span><span class="s2">()</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">showDeleteConfirmation</span><span class="s2">(</span><span class="s1">number: String</span><span class="s2">) {</span>
+        <span class="s1">AlertDialog</span><span class="s2">.</span><span class="s1">Builder</span><span class="s2">(</span><span class="s0">this</span><span class="s2">)</span>
+            <span class="s2">.</span><span class="s1">setTitle</span><span class="s2">(</span><span class="s4">&quot;Supprimer de la liste noire&quot;</span><span class="s2">)</span>
+            <span class="s2">.</span><span class="s1">setMessage</span><span class="s2">(</span><span class="s4">&quot;Voulez-vous supprimer '</span><span class="s0">$</span><span class="s1">number</span><span class="s4">' de la liste des numéros bloqués ?&quot;</span><span class="s2">)</span>
+            <span class="s2">.</span><span class="s1">setPositiveButton</span><span class="s2">(</span><span class="s4">&quot;Supprimer&quot;</span><span class="s2">) { </span><span class="s1">_</span><span class="s2">, </span><span class="s1">_ </span><span class="s2">-&gt;</span>
+                <span class="s1">deleteBlockedNumber</span><span class="s2">(</span><span class="s1">number</span><span class="s2">)</span>
+            <span class="s2">}</span>
+            <span class="s2">.</span><span class="s1">setNegativeButton</span><span class="s2">(</span><span class="s4">&quot;Annuler&quot;</span><span class="s2">, </span><span class="s0">null</span><span class="s2">)</span>
+            <span class="s2">.</span><span class="s1">show</span><span class="s2">()</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">deleteBlockedNumber</span><span class="s2">(</span><span class="s1">number: String</span><span class="s2">) {</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">blockedList</span><span class="s2">.</span><span class="s1">remove</span><span class="s2">(</span><span class="s1">number</span><span class="s2">)) {</span>
+            <span class="s1">adapter</span><span class="s2">.</span><span class="s1">notifyDataSetChanged</span><span class="s2">()</span>
+            <span class="s1">saveBlockedNumbers</span><span class="s2">()</span>
+            <span class="s1">Toast</span><span class="s2">.</span><span class="s1">makeText</span><span class="s2">(</span><span class="s0">this</span><span class="s2">, </span><span class="s4">&quot;'</span><span class="s0">$</span><span class="s1">number</span><span class="s4">' supprimé de la liste noire&quot;</span><span class="s2">, </span><span class="s1">Toast</span><span class="s2">.</span><span class="s1">LENGTH_SHORT</span><span class="s2">).</span><span class="s1">show</span><span class="s2">()</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">saveBlockedNumbers</span><span class="s2">() {</span>
+        <span class="s3">// Enregistrer le Set&lt;String&gt; directement</span>
+        <span class="s1">sharedPreferences</span><span class="s2">.</span><span class="s1">edit</span><span class="s2">().</span><span class="s1">putStringSet</span><span class="s2">(</span><span class="s1">KEY_BLOCKED_NUMBERS</span><span class="s2">, </span><span class="s1">blockedList</span><span class="s2">.</span><span class="s1">toSet</span><span class="s2">()).</span><span class="s1">apply</span><span class="s2">()</span>
+    <span class="s2">}</span>
+
+    <span class="s3">// --- Fonction de normalisation des numéros - DOIT ÊTRE LA MÊME PARTOUT ---</span>
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">normalizePhoneNumber</span><span class="s2">(</span><span class="s1">number: String</span><span class="s2">)</span><span class="s1">: String </span><span class="s2">{</span>
+        <span class="s0">var </span><span class="s1">normalized </span><span class="s2">= </span><span class="s1">number</span><span class="s2">.</span><span class="s1">trim</span><span class="s2">()</span>
+            <span class="s2">.</span><span class="s1">replace</span><span class="s2">(</span><span class="s4">&quot; &quot;</span><span class="s2">, </span><span class="s4">&quot;&quot;</span><span class="s2">)</span>
+            <span class="s2">.</span><span class="s1">replace</span><span class="s2">(</span><span class="s4">&quot;-&quot;</span><span class="s2">, </span><span class="s4">&quot;&quot;</span><span class="s2">)</span>
+            <span class="s2">.</span><span class="s1">replace</span><span class="s2">(</span><span class="s4">&quot;(&quot;</span><span class="s2">, </span><span class="s4">&quot;&quot;</span><span class="s2">)</span>
+            <span class="s2">.</span><span class="s1">replace</span><span class="s2">(</span><span class="s4">&quot;)&quot;</span><span class="s2">, </span><span class="s4">&quot;&quot;</span><span class="s2">)</span>
+
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">normalized</span><span class="s2">.</span><span class="s1">startsWith</span><span class="s2">(</span><span class="s4">&quot;0&quot;</span><span class="s2">) &amp;&amp; </span><span class="s1">normalized</span><span class="s2">.</span><span class="s1">length </span><span class="s2">== </span><span class="s5">10 </span><span class="s2">&amp;&amp; </span><span class="s1">normalized</span><span class="s2">.</span><span class="s1">matches</span><span class="s2">(</span><span class="s4">&quot;^0[1-9][0-9]{8}$&quot;</span><span class="s2">.</span><span class="s1">toRegex</span><span class="s2">())) {</span>
+            <span class="s1">normalized </span><span class="s2">= </span><span class="s4">&quot;+33&quot; </span><span class="s2">+ </span><span class="s1">normalized</span><span class="s2">.</span><span class="s1">substring</span><span class="s2">(</span><span class="s5">1</span><span class="s2">)</span>
+        <span class="s2">}</span>
+        <span class="s3">// Pour les préfixes qui ne sont pas des numéros complets (ex: &quot;09475&quot;),</span>
+        <span class="s3">// on ne les normalise pas en &quot;+33&quot; car ils ne sont pas des numéros de téléphone valides complets.</span>
+        <span class="s3">// Ils restent tels quels pour la comparaison par &quot;startsWith&quot; dans CallScreeningService.</span>
+        <span class="s3">// C'est un point délicat. Si vous voulez normaliser les préfixes aussi (ex: &quot;09475&quot; -&gt; &quot;+339475&quot;),</span>
+        <span class="s3">// alors il faudra adapter la liste 'blockedPrefixes' dans CallScreeningService et sa logique.</span>
+        <span class="s3">// Pour l'instant, je les laisse bruts s'ils ne correspondent pas au format 0XXXXXXXXX.</span>
+
+        <span class="s0">return </span><span class="s1">normalized</span>
+    <span class="s2">}</span>
+
+    <span class="s1">override </span><span class="s0">fun </span><span class="s1">onSupportNavigateUp</span><span class="s2">()</span><span class="s1">: Boolean </span><span class="s2">{</span>
+        <span class="s1">finish</span><span class="s2">()</span>
+        <span class="s0">return true</span>
+    <span class="s2">}</span>
+<span class="s2">}</span></pre>
+</body>
+</html>

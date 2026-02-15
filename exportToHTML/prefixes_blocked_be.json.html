@@ -1,0 +1,296 @@
+<html>
+<head>
+<title>prefixes_blocked_be.json</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #bcbec4;}
+.s1 { color: #bcbec4;}
+.s2 { color: #6aab73;}
+.s3 { color: #cf8e6d;}
+.s4 { color: #2aacb8;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+prefixes_blocked_be.json</font>
+</center></td></tr></table>
+<pre><span class="s0">{</span>
+  <span class="s2">&quot;version&quot;</span><span class="s0">: </span><span class="s2">&quot;2.2&quot;</span><span class="s0">,</span>
+  <span class="s2">&quot;country&quot;</span><span class="s0">: </span><span class="s2">&quot;BE&quot;</span><span class="s0">,</span>
+  <span class="s2">&quot;last_updated&quot;</span><span class="s0">: </span><span class="s2">&quot;2026-01-20&quot;</span><span class="s0">,</span>
+  <span class="s2">&quot;description&quot;</span><span class="s0">: </span><span class="s2">&quot;Système anti-spam Belgique - Mise à jour 2026 (version simplifiée compatible)&quot;</span><span class="s0">,</span>
+
+  <span class="s2">&quot;prefix_rules&quot;</span><span class="s0">: {</span>
+    <span class="s2">&quot;always_block&quot;</span><span class="s0">: {</span>
+      <span class="s2">&quot;description&quot;</span><span class="s0">: </span><span class="s2">&quot;Préfixes à bloquer automatiquement - Risque TRÈS ÉLEVÉ&quot;</span><span class="s0">,</span>
+      <span class="s2">&quot;risk_level&quot;</span><span class="s0">: </span><span class="s2">&quot;critical&quot;</span><span class="s0">,</span>
+      <span class="s2">&quot;prefixes&quot;</span><span class="s0">: [</span>
+        <span class="s2">&quot;070&quot;</span><span class="s0">, </span><span class="s2">&quot;0700&quot;</span><span class="s0">, </span><span class="s2">&quot;0900&quot;</span><span class="s0">, </span><span class="s2">&quot;0901&quot;</span><span class="s0">, </span><span class="s2">&quot;0902&quot;</span><span class="s0">, </span><span class="s2">&quot;0903&quot;</span><span class="s0">, </span><span class="s2">&quot;0904&quot;</span><span class="s0">, </span><span class="s2">&quot;0905&quot;</span><span class="s0">, </span><span class="s2">&quot;0906&quot;</span><span class="s0">, </span><span class="s2">&quot;0907&quot;</span><span class="s0">, </span><span class="s2">&quot;0909&quot;</span><span class="s0">,</span>
+        <span class="s2">&quot;078&quot;</span><span class="s0">, </span><span class="s2">&quot;0780&quot;</span>
+      <span class="s0">],</span>
+      <span class="s2">&quot;reason&quot;</span><span class="s0">: </span><span class="s2">&quot;Numéros surtaxés et coût partagé - Coûts élevés et souvent utilisés pour arnaque&quot;</span>
+    <span class="s0">},</span>
+
+    <span class="s2">&quot;monitor_closely&quot;</span><span class="s0">: {</span>
+      <span class="s2">&quot;description&quot;</span><span class="s0">: </span><span class="s2">&quot;Préfixes à surveiller - Risque MOYEN à ÉLEVÉ&quot;</span><span class="s0">,</span>
+      <span class="s2">&quot;risk_level&quot;</span><span class="s0">: </span><span class="s2">&quot;high&quot;</span><span class="s0">,</span>
+      <span class="s2">&quot;prefixes&quot;</span><span class="s0">: [</span>
+        <span class="s2">&quot;0800&quot;</span><span class="s0">, </span><span class="s2">&quot;0801&quot;</span><span class="s0">, </span><span class="s2">&quot;0802&quot;</span><span class="s0">, </span><span class="s2">&quot;0803&quot;</span><span class="s0">,</span>
+        <span class="s2">&quot;077&quot;</span><span class="s0">, </span><span class="s2">&quot;079&quot;</span>
+      <span class="s0">],</span>
+      <span class="s2">&quot;reason&quot;</span><span class="s0">: </span><span class="s2">&quot;Numéros gratuits et services spéciaux - Potentiellement légitimes mais aussi spam&quot;</span><span class="s0">,</span>
+      <span class="s2">&quot;additional_checks&quot;</span><span class="s0">: </span><span class="s2">&quot;Analyser le contenu du message/appel avant blocage&quot;</span>
+    <span class="s0">},</span>
+
+    <span class="s2">&quot;never_block&quot;</span><span class="s0">: {</span>
+      <span class="s2">&quot;description&quot;</span><span class="s0">: </span><span class="s2">&quot;Numéros d'urgence et services vitaux - NE JAMAIS BLOQUER&quot;</span><span class="s0">,</span>
+      <span class="s2">&quot;risk_level&quot;</span><span class="s0">: </span><span class="s2">&quot;none&quot;</span><span class="s0">,</span>
+      <span class="s2">&quot;prefixes&quot;</span><span class="s0">: [</span>
+        <span class="s2">&quot;100&quot;</span><span class="s0">, </span><span class="s2">&quot;101&quot;</span><span class="s0">, </span><span class="s2">&quot;105&quot;</span><span class="s0">, </span><span class="s2">&quot;106&quot;</span><span class="s0">, </span><span class="s2">&quot;107&quot;</span><span class="s0">, </span><span class="s2">&quot;108&quot;</span><span class="s0">, </span><span class="s2">&quot;110&quot;</span><span class="s0">, </span><span class="s2">&quot;112&quot;</span>
+      <span class="s0">],</span>
+      <span class="s2">&quot;reason&quot;</span><span class="s0">: </span><span class="s2">&quot;Services d'urgence essentiels&quot;</span><span class="s0">,</span>
+      <span class="s2">&quot;permanent_whitelist&quot;</span><span class="s0">: </span><span class="s3">true</span>
+    <span class="s0">},</span>
+
+    <span class="s2">&quot;government_services&quot;</span><span class="s0">: {</span>
+      <span class="s2">&quot;description&quot;</span><span class="s0">: </span><span class="s2">&quot;Services gouvernementaux - À whitelister&quot;</span><span class="s0">,</span>
+      <span class="s2">&quot;risk_level&quot;</span><span class="s0">: </span><span class="s2">&quot;none&quot;</span><span class="s0">,</span>
+      <span class="s2">&quot;prefixes&quot;</span><span class="s0">: [</span>
+        <span class="s2">&quot;1307&quot;</span><span class="s0">, </span><span class="s2">&quot;1357&quot;</span><span class="s0">, </span><span class="s2">&quot;1367&quot;</span><span class="s0">, </span><span class="s2">&quot;1377&quot;</span><span class="s0">,</span>
+        <span class="s2">&quot;1733&quot;</span><span class="s0">, </span><span class="s2">&quot;1771&quot;</span><span class="s0">, </span><span class="s2">&quot;1789&quot;</span>
+      <span class="s0">],</span>
+      <span class="s2">&quot;reason&quot;</span><span class="s0">: </span><span class="s2">&quot;Services administratifs et essentiels&quot;</span><span class="s0">,</span>
+      <span class="s2">&quot;whitelist&quot;</span><span class="s0">: </span><span class="s3">true</span>
+    <span class="s0">}</span>
+  <span class="s0">},</span>
+
+  <span class="s2">&quot;nouveautes_2026&quot;</span><span class="s0">: {</span>
+    <span class="s2">&quot;description&quot;</span><span class="s0">: </span><span class="s2">&quot;NOUVEAUX patterns de spam identifiés en 2026&quot;</span><span class="s0">,</span>
+
+    <span class="s2">&quot;visual_spoofing&quot;</span><span class="s0">: {</span>
+      <span class="s2">&quot;description&quot;</span><span class="s0">: </span><span class="s2">&quot;CRITIQUE: Nouveaux ping calls par confusion visuelle&quot;</span><span class="s0">,</span>
+      <span class="s2">&quot;patterns&quot;</span><span class="s0">: [</span>
+        <span class="s0">{</span>
+          <span class="s2">&quot;fake_pattern&quot;</span><span class="s0">: </span><span class="s2">&quot;002########&quot;</span><span class="s0">,</span>
+          <span class="s2">&quot;imite&quot;</span><span class="s0">: </span><span class="s2">&quot;02######## (Bruxelles)&quot;</span><span class="s0">,</span>
+          <span class="s2">&quot;risk_level&quot;</span><span class="s0">: </span><span class="s2">&quot;critical&quot;</span><span class="s0">,</span>
+          <span class="s2">&quot;action&quot;</span><span class="s0">: </span><span class="s2">&quot;BLOQUER AUTOMATIQUEMENT&quot;</span><span class="s0">,</span>
+          <span class="s2">&quot;note&quot;</span><span class="s0">: </span><span class="s2">&quot;002 ressemble à 02 mais c'est un piège - Coût élevé au rappel&quot;</span>
+        <span class="s0">},</span>
+        <span class="s0">{</span>
+          <span class="s2">&quot;fake_pattern&quot;</span><span class="s0">: </span><span class="s2">&quot;04##/##.##.##&quot;</span><span class="s0">,</span>
+          <span class="s2">&quot;imite&quot;</span><span class="s0">: </span><span class="s2">&quot;04xx/xx.xx.xx (Mobile)&quot;</span><span class="s0">,</span>
+          <span class="s2">&quot;risk_level&quot;</span><span class="s0">: </span><span class="s2">&quot;critical&quot;</span><span class="s0">,</span>
+          <span class="s2">&quot;action&quot;</span><span class="s0">: </span><span class="s2">&quot;Vérifier origine - Si international, BLOQUER&quot;</span><span class="s0">,</span>
+          <span class="s2">&quot;note&quot;</span><span class="s0">: </span><span class="s2">&quot;Imite format mobile belge mais origine étrangère&quot;</span>
+        <span class="s0">}</span>
+      <span class="s0">]</span>
+    <span class="s0">},</span>
+
+    <span class="s2">&quot;harassment_series&quot;</span><span class="s0">: {</span>
+      <span class="s2">&quot;description&quot;</span><span class="s0">: </span><span class="s2">&quot;Séries de numéros identifiées pour harcèlement commercial&quot;</span><span class="s0">,</span>
+      <span class="s2">&quot;patterns&quot;</span><span class="s0">: [</span>
+        <span class="s0">{</span>
+          <span class="s2">&quot;pattern&quot;</span><span class="s0">: </span><span class="s2">&quot;071960###&quot;</span><span class="s0">,</span>
+          <span class="s2">&quot;examples&quot;</span><span class="s0">: [</span><span class="s2">&quot;071960708&quot;</span><span class="s0">, </span><span class="s2">&quot;071960709&quot;</span><span class="s0">, </span><span class="s2">&quot;071960710&quot;</span><span class="s0">],</span>
+          <span class="s2">&quot;operator&quot;</span><span class="s0">: </span><span class="s2">&quot;Attribués par opérateurs belges à entreprises étrangères&quot;</span><span class="s0">,</span>
+          <span class="s2">&quot;reported_count&quot;</span><span class="s0">: </span><span class="s4">2000</span><span class="s0">,</span>
+          <span class="s2">&quot;risk_level&quot;</span><span class="s0">: </span><span class="s2">&quot;high&quot;</span><span class="s0">,</span>
+          <span class="s2">&quot;action&quot;</span><span class="s0">: </span><span class="s2">&quot;BLOQUER toute la série 071960000 à 071960999&quot;</span>
+        <span class="s0">}</span>
+      <span class="s0">]</span>
+    <span class="s0">}</span>
+  <span class="s0">},</span>
+
+  <span class="s2">&quot;known_spam_numbers&quot;</span><span class="s0">: {</span>
+    <span class="s2">&quot;description&quot;</span><span class="s0">: </span><span class="s2">&quot;Numéros spécifiques confirmés comme spam/arnaque en Belgique&quot;</span><span class="s0">,</span>
+    <span class="s2">&quot;severity_levels&quot;</span><span class="s0">: {</span>
+      <span class="s2">&quot;critical&quot;</span><span class="s0">: </span><span class="s2">&quot;Arnaque confirmée - Bloquer immédiatement&quot;</span><span class="s0">,</span>
+      <span class="s2">&quot;high&quot;</span><span class="s0">: </span><span class="s2">&quot;Spam confirmé - Bloquer avec avertissement&quot;</span><span class="s0">,</span>
+      <span class="s2">&quot;medium&quot;</span><span class="s0">: </span><span class="s2">&quot;Potentiellement suspect - Analyser le contenu&quot;</span>
+    <span class="s0">},</span>
+    <span class="s2">&quot;entries&quot;</span><span class="s0">: [</span>
+      <span class="s0">{</span>
+        <span class="s2">&quot;number&quot;</span><span class="s0">: </span><span class="s2">&quot;0900123456&quot;</span><span class="s0">,</span>
+        <span class="s2">&quot;category&quot;</span><span class="s0">: </span><span class="s2">&quot;arnaque_bancaire&quot;</span><span class="s0">,</span>
+        <span class="s2">&quot;severity&quot;</span><span class="s0">: </span><span class="s2">&quot;critical&quot;</span><span class="s0">,</span>
+        <span class="s2">&quot;reported_count&quot;</span><span class="s0">: </span><span class="s4">250</span><span class="s0">,</span>
+        <span class="s2">&quot;last_seen&quot;</span><span class="s0">: </span><span class="s2">&quot;2026-01-15&quot;</span><span class="s0">,</span>
+        <span class="s2">&quot;description&quot;</span><span class="s0">: </span><span class="s2">&quot;Usurpation BNP Paribas Fortis&quot;</span>
+      <span class="s0">},</span>
+      <span class="s0">{</span>
+        <span class="s2">&quot;number&quot;</span><span class="s0">: </span><span class="s2">&quot;0700555555&quot;</span><span class="s0">,</span>
+        <span class="s2">&quot;category&quot;</span><span class="s0">: </span><span class="s2">&quot;surtaxe_abusive&quot;</span><span class="s0">,</span>
+        <span class="s2">&quot;severity&quot;</span><span class="s0">: </span><span class="s2">&quot;critical&quot;</span><span class="s0">,</span>
+        <span class="s2">&quot;reported_count&quot;</span><span class="s0">: </span><span class="s4">300</span><span class="s0">,</span>
+        <span class="s2">&quot;last_seen&quot;</span><span class="s0">: </span><span class="s2">&quot;2026-01-18&quot;</span><span class="s0">,</span>
+        <span class="s2">&quot;description&quot;</span><span class="s0">: </span><span class="s2">&quot;Service surtaxé abusif&quot;</span>
+      <span class="s0">},</span>
+      <span class="s0">{</span>
+        <span class="s2">&quot;number&quot;</span><span class="s0">: </span><span class="s2">&quot;071960708&quot;</span><span class="s0">,</span>
+        <span class="s2">&quot;category&quot;</span><span class="s0">: </span><span class="s2">&quot;harcelement_commercial&quot;</span><span class="s0">,</span>
+        <span class="s2">&quot;severity&quot;</span><span class="s0">: </span><span class="s2">&quot;high&quot;</span><span class="s0">,</span>
+        <span class="s2">&quot;reported_count&quot;</span><span class="s0">: </span><span class="s4">500</span><span class="s0">,</span>
+        <span class="s2">&quot;last_seen&quot;</span><span class="s0">: </span><span class="s2">&quot;2026-01-19&quot;</span><span class="s0">,</span>
+        <span class="s2">&quot;description&quot;</span><span class="s0">: </span><span class="s2">&quot;Harcèlement téléphonique répété&quot;</span><span class="s0">,</span>
+        <span class="s2">&quot;action&quot;</span><span class="s0">: </span><span class="s2">&quot;Bloquer série 071960###&quot;</span>
+      <span class="s0">},</span>
+      <span class="s0">{</span>
+        <span class="s2">&quot;number&quot;</span><span class="s0">: </span><span class="s2">&quot;071960709&quot;</span><span class="s0">,</span>
+        <span class="s2">&quot;category&quot;</span><span class="s0">: </span><span class="s2">&quot;harcelement_commercial&quot;</span><span class="s0">,</span>
+        <span class="s2">&quot;severity&quot;</span><span class="s0">: </span><span class="s2">&quot;high&quot;</span><span class="s0">,</span>
+        <span class="s2">&quot;reported_count&quot;</span><span class="s0">: </span><span class="s4">450</span><span class="s0">,</span>
+        <span class="s2">&quot;last_seen&quot;</span><span class="s0">: </span><span class="s2">&quot;2026-01-19&quot;</span><span class="s0">,</span>
+        <span class="s2">&quot;description&quot;</span><span class="s0">: </span><span class="s2">&quot;Harcèlement téléphonique répété&quot;</span><span class="s0">,</span>
+        <span class="s2">&quot;action&quot;</span><span class="s0">: </span><span class="s2">&quot;Bloquer série 071960###&quot;</span>
+      <span class="s0">},</span>
+      <span class="s0">{</span>
+        <span class="s2">&quot;number&quot;</span><span class="s0">: </span><span class="s2">&quot;002123456&quot;</span><span class="s0">,</span>
+        <span class="s2">&quot;category&quot;</span><span class="s0">: </span><span class="s2">&quot;ping_call_visual_spoofing&quot;</span><span class="s0">,</span>
+        <span class="s2">&quot;severity&quot;</span><span class="s0">: </span><span class="s2">&quot;critical&quot;</span><span class="s0">,</span>
+        <span class="s2">&quot;reported_count&quot;</span><span class="s0">: </span><span class="s4">180</span><span class="s0">,</span>
+        <span class="s2">&quot;last_seen&quot;</span><span class="s0">: </span><span class="s2">&quot;2026-01-17&quot;</span><span class="s0">,</span>
+        <span class="s2">&quot;description&quot;</span><span class="s0">: </span><span class="s2">&quot;NOUVEAU 2026 - Imite 02/xxx de Bruxelles&quot;</span><span class="s0">,</span>
+        <span class="s2">&quot;action&quot;</span><span class="s0">: </span><span class="s2">&quot;Bloquer tous 002#######&quot;</span>
+      <span class="s0">}</span>
+    <span class="s0">]</span>
+  <span class="s0">},</span>
+
+  <span class="s2">&quot;whitelist_exceptions&quot;</span><span class="s0">: {</span>
+    <span class="s2">&quot;description&quot;</span><span class="s0">: </span><span class="s2">&quot;Exceptions à ne jamais bloquer même si préfixe suspect&quot;</span><span class="s0">,</span>
+    <span class="s2">&quot;trusted_organizations&quot;</span><span class="s0">: [</span>
+      <span class="s0">{</span>
+        <span class="s2">&quot;name&quot;</span><span class="s0">: </span><span class="s2">&quot;CHU - Hôpitaux Belgique&quot;</span><span class="s0">,</span>
+        <span class="s2">&quot;prefixes&quot;</span><span class="s0">: [</span><span class="s2">&quot;02&quot;</span><span class="s0">, </span><span class="s2">&quot;03&quot;</span><span class="s0">, </span><span class="s2">&quot;04&quot;</span><span class="s0">],</span>
+        <span class="s2">&quot;specific_numbers&quot;</span><span class="s0">: [</span><span class="s2">&quot;02/555.11.11&quot;</span><span class="s0">, </span><span class="s2">&quot;04/366.11.11&quot;</span><span class="s0">, </span><span class="s2">&quot;09/332.21.11&quot;</span><span class="s0">],</span>
+        <span class="s2">&quot;reason&quot;</span><span class="s0">: </span><span class="s2">&quot;Services médicaux essentiels&quot;</span>
+      <span class="s0">},</span>
+      <span class="s0">{</span>
+        <span class="s2">&quot;name&quot;</span><span class="s0">: </span><span class="s2">&quot;Banques officielles (ATTENTION spoofing possible)&quot;</span><span class="s0">,</span>
+        <span class="s2">&quot;note&quot;</span><span class="s0">: </span><span class="s2">&quot;TOUJOURS vérifier sur site officiel avant rappel&quot;</span><span class="s0">,</span>
+        <span class="s2">&quot;specific_numbers&quot;</span><span class="s0">: [</span>
+          <span class="s2">&quot;02/433.41.14&quot;</span><span class="s0">,</span>
+          <span class="s2">&quot;078/152.153&quot;</span><span class="s0">,</span>
+          <span class="s2">&quot;02/222.12.11&quot;</span><span class="s0">,</span>
+          <span class="s2">&quot;02/464.60.04&quot;</span>
+        <span class="s0">],</span>
+        <span class="s2">&quot;reason&quot;</span><span class="s0">: </span><span class="s2">&quot;Service client banques - Mais peuvent être spoofés&quot;</span>
+      <span class="s0">},</span>
+      <span class="s0">{</span>
+        <span class="s2">&quot;name&quot;</span><span class="s0">: </span><span class="s2">&quot;SNCB - Chemins de fer&quot;</span><span class="s0">,</span>
+        <span class="s2">&quot;prefixes&quot;</span><span class="s0">: [</span><span class="s2">&quot;02&quot;</span><span class="s0">],</span>
+        <span class="s2">&quot;specific_numbers&quot;</span><span class="s0">: [</span><span class="s2">&quot;02/528.28.28&quot;</span><span class="s0">],</span>
+        <span class="s2">&quot;reason&quot;</span><span class="s0">: </span><span class="s2">&quot;Transport public&quot;</span>
+      <span class="s0">},</span>
+      <span class="s0">{</span>
+        <span class="s2">&quot;name&quot;</span><span class="s0">: </span><span class="s2">&quot;Services publics&quot;</span><span class="s0">,</span>
+        <span class="s2">&quot;prefixes&quot;</span><span class="s0">: [</span><span class="s2">&quot;02&quot;</span><span class="s0">],</span>
+        <span class="s2">&quot;specific_numbers&quot;</span><span class="s0">: [</span><span class="s2">&quot;02/572.57.57&quot;</span><span class="s0">, </span><span class="s2">&quot;02/279.22.11&quot;</span><span class="s0">],</span>
+        <span class="s2">&quot;reason&quot;</span><span class="s0">: </span><span class="s2">&quot;Services administratifs&quot;</span>
+      <span class="s0">}</span>
+    <span class="s0">]</span>
+  <span class="s0">},</span>
+
+  <span class="s2">&quot;operator_info&quot;</span><span class="s0">: {</span>
+    <span class="s2">&quot;description&quot;</span><span class="s0">: </span><span class="s2">&quot;Informations sur les opérateurs belges&quot;</span><span class="s0">,</span>
+    <span class="s2">&quot;mobile_operators&quot;</span><span class="s0">: [</span>
+      <span class="s0">{</span>
+        <span class="s2">&quot;name&quot;</span><span class="s0">: </span><span class="s2">&quot;Proximus&quot;</span><span class="s0">,</span>
+        <span class="s2">&quot;prefixes&quot;</span><span class="s0">: [</span><span class="s2">&quot;0475&quot;</span><span class="s0">, </span><span class="s2">&quot;0476&quot;</span><span class="s0">, </span><span class="s2">&quot;0477&quot;</span><span class="s0">, </span><span class="s2">&quot;0478&quot;</span><span class="s0">, </span><span class="s2">&quot;0479&quot;</span><span class="s0">, </span><span class="s2">&quot;0495&quot;</span><span class="s0">, </span><span class="s2">&quot;0496&quot;</span><span class="s0">, </span><span class="s2">&quot;0497&quot;</span><span class="s0">, </span><span class="s2">&quot;0498&quot;</span><span class="s0">, </span><span class="s2">&quot;0499&quot;</span><span class="s0">]</span>
+      <span class="s0">},</span>
+      <span class="s0">{</span>
+        <span class="s2">&quot;name&quot;</span><span class="s0">: </span><span class="s2">&quot;Orange Belgium&quot;</span><span class="s0">,</span>
+        <span class="s2">&quot;prefixes&quot;</span><span class="s0">: [</span><span class="s2">&quot;0456&quot;</span><span class="s0">, </span><span class="s2">&quot;0457&quot;</span><span class="s0">, </span><span class="s2">&quot;0458&quot;</span><span class="s0">, </span><span class="s2">&quot;0459&quot;</span><span class="s0">, </span><span class="s2">&quot;0465&quot;</span><span class="s0">, </span><span class="s2">&quot;0466&quot;</span><span class="s0">, </span><span class="s2">&quot;0467&quot;</span><span class="s0">, </span><span class="s2">&quot;0468&quot;</span><span class="s0">, </span><span class="s2">&quot;0469&quot;</span><span class="s0">]</span>
+      <span class="s0">},</span>
+      <span class="s0">{</span>
+        <span class="s2">&quot;name&quot;</span><span class="s0">: </span><span class="s2">&quot;Base&quot;</span><span class="s0">,</span>
+        <span class="s2">&quot;prefixes&quot;</span><span class="s0">: [</span><span class="s2">&quot;0485&quot;</span><span class="s0">, </span><span class="s2">&quot;0486&quot;</span><span class="s0">, </span><span class="s2">&quot;0487&quot;</span><span class="s0">, </span><span class="s2">&quot;0488&quot;</span><span class="s0">, </span><span class="s2">&quot;0489&quot;</span><span class="s0">]</span>
+      <span class="s0">}</span>
+    <span class="s0">]</span>
+  <span class="s0">},</span>
+
+  <span class="s2">&quot;validation_rules&quot;</span><span class="s0">: {</span>
+    <span class="s2">&quot;number_format&quot;</span><span class="s0">: {</span>
+      <span class="s2">&quot;national&quot;</span><span class="s0">: </span><span class="s2">&quot;^0[0-9]{8,9}$&quot;</span><span class="s0">,</span>
+      <span class="s2">&quot;international&quot;</span><span class="s0">: </span><span class="s2">&quot;^</span><span class="s3">\\</span><span class="s2">+32[0-9]{8,9}$&quot;</span><span class="s0">,</span>
+      <span class="s2">&quot;mobile_length&quot;</span><span class="s0">: </span><span class="s4">10</span><span class="s0">,</span>
+      <span class="s2">&quot;fixed_line_length&quot;</span><span class="s0">: </span><span class="s4">9</span>
+    <span class="s0">},</span>
+    <span class="s2">&quot;area_codes&quot;</span><span class="s0">: {</span>
+      <span class="s2">&quot;bruxelles&quot;</span><span class="s0">: </span><span class="s2">&quot;02&quot;</span><span class="s0">,</span>
+      <span class="s2">&quot;anvers&quot;</span><span class="s0">: </span><span class="s2">&quot;03&quot;</span><span class="s0">,</span>
+      <span class="s2">&quot;liege&quot;</span><span class="s0">: </span><span class="s2">&quot;04&quot;</span><span class="s0">,</span>
+      <span class="s2">&quot;namur&quot;</span><span class="s0">: </span><span class="s2">&quot;081&quot;</span><span class="s0">,</span>
+      <span class="s2">&quot;charleroi&quot;</span><span class="s0">: </span><span class="s2">&quot;071&quot;</span><span class="s0">,</span>
+      <span class="s2">&quot;mons&quot;</span><span class="s0">: </span><span class="s2">&quot;065&quot;</span>
+    <span class="s0">}</span>
+  <span class="s0">},</span>
+
+  <span class="s2">&quot;detection_patterns&quot;</span><span class="s0">: {</span>
+    <span class="s2">&quot;description&quot;</span><span class="s0">: </span><span class="s2">&quot;Patterns pour détection intelligente (optionnel)&quot;</span><span class="s0">,</span>
+    <span class="s2">&quot;ping_call&quot;</span><span class="s0">: {</span>
+      <span class="s2">&quot;duration&quot;</span><span class="s0">: </span><span class="s2">&quot;&lt; 3 secondes&quot;</span><span class="s0">,</span>
+      <span class="s2">&quot;behavior&quot;</span><span class="s0">: </span><span class="s2">&quot;Raccrochage immédiat&quot;</span><span class="s0">,</span>
+      <span class="s2">&quot;typical_prefixes&quot;</span><span class="s0">: [</span><span class="s2">&quot;089&quot;</span><span class="s0">, </span><span class="s2">&quot;070&quot;</span><span class="s0">, </span><span class="s2">&quot;090&quot;</span><span class="s0">, </span><span class="s2">&quot;002&quot;</span><span class="s0">],</span>
+      <span class="s2">&quot;action&quot;</span><span class="s0">: </span><span class="s2">&quot;Bloquer automatiquement&quot;</span>
+    <span class="s0">},</span>
+    <span class="s2">&quot;rapid_calls&quot;</span><span class="s0">: {</span>
+      <span class="s2">&quot;rule&quot;</span><span class="s0">: </span><span class="s2">&quot;Plus de 3 appels du même numéro en 5 minutes&quot;</span><span class="s0">,</span>
+      <span class="s2">&quot;action&quot;</span><span class="s0">: </span><span class="s2">&quot;Marquer comme suspect&quot;</span>
+    <span class="s0">},</span>
+    <span class="s2">&quot;visual_spoofing_check&quot;</span><span class="s0">: {</span>
+      <span class="s2">&quot;rule&quot;</span><span class="s0">: </span><span class="s2">&quot;Si numéro commence par 002 (au lieu de 02)&quot;</span><span class="s0">,</span>
+      <span class="s2">&quot;action&quot;</span><span class="s0">: </span><span class="s2">&quot;BLOQUER - Arnaque par confusion visuelle&quot;</span>
+    <span class="s0">},</span>
+    <span class="s2">&quot;high_risk_hours&quot;</span><span class="s0">: {</span>
+      <span class="s2">&quot;ranges&quot;</span><span class="s0">: [</span><span class="s2">&quot;00:00-08:00&quot;</span><span class="s0">, </span><span class="s2">&quot;20:00-23:59&quot;</span><span class="s0">],</span>
+      <span class="s2">&quot;note&quot;</span><span class="s0">: </span><span class="s2">&quot;Les arnaqueurs appellent souvent tard la nuit ou tôt le matin&quot;</span>
+    <span class="s0">}</span>
+  <span class="s0">},</span>
+
+  <span class="s2">&quot;reporting&quot;</span><span class="s0">: {</span>
+    <span class="s2">&quot;description&quot;</span><span class="s0">: </span><span class="s2">&quot;Où signaler le spam&quot;</span><span class="s0">,</span>
+    <span class="s2">&quot;bipt&quot;</span><span class="s0">: {</span>
+      <span class="s2">&quot;phone&quot;</span><span class="s0">: </span><span class="s2">&quot;02/226.88.88&quot;</span><span class="s0">,</span>
+      <span class="s2">&quot;website&quot;</span><span class="s0">: </span><span class="s2">&quot;https://www.bipt.be&quot;</span><span class="s0">,</span>
+      <span class="s2">&quot;description&quot;</span><span class="s0">: </span><span class="s2">&quot;Régulateur officiel&quot;</span>
+    <span class="s0">},</span>
+    <span class="s2">&quot;ne_mappellez_plus&quot;</span><span class="s0">: {</span>
+      <span class="s2">&quot;phone&quot;</span><span class="s0">: </span><span class="s2">&quot;02/882.19.75&quot;</span><span class="s0">,</span>
+      <span class="s2">&quot;website&quot;</span><span class="s0">: </span><span class="s2">&quot;https://www.neplusmeappeler.be&quot;</span><span class="s0">,</span>
+      <span class="s2">&quot;description&quot;</span><span class="s0">: </span><span class="s2">&quot;Liste d'opposition au démarchage&quot;</span>
+    <span class="s0">}</span>
+  <span class="s0">},</span>
+
+  <span class="s2">&quot;usage_recommendations&quot;</span><span class="s0">: {</span>
+    <span class="s2">&quot;blocking_strategy&quot;</span><span class="s0">: [</span>
+      <span class="s2">&quot;1. Bloquer automatiquement les 'always_block'&quot;</span><span class="s0">,</span>
+      <span class="s2">&quot;2. Bloquer automatiquement les patterns 002 et 071960###&quot;</span><span class="s0">,</span>
+      <span class="s2">&quot;3. Analyser le contenu des 'monitor_closely'&quot;</span><span class="s0">,</span>
+      <span class="s2">&quot;4. Jamais bloquer les 'never_block'&quot;</span><span class="s0">,</span>
+      <span class="s2">&quot;5. Whitelister les 'whitelist_exceptions'&quot;</span><span class="s0">,</span>
+      <span class="s2">&quot;6. Bloquer immédiatement les 'known_spam_numbers' critiques&quot;</span>
+    <span class="s0">],</span>
+    <span class="s2">&quot;smart_filtering&quot;</span><span class="s0">: [</span>
+      <span class="s2">&quot;Si SMS = analyser le contenu avec mots-clés suspects&quot;</span><span class="s0">,</span>
+      <span class="s2">&quot;Si appel = analyser durée et pattern de rappel&quot;</span><span class="s0">,</span>
+      <span class="s2">&quot;Si appel répété = augmenter le score de suspicion&quot;</span><span class="s0">,</span>
+      <span class="s2">&quot;Si 002 = bloquer immédiatement (nouveau piège 2026)&quot;</span>
+    <span class="s0">]</span>
+  <span class="s0">},</span>
+
+  <span class="s2">&quot;metadata&quot;</span><span class="s0">: {</span>
+    <span class="s2">&quot;data_source&quot;</span><span class="s0">: </span><span class="s2">&quot;BIPT/IBPT + Community Reports&quot;</span><span class="s0">,</span>
+    <span class="s2">&quot;update_frequency&quot;</span><span class="s0">: </span><span class="s2">&quot;weekly&quot;</span><span class="s0">,</span>
+    <span class="s2">&quot;last_community_update&quot;</span><span class="s0">: </span><span class="s2">&quot;2026-01-20&quot;</span><span class="s0">,</span>
+    <span class="s2">&quot;notes&quot;</span><span class="s0">: </span><span class="s2">&quot;Version simplifiée compatible avec structure existante - Mises à jour critiques 2026 incluses&quot;</span><span class="s0">,</span>
+    <span class="s2">&quot;changelog&quot;</span><span class="s0">: {</span>
+      <span class="s2">&quot;2.2&quot;</span><span class="s0">: </span><span class="s2">&quot;Ajout nouveautés 2026 (visual spoofing 002, série 071960###)&quot;</span><span class="s0">,</span>
+      <span class="s2">&quot;2.1&quot;</span><span class="s0">: </span><span class="s2">&quot;Version initiale simplifiée&quot;</span>
+    <span class="s0">}</span>
+  <span class="s0">}</span>
+<span class="s0">}</span></pre>
+</body>
+</html>

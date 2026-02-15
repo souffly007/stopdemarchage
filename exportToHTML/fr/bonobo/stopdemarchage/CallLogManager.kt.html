@@ -1,0 +1,196 @@
+<html>
+<head>
+<title>CallLogManager.kt</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #7a7e85;}
+.s4 { color: #6aab73;}
+.s5 { color: #2aacb8;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+CallLogManager.kt</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">fr</span><span class="s2">.</span><span class="s1">bonobo</span><span class="s2">.</span><span class="s1">stopdemarchage</span>
+
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">content</span><span class="s2">.</span><span class="s1">Context</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">database</span><span class="s2">.</span><span class="s1">Cursor</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">provider</span><span class="s2">.</span><span class="s1">CallLog</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">provider</span><span class="s2">.</span><span class="s1">ContactsContract</span>
+<span class="s1">import kotlinx</span><span class="s2">.</span><span class="s1">coroutines</span><span class="s2">.</span><span class="s1">Dispatchers</span>
+<span class="s1">import kotlinx</span><span class="s2">.</span><span class="s1">coroutines</span><span class="s2">.</span><span class="s1">withContext</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">net</span><span class="s2">.</span><span class="s1">Uri </span><span class="s3">// Assurez-vous que cette ligne est présente</span>
+
+
+<span class="s0">class </span><span class="s1">CallLogManager</span><span class="s2">(</span><span class="s1">private </span><span class="s0">val </span><span class="s1">context: Context</span><span class="s2">) {</span>
+
+    <span class="s3">// Utiliser le même nom de fichier SharedPreferences que dans MainActivity et CallScreeningService</span>
+    <span class="s1">private </span><span class="s0">val </span><span class="s1">PREFS_FILE_NAME </span><span class="s2">= </span><span class="s4">&quot;StopDemarchagePrefs&quot; </span><span class="s3">// Doit correspondre à MainActivity</span>
+    <span class="s3">// Utiliser la même clé que celle que nous allons définir pour la liste noire</span>
+    <span class="s1">private </span><span class="s0">val </span><span class="s1">KEY_BLOCKED_NUMBERS </span><span class="s2">= </span><span class="s4">&quot;blocked_numbers&quot; </span><span class="s3">// Doit correspondre à CallScreeningService et aux futurs changements</span>
+
+    <span class="s1">private </span><span class="s0">val </span><span class="s1">sharedPrefs </span><span class="s2">= </span><span class="s1">context</span><span class="s2">.</span><span class="s1">getSharedPreferences</span><span class="s2">(</span><span class="s1">PREFS_FILE_NAME</span><span class="s2">, </span><span class="s1">Context</span><span class="s2">.</span><span class="s1">MODE_PRIVATE</span><span class="s2">)</span>
+
+    <span class="s1">suspend </span><span class="s0">fun </span><span class="s1">getCallLogs</span><span class="s2">(</span><span class="s1">limit: Int </span><span class="s2">= </span><span class="s5">100</span><span class="s2">)</span><span class="s1">: List</span><span class="s2">&lt;</span><span class="s1">CallLogEntry</span><span class="s2">&gt; = </span><span class="s1">withContext</span><span class="s2">(</span><span class="s1">Dispatchers</span><span class="s2">.</span><span class="s1">IO</span><span class="s2">) {</span>
+        <span class="s0">val </span><span class="s1">callLogs </span><span class="s2">= </span><span class="s1">mutableListOf</span><span class="s2">&lt;</span><span class="s1">CallLogEntry</span><span class="s2">&gt;()</span>
+        <span class="s0">val </span><span class="s1">blockedNumbers </span><span class="s2">= </span><span class="s1">getBlockedNumbersSet</span><span class="s2">() </span><span class="s3">// Lire la liste noire sous forme de Set&lt;String&gt;</span>
+
+        <span class="s0">try </span><span class="s2">{</span>
+            <span class="s0">val </span><span class="s1">cursor </span><span class="s2">= </span><span class="s1">context</span><span class="s2">.</span><span class="s1">contentResolver</span><span class="s2">.</span><span class="s1">query</span><span class="s2">(</span>
+                <span class="s1">CallLog</span><span class="s2">.</span><span class="s1">Calls</span><span class="s2">.</span><span class="s1">CONTENT_URI</span><span class="s2">,</span>
+                <span class="s1">arrayOf</span><span class="s2">(</span>
+                    <span class="s1">CallLog</span><span class="s2">.</span><span class="s1">Calls</span><span class="s2">.</span><span class="s1">_ID</span><span class="s2">,</span>
+                    <span class="s1">CallLog</span><span class="s2">.</span><span class="s1">Calls</span><span class="s2">.</span><span class="s1">NUMBER</span><span class="s2">,</span>
+                    <span class="s1">CallLog</span><span class="s2">.</span><span class="s1">Calls</span><span class="s2">.</span><span class="s1">CACHED_NAME</span><span class="s2">,</span>
+                    <span class="s1">CallLog</span><span class="s2">.</span><span class="s1">Calls</span><span class="s2">.</span><span class="s1">TYPE</span><span class="s2">,</span>
+                    <span class="s1">CallLog</span><span class="s2">.</span><span class="s1">Calls</span><span class="s2">.</span><span class="s1">DATE</span><span class="s2">,</span>
+                    <span class="s1">CallLog</span><span class="s2">.</span><span class="s1">Calls</span><span class="s2">.</span><span class="s1">DURATION</span>
+                <span class="s2">),</span>
+                <span class="s0">null</span><span class="s2">,</span>
+                <span class="s0">null</span><span class="s2">,</span>
+                <span class="s4">&quot;</span><span class="s0">${</span><span class="s1">CallLog</span><span class="s2">.</span><span class="s1">Calls</span><span class="s2">.</span><span class="s1">DATE</span><span class="s0">} </span><span class="s4">DESC&quot;</span>
+            <span class="s2">)</span>
+
+            <span class="s1">cursor?</span><span class="s2">.</span><span class="s1">use </span><span class="s2">{ </span><span class="s1">c </span><span class="s2">-&gt;</span>
+                <span class="s0">val </span><span class="s1">idColumn </span><span class="s2">= </span><span class="s1">c</span><span class="s2">.</span><span class="s1">getColumnIndex</span><span class="s2">(</span><span class="s1">CallLog</span><span class="s2">.</span><span class="s1">Calls</span><span class="s2">.</span><span class="s1">_ID</span><span class="s2">)</span>
+                <span class="s0">val </span><span class="s1">numberColumn </span><span class="s2">= </span><span class="s1">c</span><span class="s2">.</span><span class="s1">getColumnIndex</span><span class="s2">(</span><span class="s1">CallLog</span><span class="s2">.</span><span class="s1">Calls</span><span class="s2">.</span><span class="s1">NUMBER</span><span class="s2">)</span>
+                <span class="s0">val </span><span class="s1">nameColumn </span><span class="s2">= </span><span class="s1">c</span><span class="s2">.</span><span class="s1">getColumnIndex</span><span class="s2">(</span><span class="s1">CallLog</span><span class="s2">.</span><span class="s1">Calls</span><span class="s2">.</span><span class="s1">CACHED_NAME</span><span class="s2">)</span>
+                <span class="s0">val </span><span class="s1">typeColumn </span><span class="s2">= </span><span class="s1">c</span><span class="s2">.</span><span class="s1">getColumnIndex</span><span class="s2">(</span><span class="s1">CallLog</span><span class="s2">.</span><span class="s1">Calls</span><span class="s2">.</span><span class="s1">TYPE</span><span class="s2">)</span>
+                <span class="s0">val </span><span class="s1">dateColumn </span><span class="s2">= </span><span class="s1">c</span><span class="s2">.</span><span class="s1">getColumnIndex</span><span class="s2">(</span><span class="s1">CallLog</span><span class="s2">.</span><span class="s1">Calls</span><span class="s2">.</span><span class="s1">DATE</span><span class="s2">)</span>
+                <span class="s0">val </span><span class="s1">durationColumn </span><span class="s2">= </span><span class="s1">c</span><span class="s2">.</span><span class="s1">getColumnIndex</span><span class="s2">(</span><span class="s1">CallLog</span><span class="s2">.</span><span class="s1">Calls</span><span class="s2">.</span><span class="s1">DURATION</span><span class="s2">)</span>
+
+                <span class="s0">var </span><span class="s1">count </span><span class="s2">= </span><span class="s5">0</span>
+                <span class="s0">while </span><span class="s2">(</span><span class="s1">c</span><span class="s2">.</span><span class="s1">moveToNext</span><span class="s2">() &amp;&amp; </span><span class="s1">count </span><span class="s2">&lt; </span><span class="s1">limit</span><span class="s2">) {</span>
+                    <span class="s0">val </span><span class="s1">id </span><span class="s2">= </span><span class="s0">if </span><span class="s2">(</span><span class="s1">idColumn </span><span class="s2">&gt;= </span><span class="s5">0</span><span class="s2">) </span><span class="s1">c</span><span class="s2">.</span><span class="s1">getLong</span><span class="s2">(</span><span class="s1">idColumn</span><span class="s2">) </span><span class="s0">else </span><span class="s5">0L</span>
+                    <span class="s0">val </span><span class="s1">rawNumber </span><span class="s2">= </span><span class="s0">if </span><span class="s2">(</span><span class="s1">numberColumn </span><span class="s2">&gt;= </span><span class="s5">0</span><span class="s2">) </span><span class="s1">c</span><span class="s2">.</span><span class="s1">getString</span><span class="s2">(</span><span class="s1">numberColumn</span><span class="s2">) </span><span class="s1">?: </span><span class="s4">&quot;Inconnu&quot; </span><span class="s0">else </span><span class="s4">&quot;Inconnu&quot;</span>
+                    <span class="s0">val </span><span class="s1">contactName </span><span class="s2">= </span><span class="s0">if </span><span class="s2">(</span><span class="s1">nameColumn </span><span class="s2">&gt;= </span><span class="s5">0</span><span class="s2">) </span><span class="s1">c</span><span class="s2">.</span><span class="s1">getString</span><span class="s2">(</span><span class="s1">nameColumn</span><span class="s2">) </span><span class="s0">else null</span>
+                    <span class="s0">val </span><span class="s1">type </span><span class="s2">= </span><span class="s0">if </span><span class="s2">(</span><span class="s1">typeColumn </span><span class="s2">&gt;= </span><span class="s5">0</span><span class="s2">) </span><span class="s1">c</span><span class="s2">.</span><span class="s1">getInt</span><span class="s2">(</span><span class="s1">typeColumn</span><span class="s2">) </span><span class="s0">else </span><span class="s1">CallLog</span><span class="s2">.</span><span class="s1">Calls</span><span class="s2">.</span><span class="s1">MISSED_TYPE</span>
+                    <span class="s0">val </span><span class="s1">date </span><span class="s2">= </span><span class="s0">if </span><span class="s2">(</span><span class="s1">dateColumn </span><span class="s2">&gt;= </span><span class="s5">0</span><span class="s2">) </span><span class="s1">c</span><span class="s2">.</span><span class="s1">getLong</span><span class="s2">(</span><span class="s1">dateColumn</span><span class="s2">) </span><span class="s0">else </span><span class="s5">0L</span>
+                    <span class="s0">val </span><span class="s1">duration </span><span class="s2">= </span><span class="s0">if </span><span class="s2">(</span><span class="s1">durationColumn </span><span class="s2">&gt;= </span><span class="s5">0</span><span class="s2">) </span><span class="s1">c</span><span class="s2">.</span><span class="s1">getLong</span><span class="s2">(</span><span class="s1">durationColumn</span><span class="s2">) </span><span class="s0">else </span><span class="s5">0L</span>
+
+                    <span class="s0">val </span><span class="s1">finalContactName </span><span class="s2">= </span><span class="s1">contactName ?: getContactName</span><span class="s2">(</span><span class="s1">rawNumber</span><span class="s2">)</span>
+
+                    <span class="s3">// &gt;&gt;&gt; CORRECTION MAJEURE: Normaliser le numéro avant de le vérifier</span>
+                    <span class="s0">val </span><span class="s1">normalizedNumber </span><span class="s2">= </span><span class="s1">normalizePhoneNumber</span><span class="s2">(</span><span class="s1">rawNumber</span><span class="s2">)</span>
+
+                    <span class="s0">val </span><span class="s1">isBlocked </span><span class="s2">= </span><span class="s1">blockedNumbers</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s1">normalizedNumber</span><span class="s2">) </span><span class="s3">// Vérifier le numéro normalisé</span>
+
+                    <span class="s1">callLogs</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span>
+                        <span class="s1">CallLogEntry</span><span class="s2">(</span>
+                            <span class="s1">id </span><span class="s2">= </span><span class="s1">id</span><span class="s2">,</span>
+                            <span class="s1">number </span><span class="s2">= </span><span class="s1">rawNumber</span><span class="s2">, </span><span class="s3">// Garder le numéro original pour l'affichage</span>
+                            <span class="s1">contactName </span><span class="s2">= </span><span class="s1">finalContactName</span><span class="s2">,</span>
+                            <span class="s1">type </span><span class="s2">= </span><span class="s1">type</span><span class="s2">,</span>
+                            <span class="s1">date </span><span class="s2">= </span><span class="s1">date</span><span class="s2">,</span>
+                            <span class="s1">duration </span><span class="s2">= </span><span class="s1">duration</span><span class="s2">,</span>
+                            <span class="s1">isBlocked </span><span class="s2">= </span><span class="s1">isBlocked</span>
+                        <span class="s2">)</span>
+                    <span class="s2">)</span>
+                    <span class="s1">count</span><span class="s2">++</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+        <span class="s2">} </span><span class="s1">catch </span><span class="s2">(</span><span class="s1">e: SecurityException</span><span class="s2">) {</span>
+            <span class="s3">// Gérer l'exception de permission, log ou Toast</span>
+            <span class="s1">e</span><span class="s2">.</span><span class="s1">printStackTrace</span><span class="s2">()</span>
+        <span class="s2">} </span><span class="s1">catch </span><span class="s2">(</span><span class="s1">e: Exception</span><span class="s2">) {</span>
+            <span class="s1">e</span><span class="s2">.</span><span class="s1">printStackTrace</span><span class="s2">()</span>
+        <span class="s2">}</span>
+
+        <span class="s1">callLogs</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">getContactName</span><span class="s2">(</span><span class="s1">phoneNumber: String</span><span class="s2">)</span><span class="s1">: String? </span><span class="s2">{</span>
+        <span class="s0">return try </span><span class="s2">{</span>
+            <span class="s0">val </span><span class="s1">cursor </span><span class="s2">= </span><span class="s1">context</span><span class="s2">.</span><span class="s1">contentResolver</span><span class="s2">.</span><span class="s1">query</span><span class="s2">(</span>
+                <span class="s1">Uri</span><span class="s2">.</span><span class="s1">withAppendedPath</span><span class="s2">(</span><span class="s1">ContactsContract</span><span class="s2">.</span><span class="s1">PhoneLookup</span><span class="s2">.</span><span class="s1">CONTENT_FILTER_URI</span><span class="s2">, </span><span class="s1">Uri</span><span class="s2">.</span><span class="s1">encode</span><span class="s2">(</span><span class="s1">phoneNumber</span><span class="s2">)),</span>
+                <span class="s1">arrayOf</span><span class="s2">(</span><span class="s1">ContactsContract</span><span class="s2">.</span><span class="s1">PhoneLookup</span><span class="s2">.</span><span class="s1">DISPLAY_NAME</span><span class="s2">),</span>
+                <span class="s0">null</span><span class="s2">,</span>
+                <span class="s0">null</span><span class="s2">,</span>
+                <span class="s0">null</span>
+            <span class="s2">)</span>
+
+            <span class="s1">cursor?</span><span class="s2">.</span><span class="s1">use </span><span class="s2">{ </span><span class="s1">c </span><span class="s2">-&gt;</span>
+                <span class="s0">if </span><span class="s2">(</span><span class="s1">c</span><span class="s2">.</span><span class="s1">moveToFirst</span><span class="s2">()) {</span>
+                    <span class="s0">val </span><span class="s1">nameColumn </span><span class="s2">= </span><span class="s1">c</span><span class="s2">.</span><span class="s1">getColumnIndex</span><span class="s2">(</span><span class="s1">ContactsContract</span><span class="s2">.</span><span class="s1">PhoneLookup</span><span class="s2">.</span><span class="s1">DISPLAY_NAME</span><span class="s2">)</span>
+                    <span class="s0">if </span><span class="s2">(</span><span class="s1">nameColumn </span><span class="s2">&gt;= </span><span class="s5">0</span><span class="s2">) </span><span class="s1">c</span><span class="s2">.</span><span class="s1">getString</span><span class="s2">(</span><span class="s1">nameColumn</span><span class="s2">) </span><span class="s0">else null</span>
+                <span class="s2">} </span><span class="s0">else null</span>
+            <span class="s2">}</span>
+        <span class="s2">} </span><span class="s1">catch </span><span class="s2">(</span><span class="s1">e: Exception</span><span class="s2">) {</span>
+            <span class="s3">// Gérer les exceptions de permission ou autres</span>
+            <span class="s1">e</span><span class="s2">.</span><span class="s1">printStackTrace</span><span class="s2">()</span>
+            <span class="s0">null</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s3">// --- Fonctions de gestion de la liste noire ---</span>
+
+    <span class="s3">// Utilisera la normalisation avant d'ajouter</span>
+    <span class="s0">fun </span><span class="s1">blockNumber</span><span class="s2">(</span><span class="s1">phoneNumber: String</span><span class="s2">) {</span>
+        <span class="s0">val </span><span class="s1">normalizedNumber </span><span class="s2">= </span><span class="s1">normalizePhoneNumber</span><span class="s2">(</span><span class="s1">phoneNumber</span><span class="s2">)</span>
+        <span class="s0">val </span><span class="s1">blockedNumbers </span><span class="s2">= </span><span class="s1">getBlockedNumbersSet</span><span class="s2">().</span><span class="s1">toMutableSet</span><span class="s2">()</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">blockedNumbers</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s1">normalizedNumber</span><span class="s2">)) { </span><span class="s3">// N'ajoute que si nouveau</span>
+            <span class="s1">saveBlockedNumbersSet</span><span class="s2">(</span><span class="s1">blockedNumbers</span><span class="s2">)</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s3">// Utilisera la normalisation avant de supprimer</span>
+    <span class="s0">fun </span><span class="s1">unblockNumber</span><span class="s2">(</span><span class="s1">phoneNumber: String</span><span class="s2">) {</span>
+        <span class="s0">val </span><span class="s1">normalizedNumber </span><span class="s2">= </span><span class="s1">normalizePhoneNumber</span><span class="s2">(</span><span class="s1">phoneNumber</span><span class="s2">)</span>
+        <span class="s0">val </span><span class="s1">blockedNumbers </span><span class="s2">= </span><span class="s1">getBlockedNumbersSet</span><span class="s2">().</span><span class="s1">toMutableSet</span><span class="s2">()</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">blockedNumbers</span><span class="s2">.</span><span class="s1">remove</span><span class="s2">(</span><span class="s1">normalizedNumber</span><span class="s2">)) { </span><span class="s3">// Ne supprime que si existant</span>
+            <span class="s1">saveBlockedNumbersSet</span><span class="s2">(</span><span class="s1">blockedNumbers</span><span class="s2">)</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s3">// Utilisera la normalisation avant de vérifier</span>
+    <span class="s0">fun </span><span class="s1">isNumberBlocked</span><span class="s2">(</span><span class="s1">phoneNumber: String</span><span class="s2">)</span><span class="s1">: Boolean </span><span class="s2">{</span>
+        <span class="s0">val </span><span class="s1">normalizedNumber </span><span class="s2">= </span><span class="s1">normalizePhoneNumber</span><span class="s2">(</span><span class="s1">phoneNumber</span><span class="s2">)</span>
+        <span class="s0">return </span><span class="s1">getBlockedNumbersSet</span><span class="s2">().</span><span class="s1">contains</span><span class="s2">(</span><span class="s1">normalizedNumber</span><span class="s2">)</span>
+    <span class="s2">}</span>
+
+    <span class="s3">// Récupère la liste des numéros bloqués, déjà normalisés</span>
+    <span class="s0">fun </span><span class="s1">getBlockedNumbersList</span><span class="s2">()</span><span class="s1">: List</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">&gt; {</span>
+        <span class="s0">return </span><span class="s1">getBlockedNumbersSet</span><span class="s2">().</span><span class="s1">toList</span><span class="s2">()</span>
+    <span class="s2">}</span>
+
+    <span class="s3">// &gt;&gt;&gt; CORRECTION: Lire le Set&lt;String&gt; directement</span>
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">getBlockedNumbersSet</span><span class="s2">()</span><span class="s1">: Set</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">&gt; {</span>
+        <span class="s3">// La clé doit être la même que celle utilisée dans CallScreeningService</span>
+        <span class="s0">return </span><span class="s1">sharedPrefs</span><span class="s2">.</span><span class="s1">getStringSet</span><span class="s2">(</span><span class="s1">KEY_BLOCKED_NUMBERS</span><span class="s2">, </span><span class="s1">emptySet</span><span class="s2">()) </span><span class="s1">?: emptySet</span><span class="s2">()</span>
+    <span class="s2">}</span>
+
+    <span class="s3">// &gt;&gt;&gt; CORRECTION: Enregistrer le Set&lt;String&gt; directement</span>
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">saveBlockedNumbersSet</span><span class="s2">(</span><span class="s1">blockedNumbers: Set</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">&gt;) {</span>
+        <span class="s1">sharedPrefs</span><span class="s2">.</span><span class="s1">edit</span><span class="s2">().</span><span class="s1">putStringSet</span><span class="s2">(</span><span class="s1">KEY_BLOCKED_NUMBERS</span><span class="s2">, </span><span class="s1">blockedNumbers</span><span class="s2">).</span><span class="s1">apply</span><span class="s2">()</span>
+    <span class="s2">}</span>
+
+    <span class="s3">// Fonction de normalisation des numéros - CRUCIALE</span>
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">normalizePhoneNumber</span><span class="s2">(</span><span class="s1">number: String</span><span class="s2">)</span><span class="s1">: String </span><span class="s2">{</span>
+        <span class="s0">var </span><span class="s1">normalized </span><span class="s2">= </span><span class="s1">number</span><span class="s2">.</span><span class="s1">trim</span><span class="s2">()</span>
+            <span class="s2">.</span><span class="s1">replace</span><span class="s2">(</span><span class="s4">&quot; &quot;</span><span class="s2">, </span><span class="s4">&quot;&quot;</span><span class="s2">) </span><span class="s3">// Supprimer les espaces</span>
+            <span class="s2">.</span><span class="s1">replace</span><span class="s2">(</span><span class="s4">&quot;-&quot;</span><span class="s2">, </span><span class="s4">&quot;&quot;</span><span class="s2">) </span><span class="s3">// Supprimer les tirets</span>
+            <span class="s2">.</span><span class="s1">replace</span><span class="s2">(</span><span class="s4">&quot;(&quot;</span><span class="s2">, </span><span class="s4">&quot;&quot;</span><span class="s2">) </span><span class="s3">// Supprimer les parenthèses</span>
+            <span class="s2">.</span><span class="s1">replace</span><span class="s2">(</span><span class="s4">&quot;)&quot;</span><span class="s2">, </span><span class="s4">&quot;&quot;</span><span class="s2">) </span><span class="s3">// Supprimer les parenthèses</span>
+
+        <span class="s3">// Si le numéro commence par 0 et a 10 chiffres (format français typique)</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">normalized</span><span class="s2">.</span><span class="s1">startsWith</span><span class="s2">(</span><span class="s4">&quot;0&quot;</span><span class="s2">) &amp;&amp; </span><span class="s1">normalized</span><span class="s2">.</span><span class="s1">length </span><span class="s2">== </span><span class="s5">10 </span><span class="s2">&amp;&amp; </span><span class="s1">normalized</span><span class="s2">.</span><span class="s1">matches</span><span class="s2">(</span><span class="s4">&quot;^0[1-9][0-9]{8}$&quot;</span><span class="s2">.</span><span class="s1">toRegex</span><span class="s2">())) {</span>
+            <span class="s1">normalized </span><span class="s2">= </span><span class="s4">&quot;+33&quot; </span><span class="s2">+ </span><span class="s1">normalized</span><span class="s2">.</span><span class="s1">substring</span><span class="s2">(</span><span class="s5">1</span><span class="s2">)</span>
+        <span class="s2">}</span>
+        <span class="s3">// Pour les numéros courts ou spéciaux qui ne commencent pas par un +, on peut décider de ne pas les normaliser</span>
+        <span class="s3">// ou d'ajouter d'autres règles si besoin (ex: numéros d'urgence, numéros à 4 chiffres, etc.)</span>
+
+        <span class="s3">// IMPORTANT: Pour une robustesse maximale, vous pouvez envisager d'utiliser une bibliothèque</span>
+        <span class="s3">// comme libphonenumber de Google pour une normalisation internationale complexe.</span>
+        <span class="s3">// Mais pour un usage simple en France, ceci est un bon début.</span>
+
+        <span class="s0">return </span><span class="s1">normalized</span>
+    <span class="s2">}</span>
+<span class="s2">}</span></pre>
+</body>
+</html>

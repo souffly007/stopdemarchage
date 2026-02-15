@@ -1,0 +1,369 @@
+<html>
+<head>
+<title>KeypadManager.kt</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #6aab73;}
+.s4 { color: #7a7e85;}
+.s5 { color: #2aacb8;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+KeypadManager.kt</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">fr</span><span class="s2">.</span><span class="s1">bonobo</span><span class="s2">.</span><span class="s1">stopdemarchage</span>
+
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">Manifest</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">content</span><span class="s2">.</span><span class="s1">Context</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">content</span><span class="s2">.</span><span class="s1">Intent</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">content</span><span class="s2">.</span><span class="s1">pm</span><span class="s2">.</span><span class="s1">PackageManager</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">media</span><span class="s2">.</span><span class="s1">AudioManager</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">media</span><span class="s2">.</span><span class="s1">ToneGenerator</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">net</span><span class="s2">.</span><span class="s1">Uri</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">os</span><span class="s2">.</span><span class="s1">Handler</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">os</span><span class="s2">.</span><span class="s1">Looper</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">os</span><span class="s2">.</span><span class="s1">VibrationEffect</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">os</span><span class="s2">.</span><span class="s1">Vibrator</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">provider</span><span class="s2">.</span><span class="s1">ContactsContract</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">telecom</span><span class="s2">.</span><span class="s1">TelecomManager</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">Log</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">widget</span><span class="s2">.</span><span class="s1">Button</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">widget</span><span class="s2">.</span><span class="s1">EditText</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">widget</span><span class="s2">.</span><span class="s1">TextView</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">widget</span><span class="s2">.</span><span class="s1">Toast</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">core</span><span class="s2">.</span><span class="s1">content</span><span class="s2">.</span><span class="s1">ContextCompat</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">lifecycle</span><span class="s2">.</span><span class="s1">LifecycleOwner</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">lifecycle</span><span class="s2">.</span><span class="s1">lifecycleScope</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">google</span><span class="s2">.</span><span class="s1">android</span><span class="s2">.</span><span class="s1">material</span><span class="s2">.</span><span class="s1">button</span><span class="s2">.</span><span class="s1">MaterialButton</span>
+<span class="s1">import kotlinx</span><span class="s2">.</span><span class="s1">coroutines</span><span class="s2">.</span><span class="s1">Dispatchers</span>
+<span class="s1">import kotlinx</span><span class="s2">.</span><span class="s1">coroutines</span><span class="s2">.</span><span class="s1">launch</span>
+<span class="s1">import kotlinx</span><span class="s2">.</span><span class="s1">coroutines</span><span class="s2">.</span><span class="s1">withContext</span>
+
+<span class="s0">class </span><span class="s1">KeypadManager</span><span class="s2">(</span>
+    <span class="s1">private </span><span class="s0">val </span><span class="s1">context: Context</span><span class="s2">,</span>
+    <span class="s1">private </span><span class="s0">val </span><span class="s1">lifecycleOwner: LifecycleOwner</span>
+<span class="s2">) {</span>
+
+    <span class="s1">private lateinit </span><span class="s0">var </span><span class="s1">phoneNumberField: EditText</span>
+    <span class="s1">private lateinit </span><span class="s0">var </span><span class="s1">contactNameField: TextView</span>
+
+    <span class="s1">private </span><span class="s0">var </span><span class="s1">toneGenerator: ToneGenerator? </span><span class="s2">= </span><span class="s0">null</span>
+    <span class="s1">private </span><span class="s0">var </span><span class="s1">vibrator: Vibrator? </span><span class="s2">= </span><span class="s0">null</span>
+
+    <span class="s1">private </span><span class="s0">val </span><span class="s1">TAG </span><span class="s2">= </span><span class="s3">&quot;KeypadManager&quot;</span>
+
+    <span class="s4">// Mapping des boutons vers les tons DTMF</span>
+    <span class="s1">private </span><span class="s0">val </span><span class="s1">keypadTones </span><span class="s2">= </span><span class="s1">mapOf</span><span class="s2">(</span>
+        <span class="s3">'0' </span><span class="s1">to ToneGenerator</span><span class="s2">.</span><span class="s1">TONE_DTMF_0</span><span class="s2">,</span>
+        <span class="s3">'1' </span><span class="s1">to ToneGenerator</span><span class="s2">.</span><span class="s1">TONE_DTMF_1</span><span class="s2">,</span>
+        <span class="s3">'2' </span><span class="s1">to ToneGenerator</span><span class="s2">.</span><span class="s1">TONE_DTMF_2</span><span class="s2">,</span>
+        <span class="s3">'3' </span><span class="s1">to ToneGenerator</span><span class="s2">.</span><span class="s1">TONE_DTMF_3</span><span class="s2">,</span>
+        <span class="s3">'4' </span><span class="s1">to ToneGenerator</span><span class="s2">.</span><span class="s1">TONE_DTMF_4</span><span class="s2">,</span>
+        <span class="s3">'5' </span><span class="s1">to ToneGenerator</span><span class="s2">.</span><span class="s1">TONE_DTMF_5</span><span class="s2">,</span>
+        <span class="s3">'6' </span><span class="s1">to ToneGenerator</span><span class="s2">.</span><span class="s1">TONE_DTMF_6</span><span class="s2">,</span>
+        <span class="s3">'7' </span><span class="s1">to ToneGenerator</span><span class="s2">.</span><span class="s1">TONE_DTMF_7</span><span class="s2">,</span>
+        <span class="s3">'8' </span><span class="s1">to ToneGenerator</span><span class="s2">.</span><span class="s1">TONE_DTMF_8</span><span class="s2">,</span>
+        <span class="s3">'9' </span><span class="s1">to ToneGenerator</span><span class="s2">.</span><span class="s1">TONE_DTMF_9</span><span class="s2">,</span>
+        <span class="s3">'*' </span><span class="s1">to ToneGenerator</span><span class="s2">.</span><span class="s1">TONE_DTMF_S</span><span class="s2">,</span>
+        <span class="s3">'#' </span><span class="s1">to ToneGenerator</span><span class="s2">.</span><span class="s1">TONE_DTMF_P</span>
+    <span class="s2">)</span>
+
+    <span class="s1">init </span><span class="s2">{</span>
+        <span class="s1">initializeAudio</span><span class="s2">()</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">initializeAudio</span><span class="s2">() {</span>
+        <span class="s0">try </span><span class="s2">{</span>
+            <span class="s1">toneGenerator </span><span class="s2">= </span><span class="s1">ToneGenerator</span><span class="s2">(</span><span class="s1">AudioManager</span><span class="s2">.</span><span class="s1">STREAM_DTMF</span><span class="s2">, </span><span class="s5">80</span><span class="s2">)</span>
+            <span class="s1">vibrator </span><span class="s2">= </span><span class="s1">context</span><span class="s2">.</span><span class="s1">getSystemService</span><span class="s2">(</span><span class="s1">Context</span><span class="s2">.</span><span class="s1">VIBRATOR_SERVICE</span><span class="s2">) </span><span class="s0">as </span><span class="s1">Vibrator</span>
+            <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Audio initialisé avec succès&quot;</span><span class="s2">)</span>
+        <span class="s2">} </span><span class="s1">catch </span><span class="s2">(</span><span class="s1">e: Exception</span><span class="s2">) {</span>
+            <span class="s1">Log</span><span class="s2">.</span><span class="s1">e</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Erreur lors de l'initialisation audio&quot;</span><span class="s2">, </span><span class="s1">e</span><span class="s2">)</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">fun </span><span class="s1">setupKeypad</span><span class="s2">(</span>
+        <span class="s1">phoneField: EditText</span><span class="s2">,</span>
+        <span class="s1">contactField: TextView</span><span class="s2">,</span>
+        <span class="s1">keypadButtons: Map</span><span class="s2">&lt;</span><span class="s1">Char</span><span class="s2">, </span><span class="s1">Button</span><span class="s2">&gt;,</span>
+        <span class="s1">deleteButton: Button</span><span class="s2">,</span>
+        <span class="s1">callButton: MaterialButton</span><span class="s2">,</span>
+        <span class="s1">addContactButton: MaterialButton</span><span class="s2">,</span>
+        <span class="s1">smsButton: MaterialButton</span><span class="s2">,</span>
+        <span class="s1">historyButton: MaterialButton</span>
+    <span class="s2">) {</span>
+        <span class="s1">phoneNumberField </span><span class="s2">= </span><span class="s1">phoneField</span>
+        <span class="s1">contactNameField </span><span class="s2">= </span><span class="s1">contactField</span>
+
+        <span class="s4">// Configuration des boutons numériques</span>
+        <span class="s1">keypadButtons</span><span class="s2">.</span><span class="s1">forEach </span><span class="s2">{ (</span><span class="s1">digit</span><span class="s2">, </span><span class="s1">button</span><span class="s2">) -&gt;</span>
+            <span class="s1">button</span><span class="s2">.</span><span class="s1">setOnClickListener </span><span class="s2">{</span>
+                <span class="s1">addDigit</span><span class="s2">(</span><span class="s1">digit</span><span class="s2">)</span>
+                <span class="s1">playKeypadSound</span><span class="s2">(</span><span class="s1">digit</span><span class="s2">)</span>
+                <span class="s1">vibrateKeypress</span><span class="s2">()</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+
+        <span class="s4">// Configuration du bouton effacer</span>
+        <span class="s1">deleteButton</span><span class="s2">.</span><span class="s1">setOnClickListener </span><span class="s2">{</span>
+            <span class="s1">deleteLastDigit</span><span class="s2">()</span>
+        <span class="s2">}</span>
+
+        <span class="s4">// Configuration du bouton appeler</span>
+        <span class="s1">callButton</span><span class="s2">.</span><span class="s1">setOnClickListener </span><span class="s2">{</span>
+            <span class="s1">makeCall</span><span class="s2">()</span>
+        <span class="s2">}</span>
+
+        <span class="s4">// Configuration du bouton ajouter aux contacts</span>
+        <span class="s1">addContactButton</span><span class="s2">.</span><span class="s1">setOnClickListener </span><span class="s2">{</span>
+            <span class="s1">addToContacts</span><span class="s2">()</span>
+        <span class="s2">}</span>
+
+        <span class="s4">// Configuration du bouton SMS</span>
+        <span class="s1">smsButton</span><span class="s2">.</span><span class="s1">setOnClickListener </span><span class="s2">{</span>
+            <span class="s1">sendSms</span><span class="s2">()</span>
+        <span class="s2">}</span>
+
+        <span class="s4">// Configuration du bouton historique</span>
+        <span class="s1">historyButton</span><span class="s2">.</span><span class="s1">setOnClickListener </span><span class="s2">{</span>
+            <span class="s1">showHistory</span><span class="s2">()</span>
+        <span class="s2">}</span>
+
+        <span class="s4">// Listener pour détecter les changements et chercher des contacts</span>
+        <span class="s1">phoneNumberField</span><span class="s2">.</span><span class="s1">setOnTextChangedListener </span><span class="s2">{ </span><span class="s1">text </span><span class="s2">-&gt;</span>
+            <span class="s1">searchContactByNumber</span><span class="s2">(</span><span class="s1">text</span><span class="s2">.</span><span class="s1">toString</span><span class="s2">())</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">addDigit</span><span class="s2">(</span><span class="s1">digit: Char</span><span class="s2">) {</span>
+        <span class="s0">val </span><span class="s1">currentText </span><span class="s2">= </span><span class="s1">phoneNumberField</span><span class="s2">.</span><span class="s1">text</span><span class="s2">.</span><span class="s1">toString</span><span class="s2">()</span>
+        <span class="s0">val </span><span class="s1">newText </span><span class="s2">= </span><span class="s1">currentText </span><span class="s2">+ </span><span class="s1">digit</span>
+        <span class="s1">phoneNumberField</span><span class="s2">.</span><span class="s1">setText</span><span class="s2">(</span><span class="s1">newText</span><span class="s2">)</span>
+        <span class="s1">phoneNumberField</span><span class="s2">.</span><span class="s1">setSelection</span><span class="s2">(</span><span class="s1">newText</span><span class="s2">.</span><span class="s1">length</span><span class="s2">)</span>
+
+        <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Chiffre ajouté: </span><span class="s0">$</span><span class="s1">digit</span><span class="s3">, numéro: </span><span class="s0">$</span><span class="s1">newText</span><span class="s3">&quot;</span><span class="s2">)</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">deleteLastDigit</span><span class="s2">() {</span>
+        <span class="s0">val </span><span class="s1">currentText </span><span class="s2">= </span><span class="s1">phoneNumberField</span><span class="s2">.</span><span class="s1">text</span><span class="s2">.</span><span class="s1">toString</span><span class="s2">()</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">currentText</span><span class="s2">.</span><span class="s1">isNotEmpty</span><span class="s2">()) {</span>
+            <span class="s0">val </span><span class="s1">newText </span><span class="s2">= </span><span class="s1">currentText</span><span class="s2">.</span><span class="s1">dropLast</span><span class="s2">(</span><span class="s5">1</span><span class="s2">)</span>
+            <span class="s1">phoneNumberField</span><span class="s2">.</span><span class="s1">setText</span><span class="s2">(</span><span class="s1">newText</span><span class="s2">)</span>
+            <span class="s1">phoneNumberField</span><span class="s2">.</span><span class="s1">setSelection</span><span class="s2">(</span><span class="s1">newText</span><span class="s2">.</span><span class="s1">length</span><span class="s2">)</span>
+
+            <span class="s4">// Effacer le nom du contact si plus de numéro</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">newText</span><span class="s2">.</span><span class="s1">isEmpty</span><span class="s2">()) {</span>
+                <span class="s1">contactNameField</span><span class="s2">.</span><span class="s1">text </span><span class="s2">= </span><span class="s3">&quot;&quot;</span>
+                <span class="s1">contactNameField</span><span class="s2">.</span><span class="s1">visibility </span><span class="s2">= </span><span class="s1">TextView</span><span class="s2">.</span><span class="s1">GONE</span>
+            <span class="s2">}</span>
+
+            <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Chiffre supprimé, numéro: </span><span class="s0">$</span><span class="s1">newText</span><span class="s3">&quot;</span><span class="s2">)</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">playKeypadSound</span><span class="s2">(</span><span class="s1">digit: Char</span><span class="s2">) {</span>
+        <span class="s0">try </span><span class="s2">{</span>
+            <span class="s0">val </span><span class="s1">tone </span><span class="s2">= </span><span class="s1">keypadTones</span><span class="s2">[</span><span class="s1">digit</span><span class="s2">]</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">tone </span><span class="s2">!= </span><span class="s0">null </span><span class="s2">&amp;&amp; </span><span class="s1">toneGenerator </span><span class="s2">!= </span><span class="s0">null</span><span class="s2">) {</span>
+                <span class="s1">toneGenerator?</span><span class="s2">.</span><span class="s1">startTone</span><span class="s2">(</span><span class="s1">tone</span><span class="s2">, </span><span class="s5">150</span><span class="s2">)</span>
+            <span class="s2">}</span>
+        <span class="s2">} </span><span class="s1">catch </span><span class="s2">(</span><span class="s1">e: Exception</span><span class="s2">) {</span>
+            <span class="s1">Log</span><span class="s2">.</span><span class="s1">e</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Erreur lors de la lecture du son&quot;</span><span class="s2">, </span><span class="s1">e</span><span class="s2">)</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">vibrateKeypress</span><span class="s2">() {</span>
+        <span class="s0">try </span><span class="s2">{</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">android</span><span class="s2">.</span><span class="s1">os</span><span class="s2">.</span><span class="s1">Build</span><span class="s2">.</span><span class="s1">VERSION</span><span class="s2">.</span><span class="s1">SDK_INT </span><span class="s2">&gt;= </span><span class="s1">android</span><span class="s2">.</span><span class="s1">os</span><span class="s2">.</span><span class="s1">Build</span><span class="s2">.</span><span class="s1">VERSION_CODES</span><span class="s2">.</span><span class="s1">O</span><span class="s2">) {</span>
+                <span class="s1">vibrator?</span><span class="s2">.</span><span class="s1">vibrate</span><span class="s2">(</span><span class="s1">VibrationEffect</span><span class="s2">.</span><span class="s1">createOneShot</span><span class="s2">(</span><span class="s5">50</span><span class="s2">, </span><span class="s1">VibrationEffect</span><span class="s2">.</span><span class="s1">DEFAULT_AMPLITUDE</span><span class="s2">))</span>
+            <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+                <span class="s1">@Suppress</span><span class="s2">(</span><span class="s3">&quot;DEPRECATION&quot;</span><span class="s2">)</span>
+                <span class="s1">vibrator?</span><span class="s2">.</span><span class="s1">vibrate</span><span class="s2">(</span><span class="s5">50</span><span class="s2">)</span>
+            <span class="s2">}</span>
+        <span class="s2">} </span><span class="s1">catch </span><span class="s2">(</span><span class="s1">e: Exception</span><span class="s2">) {</span>
+            <span class="s1">Log</span><span class="s2">.</span><span class="s1">e</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Erreur lors de la vibration&quot;</span><span class="s2">, </span><span class="s1">e</span><span class="s2">)</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">makeCall</span><span class="s2">() {</span>
+        <span class="s0">val </span><span class="s1">phoneNumber </span><span class="s2">= </span><span class="s1">phoneNumberField</span><span class="s2">.</span><span class="s1">text</span><span class="s2">.</span><span class="s1">toString</span><span class="s2">().</span><span class="s1">trim</span><span class="s2">()</span>
+
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">phoneNumber</span><span class="s2">.</span><span class="s1">isEmpty</span><span class="s2">()) {</span>
+            <span class="s1">Toast</span><span class="s2">.</span><span class="s1">makeText</span><span class="s2">(</span><span class="s1">context</span><span class="s2">, </span><span class="s3">&quot;Veuillez saisir un numéro&quot;</span><span class="s2">, </span><span class="s1">Toast</span><span class="s2">.</span><span class="s1">LENGTH_SHORT</span><span class="s2">).</span><span class="s1">show</span><span class="s2">()</span>
+            <span class="s0">return</span>
+        <span class="s2">}</span>
+
+        <span class="s4">// Normaliser le numéro</span>
+        <span class="s0">val </span><span class="s1">normalizedNumber </span><span class="s2">= </span><span class="s1">PhoneNormalizer</span><span class="s2">.</span><span class="s1">normalizePhoneNumber</span><span class="s2">(</span><span class="s1">phoneNumber</span><span class="s2">)</span>
+
+        <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Tentative d'appel vers: </span><span class="s0">$</span><span class="s1">normalizedNumber</span><span class="s3">&quot;</span><span class="s2">)</span>
+
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">ContextCompat</span><span class="s2">.</span><span class="s1">checkSelfPermission</span><span class="s2">(</span><span class="s1">context</span><span class="s2">, </span><span class="s1">Manifest</span><span class="s2">.</span><span class="s1">permission</span><span class="s2">.</span><span class="s1">CALL_PHONE</span><span class="s2">)</span>
+            <span class="s2">== </span><span class="s1">PackageManager</span><span class="s2">.</span><span class="s1">PERMISSION_GRANTED</span><span class="s2">) {</span>
+
+            <span class="s0">try </span><span class="s2">{</span>
+                <span class="s0">val </span><span class="s1">callIntent </span><span class="s2">= </span><span class="s1">Intent</span><span class="s2">(</span><span class="s1">Intent</span><span class="s2">.</span><span class="s1">ACTION_CALL</span><span class="s2">).</span><span class="s1">apply </span><span class="s2">{</span>
+                    <span class="s1">data </span><span class="s2">= </span><span class="s1">Uri</span><span class="s2">.</span><span class="s1">parse</span><span class="s2">(</span><span class="s3">&quot;tel:</span><span class="s0">$</span><span class="s1">normalizedNumber</span><span class="s3">&quot;</span><span class="s2">)</span>
+                    <span class="s1">flags </span><span class="s2">= </span><span class="s1">Intent</span><span class="s2">.</span><span class="s1">FLAG_ACTIVITY_NEW_TASK</span>
+                <span class="s2">}</span>
+                <span class="s1">context</span><span class="s2">.</span><span class="s1">startActivity</span><span class="s2">(</span><span class="s1">callIntent</span><span class="s2">)</span>
+
+                <span class="s4">// Sauvegarder dans l'historique</span>
+                <span class="s1">saveToCallHistory</span><span class="s2">(</span><span class="s1">normalizedNumber</span><span class="s2">)</span>
+
+                <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Appel initié vers: </span><span class="s0">$</span><span class="s1">normalizedNumber</span><span class="s3">&quot;</span><span class="s2">)</span>
+                <span class="s1">Toast</span><span class="s2">.</span><span class="s1">makeText</span><span class="s2">(</span><span class="s1">context</span><span class="s2">, </span><span class="s3">&quot;Appel vers </span><span class="s0">$</span><span class="s1">normalizedNumber</span><span class="s3">&quot;</span><span class="s2">, </span><span class="s1">Toast</span><span class="s2">.</span><span class="s1">LENGTH_SHORT</span><span class="s2">).</span><span class="s1">show</span><span class="s2">()</span>
+
+            <span class="s2">} </span><span class="s1">catch </span><span class="s2">(</span><span class="s1">e: Exception</span><span class="s2">) {</span>
+                <span class="s1">Log</span><span class="s2">.</span><span class="s1">e</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Erreur lors de l'appel&quot;</span><span class="s2">, </span><span class="s1">e</span><span class="s2">)</span>
+                <span class="s1">Toast</span><span class="s2">.</span><span class="s1">makeText</span><span class="s2">(</span><span class="s1">context</span><span class="s2">, </span><span class="s3">&quot;Erreur lors de l'appel: </span><span class="s0">${</span><span class="s1">e</span><span class="s2">.</span><span class="s1">message</span><span class="s0">}</span><span class="s3">&quot;</span><span class="s2">, </span><span class="s1">Toast</span><span class="s2">.</span><span class="s1">LENGTH_LONG</span><span class="s2">).</span><span class="s1">show</span><span class="s2">()</span>
+            <span class="s2">}</span>
+        <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+            <span class="s1">Toast</span><span class="s2">.</span><span class="s1">makeText</span><span class="s2">(</span><span class="s1">context</span><span class="s2">, </span><span class="s3">&quot;Permission d'appel requise&quot;</span><span class="s2">, </span><span class="s1">Toast</span><span class="s2">.</span><span class="s1">LENGTH_LONG</span><span class="s2">).</span><span class="s1">show</span><span class="s2">()</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">addToContacts</span><span class="s2">() {</span>
+        <span class="s0">val </span><span class="s1">phoneNumber </span><span class="s2">= </span><span class="s1">phoneNumberField</span><span class="s2">.</span><span class="s1">text</span><span class="s2">.</span><span class="s1">toString</span><span class="s2">().</span><span class="s1">trim</span><span class="s2">()</span>
+
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">phoneNumber</span><span class="s2">.</span><span class="s1">isEmpty</span><span class="s2">()) {</span>
+            <span class="s1">Toast</span><span class="s2">.</span><span class="s1">makeText</span><span class="s2">(</span><span class="s1">context</span><span class="s2">, </span><span class="s3">&quot;Veuillez saisir un numéro&quot;</span><span class="s2">, </span><span class="s1">Toast</span><span class="s2">.</span><span class="s1">LENGTH_SHORT</span><span class="s2">).</span><span class="s1">show</span><span class="s2">()</span>
+            <span class="s0">return</span>
+        <span class="s2">}</span>
+
+        <span class="s0">try </span><span class="s2">{</span>
+            <span class="s0">val </span><span class="s1">intent </span><span class="s2">= </span><span class="s1">Intent</span><span class="s2">(</span><span class="s1">Intent</span><span class="s2">.</span><span class="s1">ACTION_INSERT</span><span class="s2">).</span><span class="s1">apply </span><span class="s2">{</span>
+                <span class="s1">type </span><span class="s2">= </span><span class="s1">ContactsContract</span><span class="s2">.</span><span class="s1">Contacts</span><span class="s2">.</span><span class="s1">CONTENT_TYPE</span>
+                <span class="s1">putExtra</span><span class="s2">(</span><span class="s1">ContactsContract</span><span class="s2">.</span><span class="s1">Intents</span><span class="s2">.</span><span class="s1">Insert</span><span class="s2">.</span><span class="s1">PHONE</span><span class="s2">, </span><span class="s1">phoneNumber</span><span class="s2">)</span>
+                <span class="s1">flags </span><span class="s2">= </span><span class="s1">Intent</span><span class="s2">.</span><span class="s1">FLAG_ACTIVITY_NEW_TASK</span>
+            <span class="s2">}</span>
+            <span class="s1">context</span><span class="s2">.</span><span class="s1">startActivity</span><span class="s2">(</span><span class="s1">intent</span><span class="s2">)</span>
+            <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Ouverture de l'ajout de contact pour: </span><span class="s0">$</span><span class="s1">phoneNumber</span><span class="s3">&quot;</span><span class="s2">)</span>
+        <span class="s2">} </span><span class="s1">catch </span><span class="s2">(</span><span class="s1">e: Exception</span><span class="s2">) {</span>
+            <span class="s1">Log</span><span class="s2">.</span><span class="s1">e</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Erreur lors de l'ajout aux contacts&quot;</span><span class="s2">, </span><span class="s1">e</span><span class="s2">)</span>
+            <span class="s1">Toast</span><span class="s2">.</span><span class="s1">makeText</span><span class="s2">(</span><span class="s1">context</span><span class="s2">, </span><span class="s3">&quot;Impossible d'ouvrir les contacts&quot;</span><span class="s2">, </span><span class="s1">Toast</span><span class="s2">.</span><span class="s1">LENGTH_SHORT</span><span class="s2">).</span><span class="s1">show</span><span class="s2">()</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">sendSms</span><span class="s2">() {</span>
+        <span class="s0">val </span><span class="s1">phoneNumber </span><span class="s2">= </span><span class="s1">phoneNumberField</span><span class="s2">.</span><span class="s1">text</span><span class="s2">.</span><span class="s1">toString</span><span class="s2">().</span><span class="s1">trim</span><span class="s2">()</span>
+
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">phoneNumber</span><span class="s2">.</span><span class="s1">isEmpty</span><span class="s2">()) {</span>
+            <span class="s1">Toast</span><span class="s2">.</span><span class="s1">makeText</span><span class="s2">(</span><span class="s1">context</span><span class="s2">, </span><span class="s3">&quot;Veuillez saisir un numéro&quot;</span><span class="s2">, </span><span class="s1">Toast</span><span class="s2">.</span><span class="s1">LENGTH_SHORT</span><span class="s2">).</span><span class="s1">show</span><span class="s2">()</span>
+            <span class="s0">return</span>
+        <span class="s2">}</span>
+
+        <span class="s0">try </span><span class="s2">{</span>
+            <span class="s0">val </span><span class="s1">intent </span><span class="s2">= </span><span class="s1">Intent</span><span class="s2">(</span><span class="s1">Intent</span><span class="s2">.</span><span class="s1">ACTION_SENDTO</span><span class="s2">).</span><span class="s1">apply </span><span class="s2">{</span>
+                <span class="s1">data </span><span class="s2">= </span><span class="s1">Uri</span><span class="s2">.</span><span class="s1">parse</span><span class="s2">(</span><span class="s3">&quot;smsto:</span><span class="s0">$</span><span class="s1">phoneNumber</span><span class="s3">&quot;</span><span class="s2">)</span>
+                <span class="s1">flags </span><span class="s2">= </span><span class="s1">Intent</span><span class="s2">.</span><span class="s1">FLAG_ACTIVITY_NEW_TASK</span>
+            <span class="s2">}</span>
+            <span class="s1">context</span><span class="s2">.</span><span class="s1">startActivity</span><span class="s2">(</span><span class="s1">intent</span><span class="s2">)</span>
+            <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Ouverture SMS pour: </span><span class="s0">$</span><span class="s1">phoneNumber</span><span class="s3">&quot;</span><span class="s2">)</span>
+        <span class="s2">} </span><span class="s1">catch </span><span class="s2">(</span><span class="s1">e: Exception</span><span class="s2">) {</span>
+            <span class="s1">Log</span><span class="s2">.</span><span class="s1">e</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Erreur lors de l'ouverture SMS&quot;</span><span class="s2">, </span><span class="s1">e</span><span class="s2">)</span>
+            <span class="s1">Toast</span><span class="s2">.</span><span class="s1">makeText</span><span class="s2">(</span><span class="s1">context</span><span class="s2">, </span><span class="s3">&quot;Impossible d'ouvrir les messages&quot;</span><span class="s2">, </span><span class="s1">Toast</span><span class="s2">.</span><span class="s1">LENGTH_SHORT</span><span class="s2">).</span><span class="s1">show</span><span class="s2">()</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">showHistory</span><span class="s2">() {</span>
+        <span class="s4">// Basculer vers l'onglet Récents</span>
+        <span class="s1">Toast</span><span class="s2">.</span><span class="s1">makeText</span><span class="s2">(</span><span class="s1">context</span><span class="s2">, </span><span class="s3">&quot;Basculement vers l'historique des appels&quot;</span><span class="s2">, </span><span class="s1">Toast</span><span class="s2">.</span><span class="s1">LENGTH_SHORT</span><span class="s2">).</span><span class="s1">show</span><span class="s2">()</span>
+        <span class="s4">// Ici vous pourriez déclencher un changement d'onglet</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">searchContactByNumber</span><span class="s2">(</span><span class="s1">phoneNumber: String</span><span class="s2">) {</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">phoneNumber</span><span class="s2">.</span><span class="s1">length </span><span class="s2">&lt; </span><span class="s5">4</span><span class="s2">) {</span>
+            <span class="s1">contactNameField</span><span class="s2">.</span><span class="s1">visibility </span><span class="s2">= </span><span class="s1">TextView</span><span class="s2">.</span><span class="s1">GONE</span>
+            <span class="s0">return</span>
+        <span class="s2">}</span>
+
+        <span class="s1">lifecycleOwner</span><span class="s2">.</span><span class="s1">lifecycleScope</span><span class="s2">.</span><span class="s1">launch </span><span class="s2">{</span>
+            <span class="s0">val </span><span class="s1">contactName </span><span class="s2">= </span><span class="s1">withContext</span><span class="s2">(</span><span class="s1">Dispatchers</span><span class="s2">.</span><span class="s1">IO</span><span class="s2">) {</span>
+                <span class="s1">findContactByNumber</span><span class="s2">(</span><span class="s1">phoneNumber</span><span class="s2">)</span>
+            <span class="s2">}</span>
+
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">contactName </span><span class="s2">!= </span><span class="s0">null</span><span class="s2">) {</span>
+                <span class="s1">contactNameField</span><span class="s2">.</span><span class="s1">text </span><span class="s2">= </span><span class="s1">contactName</span>
+                <span class="s1">contactNameField</span><span class="s2">.</span><span class="s1">visibility </span><span class="s2">= </span><span class="s1">TextView</span><span class="s2">.</span><span class="s1">VISIBLE</span>
+                <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Contact trouvé: </span><span class="s0">$</span><span class="s1">contactName </span><span class="s3">pour </span><span class="s0">$</span><span class="s1">phoneNumber</span><span class="s3">&quot;</span><span class="s2">)</span>
+            <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+                <span class="s1">contactNameField</span><span class="s2">.</span><span class="s1">visibility </span><span class="s2">= </span><span class="s1">TextView</span><span class="s2">.</span><span class="s1">GONE</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">findContactByNumber</span><span class="s2">(</span><span class="s1">phoneNumber: String</span><span class="s2">)</span><span class="s1">: String? </span><span class="s2">{</span>
+        <span class="s0">try </span><span class="s2">{</span>
+            <span class="s0">val </span><span class="s1">cursor </span><span class="s2">= </span><span class="s1">context</span><span class="s2">.</span><span class="s1">contentResolver</span><span class="s2">.</span><span class="s1">query</span><span class="s2">(</span>
+                <span class="s1">ContactsContract</span><span class="s2">.</span><span class="s1">CommonDataKinds</span><span class="s2">.</span><span class="s1">Phone</span><span class="s2">.</span><span class="s1">CONTENT_URI</span><span class="s2">,</span>
+                <span class="s1">arrayOf</span><span class="s2">(</span><span class="s1">ContactsContract</span><span class="s2">.</span><span class="s1">CommonDataKinds</span><span class="s2">.</span><span class="s1">Phone</span><span class="s2">.</span><span class="s1">DISPLAY_NAME</span><span class="s2">),</span>
+                <span class="s3">&quot;</span><span class="s0">${</span><span class="s1">ContactsContract</span><span class="s2">.</span><span class="s1">CommonDataKinds</span><span class="s2">.</span><span class="s1">Phone</span><span class="s2">.</span><span class="s1">NUMBER</span><span class="s0">} </span><span class="s3">LIKE ?&quot;</span><span class="s2">,</span>
+                <span class="s1">arrayOf</span><span class="s2">(</span><span class="s3">&quot;%</span><span class="s0">$</span><span class="s1">phoneNumber</span><span class="s3">%&quot;</span><span class="s2">),</span>
+                <span class="s0">null</span>
+            <span class="s2">)</span>
+
+            <span class="s1">cursor?</span><span class="s2">.</span><span class="s1">use </span><span class="s2">{</span>
+                <span class="s0">if </span><span class="s2">(</span><span class="s1">it</span><span class="s2">.</span><span class="s1">moveToFirst</span><span class="s2">()) {</span>
+                    <span class="s0">val </span><span class="s1">nameIndex </span><span class="s2">= </span><span class="s1">it</span><span class="s2">.</span><span class="s1">getColumnIndex</span><span class="s2">(</span><span class="s1">ContactsContract</span><span class="s2">.</span><span class="s1">CommonDataKinds</span><span class="s2">.</span><span class="s1">Phone</span><span class="s2">.</span><span class="s1">DISPLAY_NAME</span><span class="s2">)</span>
+                    <span class="s0">return if </span><span class="s2">(</span><span class="s1">nameIndex </span><span class="s2">!= -</span><span class="s5">1</span><span class="s2">) </span><span class="s1">it</span><span class="s2">.</span><span class="s1">getString</span><span class="s2">(</span><span class="s1">nameIndex</span><span class="s2">) </span><span class="s0">else null</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+        <span class="s2">} </span><span class="s1">catch </span><span class="s2">(</span><span class="s1">e: Exception</span><span class="s2">) {</span>
+            <span class="s1">Log</span><span class="s2">.</span><span class="s1">e</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Erreur lors de la recherche de contact&quot;</span><span class="s2">, </span><span class="s1">e</span><span class="s2">)</span>
+        <span class="s2">}</span>
+        <span class="s0">return null</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">saveToCallHistory</span><span class="s2">(</span><span class="s1">phoneNumber: String</span><span class="s2">) {</span>
+        <span class="s4">// Ici vous pourriez sauvegarder l'appel dans votre base de données locale</span>
+        <span class="s4">// ou utiliser votre CallLogManager</span>
+        <span class="s0">try </span><span class="s2">{</span>
+            <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Sauvegarde de l'appel dans l'historique: </span><span class="s0">$</span><span class="s1">phoneNumber</span><span class="s3">&quot;</span><span class="s2">)</span>
+            <span class="s4">// Implémentation à ajouter selon votre architecture</span>
+        <span class="s2">} </span><span class="s1">catch </span><span class="s2">(</span><span class="s1">e: Exception</span><span class="s2">) {</span>
+            <span class="s1">Log</span><span class="s2">.</span><span class="s1">e</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Erreur lors de la sauvegarde&quot;</span><span class="s2">, </span><span class="s1">e</span><span class="s2">)</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">fun </span><span class="s1">clearNumber</span><span class="s2">() {</span>
+        <span class="s1">phoneNumberField</span><span class="s2">.</span><span class="s1">setText</span><span class="s2">(</span><span class="s3">&quot;&quot;</span><span class="s2">)</span>
+        <span class="s1">contactNameField</span><span class="s2">.</span><span class="s1">text </span><span class="s2">= </span><span class="s3">&quot;&quot;</span>
+        <span class="s1">contactNameField</span><span class="s2">.</span><span class="s1">visibility </span><span class="s2">= </span><span class="s1">TextView</span><span class="s2">.</span><span class="s1">GONE</span>
+    <span class="s2">}</span>
+
+    <span class="s0">fun </span><span class="s1">setNumber</span><span class="s2">(</span><span class="s1">number: String</span><span class="s2">) {</span>
+        <span class="s1">phoneNumberField</span><span class="s2">.</span><span class="s1">setText</span><span class="s2">(</span><span class="s1">number</span><span class="s2">)</span>
+        <span class="s1">phoneNumberField</span><span class="s2">.</span><span class="s1">setSelection</span><span class="s2">(</span><span class="s1">number</span><span class="s2">.</span><span class="s1">length</span><span class="s2">)</span>
+        <span class="s1">searchContactByNumber</span><span class="s2">(</span><span class="s1">number</span><span class="s2">)</span>
+    <span class="s2">}</span>
+
+    <span class="s0">fun </span><span class="s1">cleanup</span><span class="s2">() {</span>
+        <span class="s0">try </span><span class="s2">{</span>
+            <span class="s1">toneGenerator?</span><span class="s2">.</span><span class="s1">release</span><span class="s2">()</span>
+            <span class="s1">toneGenerator </span><span class="s2">= </span><span class="s0">null</span>
+            <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Ressources audio libérées&quot;</span><span class="s2">)</span>
+        <span class="s2">} </span><span class="s1">catch </span><span class="s2">(</span><span class="s1">e: Exception</span><span class="s2">) {</span>
+            <span class="s1">Log</span><span class="s2">.</span><span class="s1">e</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Erreur lors du nettoyage&quot;</span><span class="s2">, </span><span class="s1">e</span><span class="s2">)</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+
+<span class="s4">// Extension pour simplifier l'écoute des changements de texte</span>
+<span class="s0">fun </span><span class="s1">EditText</span><span class="s2">.</span><span class="s1">setOnTextChangedListener</span><span class="s2">(</span><span class="s1">callback: </span><span class="s2">(</span><span class="s1">String</span><span class="s2">) -&gt; </span><span class="s1">Unit</span><span class="s2">) {</span>
+    <span class="s0">this</span><span class="s2">.</span><span class="s1">addTextChangedListener</span><span class="s2">(</span><span class="s0">object </span><span class="s1">: android</span><span class="s2">.</span><span class="s1">text</span><span class="s2">.</span><span class="s1">TextWatcher </span><span class="s2">{</span>
+        <span class="s1">override </span><span class="s0">fun </span><span class="s1">beforeTextChanged</span><span class="s2">(</span><span class="s1">s: CharSequence?</span><span class="s2">, </span><span class="s1">start: Int</span><span class="s2">, </span><span class="s1">count: Int</span><span class="s2">, </span><span class="s1">after: Int</span><span class="s2">) {}</span>
+        <span class="s1">override </span><span class="s0">fun </span><span class="s1">onTextChanged</span><span class="s2">(</span><span class="s1">s: CharSequence?</span><span class="s2">, </span><span class="s1">start: Int</span><span class="s2">, </span><span class="s1">before: Int</span><span class="s2">, </span><span class="s1">count: Int</span><span class="s2">) {}</span>
+        <span class="s1">override </span><span class="s0">fun </span><span class="s1">afterTextChanged</span><span class="s2">(</span><span class="s1">s: android</span><span class="s2">.</span><span class="s1">text</span><span class="s2">.</span><span class="s1">Editable?</span><span class="s2">) {</span>
+            <span class="s1">callback</span><span class="s2">(</span><span class="s1">s?</span><span class="s2">.</span><span class="s1">toString</span><span class="s2">() </span><span class="s1">?: </span><span class="s3">&quot;&quot;</span><span class="s2">)</span>
+        <span class="s2">}</span>
+    <span class="s2">})</span>
+<span class="s2">}</span></pre>
+</body>
+</html>

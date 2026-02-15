@@ -1,0 +1,63 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <!-- Affichage du numéro -->
+    <EditText
+        android:id="@+id/phone_number_display"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:textSize="24sp"
+        android:gravity="center"
+        android:inputType="phone"
+        android:focusable="false"
+        android:background="@android:color/white" />
+
+    <!-- Grille des boutons -->
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:columnCount="3"
+        android:layout_marginTop="20dp">
+
+        <!-- Ligne 1: 1, 2, 3 -->
+        <fr.bonobo.stopdemarchage.DialpadButton
+            android:id="@+id/button_1"
+            android:layout_width="0dp"
+            android:layout_height="80dp"
+            android:layout_columnWeight="1"
+            android:text="1"
+            android:textSize="24sp"
+            android:layout_margin="2dp" />
+
+        <!-- Répéter pour tous les boutons 0-9, *, # -->
+
+    </GridLayout>
+
+    <!-- Boutons d'action -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="20dp">
+
+        <ImageButton
+            android:id="@+id/button_call"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:layout_weight="1"
+            android:src="@drawable/ic_call"
+            android:background="@drawable/call_button_background" />
+
+        <ImageButton
+            android:id="@+id/button_delete"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:layout_weight="1"
+            android:src="@drawable/ic_backspace"
+            android:background="@drawable/delete_button_background" />
+
+    </LinearLayout>
+
+</LinearLayout>

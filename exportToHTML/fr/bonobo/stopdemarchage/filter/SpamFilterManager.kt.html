@@ -1,0 +1,269 @@
+<html>
+<head>
+<title>SpamFilterManager.kt</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #6aab73;}
+.s4 { color: #5f826b; font-style: italic;}
+.s5 { color: #7a7e85;}
+.s6 { color: #2aacb8;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+SpamFilterManager.kt</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">fr</span><span class="s2">.</span><span class="s1">bonobo</span><span class="s2">.</span><span class="s1">stopdemarchage</span><span class="s2">.</span><span class="s1">filter</span>
+
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">content</span><span class="s2">.</span><span class="s1">Context</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">content</span><span class="s2">.</span><span class="s1">SharedPreferences</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">google</span><span class="s2">.</span><span class="s1">gson</span><span class="s2">.</span><span class="s1">Gson</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">google</span><span class="s2">.</span><span class="s1">gson</span><span class="s2">.</span><span class="s1">reflect</span><span class="s2">.</span><span class="s1">TypeToken</span>
+<span class="s1">import fr</span><span class="s2">.</span><span class="s1">bonobo</span><span class="s2">.</span><span class="s1">stopdemarchage</span><span class="s2">.</span><span class="s1">utils</span><span class="s2">.</span><span class="s1">CountryDetector</span>
+<span class="s1">import java</span><span class="s2">.</span><span class="s1">io</span><span class="s2">.</span><span class="s1">InputStreamReader</span>
+<span class="s1">import fr</span><span class="s2">.</span><span class="s1">bonobo</span><span class="s2">.</span><span class="s1">stopdemarchage</span><span class="s2">.</span><span class="s1">filter</span><span class="s2">.*</span>
+
+<span class="s1">data </span><span class="s0">class </span><span class="s1">BlockedWordsConfig</span><span class="s2">(</span>
+    <span class="s0">val </span><span class="s1">version: String</span><span class="s2">,</span>
+    <span class="s0">val </span><span class="s1">country: String</span><span class="s2">,</span>
+    <span class="s0">val </span><span class="s1">last_updated: String</span><span class="s2">,</span>
+    <span class="s0">val </span><span class="s1">keywords: List</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">&gt;,</span>
+    <span class="s0">val </span><span class="s1">suspicious_patterns: List</span><span class="s2">&lt;</span><span class="s1">SuspiciousPattern</span><span class="s2">&gt;</span><span class="s1">? </span><span class="s2">= </span><span class="s0">null</span><span class="s2">,</span>
+    <span class="s0">val </span><span class="s1">trusted_senders: List</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">&gt;</span><span class="s1">? </span><span class="s2">= </span><span class="s0">null</span>
+<span class="s2">)</span>
+
+<span class="s1">data </span><span class="s0">class </span><span class="s1">SuspiciousPattern</span><span class="s2">(</span>
+    <span class="s0">val </span><span class="s1">pattern: String</span><span class="s2">,</span>
+    <span class="s0">val </span><span class="s1">description: String</span>
+<span class="s2">)</span>
+
+<span class="s1">data </span><span class="s0">class </span><span class="s1">FilterStats</span><span class="s2">(</span>
+    <span class="s0">val </span><span class="s1">country: String</span><span class="s2">,</span>
+    <span class="s0">val </span><span class="s1">keywordCount: Int</span><span class="s2">,</span>
+    <span class="s0">val </span><span class="s1">patternCount: Int</span><span class="s2">,</span>
+    <span class="s0">val </span><span class="s1">trustedSenderCount: Int</span><span class="s2">,</span>
+    <span class="s0">val </span><span class="s1">lastUpdated: String</span><span class="s2">,</span>
+    <span class="s0">val </span><span class="s1">autoDetectEnabled: Boolean</span>
+<span class="s2">)</span>
+
+<span class="s1">data </span><span class="s0">class </span><span class="s1">SpamCheckResult</span><span class="s2">(</span>
+    <span class="s0">val </span><span class="s1">isSpam: Boolean</span><span class="s2">,</span>
+    <span class="s0">val </span><span class="s1">reason: String</span><span class="s2">,</span>
+    <span class="s0">val </span><span class="s1">confidence: Double</span><span class="s2">,</span>
+    <span class="s0">val </span><span class="s1">blockedByPrefix: Boolean</span><span class="s2">,</span>
+    <span class="s0">val </span><span class="s1">blockedByKeyword: Boolean</span><span class="s2">,</span>
+    <span class="s0">val </span><span class="s1">blockedByPattern: Boolean </span><span class="s2">= </span><span class="s0">false</span><span class="s2">,</span>
+    <span class="s0">val </span><span class="s1">matchedKeywords: List</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">&gt; = </span><span class="s1">emptyList</span><span class="s2">()</span>
+<span class="s2">)</span>
+
+<span class="s0">class </span><span class="s1">SpamFilterManager</span><span class="s2">(</span><span class="s1">private </span><span class="s0">val </span><span class="s1">context: Context</span><span class="s2">) {</span>
+
+    <span class="s1">private </span><span class="s0">val </span><span class="s1">prefs: SharedPreferences </span><span class="s2">=</span>
+        <span class="s1">context</span><span class="s2">.</span><span class="s1">getSharedPreferences</span><span class="s2">(</span><span class="s3">&quot;spam_filter_prefs&quot;</span><span class="s2">, </span><span class="s1">Context</span><span class="s2">.</span><span class="s1">MODE_PRIVATE</span><span class="s2">)</span>
+
+    <span class="s1">private </span><span class="s0">val </span><span class="s1">gson </span><span class="s2">= </span><span class="s1">Gson</span><span class="s2">()</span>
+    <span class="s1">private </span><span class="s0">val </span><span class="s1">countryDetector </span><span class="s2">= </span><span class="s1">CountryDetector</span><span class="s2">(</span><span class="s1">context</span><span class="s2">)</span>
+
+    <span class="s1">companion </span><span class="s0">object </span><span class="s2">{</span>
+        <span class="s1">private const </span><span class="s0">val </span><span class="s1">PREF_SELECTED_COUNTRY </span><span class="s2">= </span><span class="s3">&quot;selected_country&quot;</span>
+        <span class="s1">private const </span><span class="s0">val </span><span class="s1">PREF_AUTO_DETECT </span><span class="s2">= </span><span class="s3">&quot;auto_detect_country&quot;</span>
+    <span class="s2">}</span>
+
+    <span class="s4">/**</span>
+     <span class="s4">* Initialise le filtre au premier lancement</span>
+     <span class="s4">*/</span>
+    <span class="s0">fun </span><span class="s1">initialize</span><span class="s2">() {</span>
+        <span class="s0">if </span><span class="s2">(!</span><span class="s1">prefs</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s1">PREF_SELECTED_COUNTRY</span><span class="s2">)) {</span>
+            <span class="s5">// Première installation: détection automatique</span>
+            <span class="s0">val </span><span class="s1">detectedCountry </span><span class="s2">= </span><span class="s1">countryDetector</span><span class="s2">.</span><span class="s1">detectCountry</span><span class="s2">()</span>
+            <span class="s1">setCountry</span><span class="s2">(</span><span class="s1">detectedCountry</span><span class="s2">, </span><span class="s1">autoDetect </span><span class="s2">= </span><span class="s0">true</span><span class="s2">)</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s4">/**</span>
+     <span class="s4">* Obtient le pays actuellement configuré</span>
+     <span class="s4">*/</span>
+    <span class="s0">fun </span><span class="s1">getCurrentCountry</span><span class="s2">()</span><span class="s1">: String </span><span class="s2">{</span>
+        <span class="s0">return </span><span class="s1">prefs</span><span class="s2">.</span><span class="s1">getString</span><span class="s2">(</span><span class="s1">PREF_SELECTED_COUNTRY</span><span class="s2">, </span><span class="s1">CountryDetector</span><span class="s2">.</span><span class="s1">DEFAULT_COUNTRY</span><span class="s2">)</span>
+            <span class="s1">?: CountryDetector</span><span class="s2">.</span><span class="s1">DEFAULT_COUNTRY</span>
+    <span class="s2">}</span>
+
+    <span class="s4">/**</span>
+     <span class="s4">* Définit le pays manuellement</span>
+     <span class="s4">*/</span>
+    <span class="s0">fun </span><span class="s1">setCountry</span><span class="s2">(</span><span class="s1">country: String</span><span class="s2">, </span><span class="s1">autoDetect: Boolean </span><span class="s2">= </span><span class="s0">false</span><span class="s2">) {</span>
+        <span class="s1">prefs</span><span class="s2">.</span><span class="s1">edit</span><span class="s2">()</span>
+            <span class="s2">.</span><span class="s1">putString</span><span class="s2">(</span><span class="s1">PREF_SELECTED_COUNTRY</span><span class="s2">, </span><span class="s1">country</span><span class="s2">)</span>
+            <span class="s2">.</span><span class="s1">putBoolean</span><span class="s2">(</span><span class="s1">PREF_AUTO_DETECT</span><span class="s2">, </span><span class="s1">autoDetect</span><span class="s2">)</span>
+            <span class="s2">.</span><span class="s1">apply</span><span class="s2">()</span>
+    <span class="s2">}</span>
+
+    <span class="s4">/**</span>
+     <span class="s4">* Vérifie si la détection automatique est activée</span>
+     <span class="s4">*/</span>
+    <span class="s0">fun </span><span class="s1">isAutoDetectEnabled</span><span class="s2">()</span><span class="s1">: Boolean </span><span class="s2">{</span>
+        <span class="s0">return </span><span class="s1">prefs</span><span class="s2">.</span><span class="s1">getBoolean</span><span class="s2">(</span><span class="s1">PREF_AUTO_DETECT</span><span class="s2">, </span><span class="s0">true</span><span class="s2">)</span>
+    <span class="s2">}</span>
+
+    <span class="s4">/**</span>
+     <span class="s4">* Charge la configuration des mots bloqués pour le pays actuel</span>
+     <span class="s4">*/</span>
+    <span class="s0">fun </span><span class="s1">loadBlockedWords</span><span class="s2">()</span><span class="s1">: BlockedWordsConfig </span><span class="s2">{</span>
+        <span class="s0">val </span><span class="s1">country </span><span class="s2">= </span><span class="s1">getCurrentCountry</span><span class="s2">()</span>
+        <span class="s0">val </span><span class="s1">fileName </span><span class="s2">= </span><span class="s0">when </span><span class="s2">(</span><span class="s1">country</span><span class="s2">) {</span>
+            <span class="s1">CountryDetector</span><span class="s2">.</span><span class="s1">COUNTRY_BELGIUM </span><span class="s2">-&gt; </span><span class="s3">&quot;blocked_words_be.json&quot;</span>
+            <span class="s1">CountryDetector</span><span class="s2">.</span><span class="s1">COUNTRY_FRANCE </span><span class="s2">-&gt; </span><span class="s3">&quot;blocked_words_fr.json&quot;</span>
+            <span class="s0">else </span><span class="s2">-&gt; </span><span class="s3">&quot;blocked_words_fr.json&quot;</span>
+        <span class="s2">}</span>
+
+        <span class="s0">return </span><span class="s1">loadConfigFromAssets</span><span class="s2">(</span><span class="s1">fileName</span><span class="s2">)</span>
+    <span class="s2">}</span>
+
+    <span class="s4">/**</span>
+     <span class="s4">* Charge un fichier de configuration depuis les assets</span>
+     <span class="s4">*/</span>
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">loadConfigFromAssets</span><span class="s2">(</span><span class="s1">fileName: String</span><span class="s2">)</span><span class="s1">: BlockedWordsConfig </span><span class="s2">{</span>
+        <span class="s0">return try </span><span class="s2">{</span>
+            <span class="s0">val </span><span class="s1">inputStream </span><span class="s2">= </span><span class="s1">context</span><span class="s2">.</span><span class="s1">assets</span><span class="s2">.</span><span class="s1">open</span><span class="s2">(</span><span class="s1">fileName</span><span class="s2">)</span>
+            <span class="s0">val </span><span class="s1">reader </span><span class="s2">= </span><span class="s1">InputStreamReader</span><span class="s2">(</span><span class="s1">inputStream</span><span class="s2">)</span>
+            <span class="s0">val </span><span class="s1">type </span><span class="s2">= </span><span class="s0">object </span><span class="s1">: TypeToken</span><span class="s2">&lt;</span><span class="s1">BlockedWordsConfig</span><span class="s2">&gt;() {}.</span><span class="s1">type</span>
+            <span class="s1">gson</span><span class="s2">.</span><span class="s1">fromJson</span><span class="s2">(</span><span class="s1">reader</span><span class="s2">, </span><span class="s1">type</span><span class="s2">)</span>
+        <span class="s2">} </span><span class="s1">catch </span><span class="s2">(</span><span class="s1">e: Exception</span><span class="s2">) {</span>
+            <span class="s5">// Fallback avec liste vide en cas d'erreur</span>
+            <span class="s1">BlockedWordsConfig</span><span class="s2">(</span>
+                <span class="s1">version </span><span class="s2">= </span><span class="s3">&quot;1.0&quot;</span><span class="s2">,</span>
+                <span class="s1">country </span><span class="s2">= </span><span class="s3">&quot;UNKNOWN&quot;</span><span class="s2">,</span>
+                <span class="s1">last_updated </span><span class="s2">= </span><span class="s3">&quot;&quot;</span><span class="s2">,</span>
+                <span class="s1">keywords </span><span class="s2">= </span><span class="s1">emptyList</span><span class="s2">()</span>
+            <span class="s2">)</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s4">/**</span>
+     <span class="s4">* Vérifie si un SMS est suspect (combinaison préfixes + mots-clés)</span>
+     <span class="s4">*/</span>
+    <span class="s0">fun </span><span class="s1">isSpam</span><span class="s2">(</span><span class="s1">message: String</span><span class="s2">, </span><span class="s1">sender: String? </span><span class="s2">= </span><span class="s0">null</span><span class="s2">)</span><span class="s1">: SpamCheckResult </span><span class="s2">{</span>
+        <span class="s0">val </span><span class="s1">config </span><span class="s2">= </span><span class="s1">loadBlockedWords</span><span class="s2">()</span>
+        <span class="s0">val </span><span class="s1">messageLower </span><span class="s2">= </span><span class="s1">message</span><span class="s2">.</span><span class="s1">lowercase</span><span class="s2">()</span>
+        <span class="s0">val </span><span class="s1">prefixFilter </span><span class="s2">= </span><span class="s1">PrefixFilterManager</span><span class="s2">(</span><span class="s1">context</span><span class="s2">)</span>
+
+        <span class="s5">// Vérifier d'abord le numéro expéditeur par préfixe</span>
+        <span class="s0">var </span><span class="s1">blockedByPrefix </span><span class="s2">= </span><span class="s0">false</span>
+        <span class="s0">var </span><span class="s1">prefixReason: String? </span><span class="s2">= </span><span class="s0">null</span>
+
+        <span class="s1">sender?</span><span class="s2">.</span><span class="s1">let </span><span class="s2">{</span>
+            <span class="s0">val </span><span class="s1">blockResult </span><span class="s2">= </span><span class="s1">prefixFilter</span><span class="s2">.</span><span class="s1">shouldBlockByPrefix</span><span class="s2">(</span><span class="s1">it</span><span class="s2">, </span><span class="s1">getCurrentCountry</span><span class="s2">())</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">blockResult</span><span class="s2">.</span><span class="s1">shouldBlock</span><span class="s2">) {</span>
+                <span class="s1">blockedByPrefix </span><span class="s2">= </span><span class="s0">true</span>
+                <span class="s1">prefixReason </span><span class="s2">= </span><span class="s1">blockResult</span><span class="s2">.</span><span class="s1">reason</span>
+            <span class="s2">}</span>
+
+            <span class="s5">// Vérifier les expéditeurs de confiance</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">config</span><span class="s2">.</span><span class="s1">trusted_senders?</span><span class="s2">.</span><span class="s1">any </span><span class="s2">{ </span><span class="s1">trusted </span><span class="s2">-&gt;</span>
+                    <span class="s1">it</span><span class="s2">.</span><span class="s1">equals</span><span class="s2">(</span><span class="s1">trusted</span><span class="s2">, </span><span class="s1">ignoreCase </span><span class="s2">= </span><span class="s0">true</span><span class="s2">)</span>
+                <span class="s2">} == </span><span class="s0">true</span><span class="s2">) {</span>
+                <span class="s0">return </span><span class="s1">SpamCheckResult</span><span class="s2">(</span>
+                    <span class="s1">isSpam </span><span class="s2">= </span><span class="s0">false</span><span class="s2">,</span>
+                    <span class="s1">reason </span><span class="s2">= </span><span class="s3">&quot;Expéditeur de confiance&quot;</span><span class="s2">,</span>
+                    <span class="s1">confidence </span><span class="s2">= </span><span class="s6">0.0</span><span class="s2">,</span>
+                    <span class="s1">blockedByPrefix </span><span class="s2">= </span><span class="s0">false</span><span class="s2">,</span>
+                    <span class="s1">blockedByKeyword </span><span class="s2">= </span><span class="s0">false</span>
+                <span class="s2">)</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+
+        <span class="s5">// Vérifier les mots-clés</span>
+        <span class="s0">val </span><span class="s1">blockedKeywords </span><span class="s2">= </span><span class="s1">mutableListOf</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">&gt;()</span>
+        <span class="s1">config</span><span class="s2">.</span><span class="s1">keywords</span><span class="s2">.</span><span class="s1">forEach </span><span class="s2">{ </span><span class="s1">keyword </span><span class="s2">-&gt;</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">messageLower</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s1">keyword</span><span class="s2">.</span><span class="s1">lowercase</span><span class="s2">())) {</span>
+                <span class="s1">blockedKeywords</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s1">keyword</span><span class="s2">)</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+
+        <span class="s0">val </span><span class="s1">blockedByKeyword </span><span class="s2">= </span><span class="s1">blockedKeywords</span><span class="s2">.</span><span class="s1">isNotEmpty</span><span class="s2">()</span>
+
+        <span class="s5">// Vérifier les patterns regex suspects</span>
+        <span class="s0">var </span><span class="s1">blockedByPattern </span><span class="s2">= </span><span class="s0">false</span>
+        <span class="s0">var </span><span class="s1">patternMatch: String? </span><span class="s2">= </span><span class="s0">null</span>
+
+        <span class="s1">config</span><span class="s2">.</span><span class="s1">suspicious_patterns?</span><span class="s2">.</span><span class="s1">forEach </span><span class="s2">{ </span><span class="s1">pattern </span><span class="s2">-&gt;</span>
+            <span class="s0">try </span><span class="s2">{</span>
+                <span class="s0">if </span><span class="s2">(</span><span class="s1">Regex</span><span class="s2">(</span><span class="s1">pattern</span><span class="s2">.</span><span class="s1">pattern</span><span class="s2">).</span><span class="s1">containsMatchIn</span><span class="s2">(</span><span class="s1">message</span><span class="s2">)) {</span>
+                    <span class="s1">blockedByPattern </span><span class="s2">= </span><span class="s0">true</span>
+                    <span class="s1">patternMatch </span><span class="s2">= </span><span class="s1">pattern</span><span class="s2">.</span><span class="s1">description</span>
+                <span class="s2">}</span>
+            <span class="s2">} </span><span class="s1">catch </span><span class="s2">(</span><span class="s1">e: Exception</span><span class="s2">) {</span>
+                <span class="s5">// Ignorer les regex invalides</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+
+        <span class="s5">// Calculer le score de confiance</span>
+        <span class="s0">var </span><span class="s1">confidence </span><span class="s2">= </span><span class="s6">0.0</span>
+        <span class="s0">val </span><span class="s1">reasons </span><span class="s2">= </span><span class="s1">mutableListOf</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">&gt;()</span>
+
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">blockedByPrefix</span><span class="s2">) {</span>
+            <span class="s1">confidence </span><span class="s2">+= </span><span class="s6">0.4</span>
+            <span class="s1">reasons</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s1">prefixReason ?: </span><span class="s3">&quot;Préfixe suspect&quot;</span><span class="s2">)</span>
+        <span class="s2">}</span>
+
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">blockedByKeyword</span><span class="s2">) {</span>
+            <span class="s1">confidence </span><span class="s2">+= </span><span class="s6">0.3 </span><span class="s2">* (</span><span class="s1">blockedKeywords</span><span class="s2">.</span><span class="s1">size</span><span class="s2">.</span><span class="s1">coerceAtMost</span><span class="s2">(</span><span class="s6">3</span><span class="s2">) / </span><span class="s6">3.0</span><span class="s2">)</span>
+            <span class="s1">reasons</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s3">&quot;</span><span class="s0">${</span><span class="s1">blockedKeywords</span><span class="s2">.</span><span class="s1">size</span><span class="s0">} </span><span class="s3">mot(s)-clé(s) suspect(s)&quot;</span><span class="s2">)</span>
+        <span class="s2">}</span>
+
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">blockedByPattern</span><span class="s2">) {</span>
+            <span class="s1">confidence </span><span class="s2">+= </span><span class="s6">0.3</span>
+            <span class="s1">reasons</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s1">patternMatch ?: </span><span class="s3">&quot;Pattern suspect&quot;</span><span class="s2">)</span>
+        <span class="s2">}</span>
+
+        <span class="s0">val </span><span class="s1">isSpam </span><span class="s2">= </span><span class="s1">confidence </span><span class="s2">&gt;= </span><span class="s6">0.5</span>
+
+        <span class="s0">return </span><span class="s1">SpamCheckResult</span><span class="s2">(</span>
+            <span class="s1">isSpam </span><span class="s2">= </span><span class="s1">isSpam</span><span class="s2">,</span>
+            <span class="s1">reason </span><span class="s2">= </span><span class="s1">reasons</span><span class="s2">.</span><span class="s1">joinToString</span><span class="s2">(</span><span class="s3">&quot;, &quot;</span><span class="s2">),</span>
+            <span class="s1">confidence </span><span class="s2">= </span><span class="s1">confidence</span><span class="s2">,</span>
+            <span class="s1">blockedByPrefix </span><span class="s2">= </span><span class="s1">blockedByPrefix</span><span class="s2">,</span>
+            <span class="s1">blockedByKeyword </span><span class="s2">= </span><span class="s1">blockedByKeyword</span><span class="s2">,</span>
+            <span class="s1">blockedByPattern </span><span class="s2">= </span><span class="s1">blockedByPattern</span><span class="s2">,</span>
+            <span class="s1">matchedKeywords </span><span class="s2">= </span><span class="s1">blockedKeywords</span>
+        <span class="s2">)</span>
+    <span class="s2">}</span>
+
+    <span class="s4">/**</span>
+     <span class="s4">* Met à jour automatiquement le pays si la détection auto est activée</span>
+     <span class="s4">*/</span>
+    <span class="s0">fun </span><span class="s1">updateCountryIfNeeded</span><span class="s2">() {</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">isAutoDetectEnabled</span><span class="s2">()) {</span>
+            <span class="s0">val </span><span class="s1">detectedCountry </span><span class="s2">= </span><span class="s1">countryDetector</span><span class="s2">.</span><span class="s1">detectCountry</span><span class="s2">()</span>
+            <span class="s0">val </span><span class="s1">currentCountry </span><span class="s2">= </span><span class="s1">getCurrentCountry</span><span class="s2">()</span>
+
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">detectedCountry </span><span class="s2">!= </span><span class="s1">currentCountry</span><span class="s2">) {</span>
+                <span class="s1">setCountry</span><span class="s2">(</span><span class="s1">detectedCountry</span><span class="s2">, </span><span class="s1">autoDetect </span><span class="s2">= </span><span class="s0">true</span><span class="s2">)</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s4">/**</span>
+     <span class="s4">* Obtient des statistiques sur les mots bloqués</span>
+     <span class="s4">*/</span>
+    <span class="s0">fun </span><span class="s1">getFilterStats</span><span class="s2">()</span><span class="s1">: FilterStats </span><span class="s2">{</span>
+        <span class="s0">val </span><span class="s1">config </span><span class="s2">= </span><span class="s1">loadBlockedWords</span><span class="s2">()</span>
+        <span class="s0">return </span><span class="s1">FilterStats</span><span class="s2">(</span>
+            <span class="s1">country </span><span class="s2">= </span><span class="s1">config</span><span class="s2">.</span><span class="s1">country ?: </span><span class="s3">&quot;&quot;</span><span class="s2">,</span>
+            <span class="s1">keywordCount </span><span class="s2">= </span><span class="s1">config</span><span class="s2">.</span><span class="s1">keywords?</span><span class="s2">.</span><span class="s1">size ?: </span><span class="s6">0</span><span class="s2">,</span>
+            <span class="s1">patternCount </span><span class="s2">= </span><span class="s1">config</span><span class="s2">.</span><span class="s1">suspicious_patterns?</span><span class="s2">.</span><span class="s1">size ?: </span><span class="s6">0</span><span class="s2">,</span>
+            <span class="s1">trustedSenderCount </span><span class="s2">= </span><span class="s1">config</span><span class="s2">.</span><span class="s1">trusted_senders?</span><span class="s2">.</span><span class="s1">size ?: </span><span class="s6">0</span><span class="s2">,</span>
+            <span class="s5">// CORRECTION FINALE : Remplace 0L par une chaîne vide &quot;&quot; ou une date par défaut String</span>
+            <span class="s1">lastUpdated </span><span class="s2">= </span><span class="s1">config</span><span class="s2">.</span><span class="s1">last_updated ?: </span><span class="s3">&quot;&quot;</span><span class="s2">,</span>
+            <span class="s1">autoDetectEnabled </span><span class="s2">= </span><span class="s1">isAutoDetectEnabled</span><span class="s2">()</span>
+        <span class="s2">)</span>
+    <span class="s2">}</span>
+
+<span class="s2">}</span></pre>
+</body>
+</html>

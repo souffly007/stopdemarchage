@@ -1,0 +1,157 @@
+<html>
+<head>
+<title>SmsConversationDetailActivity.kt</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #6aab73;}
+.s4 { color: #2aacb8;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+SmsConversationDetailActivity.kt</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">fr</span><span class="s2">.</span><span class="s1">bonobo</span><span class="s2">.</span><span class="s1">stopdemarchage</span>
+
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">os</span><span class="s2">.</span><span class="s1">Bundle</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">view</span><span class="s2">.</span><span class="s1">View</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">widget</span><span class="s2">.</span><span class="s1">TextView</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">widget</span><span class="s2">.</span><span class="s1">Toast</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">appcompat</span><span class="s2">.</span><span class="s1">app</span><span class="s2">.</span><span class="s1">AlertDialog</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">appcompat</span><span class="s2">.</span><span class="s1">app</span><span class="s2">.</span><span class="s1">AppCompatActivity</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">recyclerview</span><span class="s2">.</span><span class="s1">widget</span><span class="s2">.</span><span class="s1">LinearLayoutManager</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">recyclerview</span><span class="s2">.</span><span class="s1">widget</span><span class="s2">.</span><span class="s1">RecyclerView</span>
+<span class="s1">import fr</span><span class="s2">.</span><span class="s1">bonobo</span><span class="s2">.</span><span class="s1">stopdemarchage</span><span class="s2">.</span><span class="s1">adapters</span><span class="s2">.</span><span class="s1">SmsMessageAdapter</span>
+<span class="s1">import fr</span><span class="s2">.</span><span class="s1">bonobo</span><span class="s2">.</span><span class="s1">stopdemarchage</span><span class="s2">.</span><span class="s1">data</span><span class="s2">.</span><span class="s1">SmsMessage</span>
+<span class="s1">import fr</span><span class="s2">.</span><span class="s1">bonobo</span><span class="s2">.</span><span class="s1">stopdemarchage</span><span class="s2">.</span><span class="s1">helpers</span><span class="s2">.</span><span class="s1">SmsHelper</span>
+
+<span class="s0">class </span><span class="s1">SmsConversationDetailActivity : AppCompatActivity</span><span class="s2">() {</span>
+
+    <span class="s1">private lateinit </span><span class="s0">var </span><span class="s1">recyclerView: RecyclerView</span>
+    <span class="s1">private lateinit </span><span class="s0">var </span><span class="s1">adapter: SmsMessageAdapter</span>
+    <span class="s1">private lateinit </span><span class="s0">var </span><span class="s1">smsAnalyzer: SmsSuspicionAnalyzer</span>
+    <span class="s1">private lateinit </span><span class="s0">var </span><span class="s1">emptyView: TextView</span>
+    <span class="s1">private lateinit </span><span class="s0">var </span><span class="s1">headerView: TextView</span>
+
+    <span class="s1">private </span><span class="s0">val </span><span class="s1">messagesList </span><span class="s2">= </span><span class="s1">mutableListOf</span><span class="s2">&lt;</span><span class="s1">SmsMessage</span><span class="s2">&gt;()</span>
+    <span class="s1">private </span><span class="s0">var </span><span class="s1">phoneNumber: String </span><span class="s2">= </span><span class="s3">&quot;&quot;</span>
+    <span class="s1">private </span><span class="s0">var </span><span class="s1">contactName: String? </span><span class="s2">= </span><span class="s0">null</span>
+
+    <span class="s1">override </span><span class="s0">fun </span><span class="s1">onCreate</span><span class="s2">(</span><span class="s1">savedInstanceState: Bundle?</span><span class="s2">) {</span>
+        <span class="s0">super</span><span class="s2">.</span><span class="s1">onCreate</span><span class="s2">(</span><span class="s1">savedInstanceState</span><span class="s2">)</span>
+        <span class="s1">setContentView</span><span class="s2">(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.</span><span class="s1">activity_sms_conversation_detail</span><span class="s2">)</span>
+
+        <span class="s1">phoneNumber </span><span class="s2">= </span><span class="s1">intent</span><span class="s2">.</span><span class="s1">getStringExtra</span><span class="s2">(</span><span class="s3">&quot;PHONE_NUMBER&quot;</span><span class="s2">) </span><span class="s1">?: </span><span class="s3">&quot;&quot;</span>
+        <span class="s1">contactName </span><span class="s2">= </span><span class="s1">intent</span><span class="s2">.</span><span class="s1">getStringExtra</span><span class="s2">(</span><span class="s3">&quot;CONTACT_NAME&quot;</span><span class="s2">)</span>
+
+        <span class="s0">val </span><span class="s1">countryDetector </span><span class="s2">= </span><span class="s1">fr</span><span class="s2">.</span><span class="s1">bonobo</span><span class="s2">.</span><span class="s1">stopdemarchage</span><span class="s2">.</span><span class="s1">utils</span><span class="s2">.</span><span class="s1">CountryDetector</span><span class="s2">(</span><span class="s0">this</span><span class="s2">)</span>
+        <span class="s0">val </span><span class="s1">detectedCountry </span><span class="s2">= </span><span class="s1">countryDetector</span><span class="s2">.</span><span class="s1">detectCountry</span><span class="s2">()</span>
+        <span class="s1">smsAnalyzer </span><span class="s2">= </span><span class="s1">SmsSuspicionAnalyzer</span><span class="s2">(</span><span class="s0">this</span><span class="s2">, </span><span class="s1">detectedCountry</span><span class="s2">)</span>
+
+        <span class="s1">setupViews</span><span class="s2">()</span>
+        <span class="s1">setupToolbar</span><span class="s2">()</span>
+        <span class="s1">loadMessages</span><span class="s2">()</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">setupViews</span><span class="s2">() {</span>
+        <span class="s1">recyclerView </span><span class="s2">= </span><span class="s1">findViewById</span><span class="s2">(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">recycler_messages</span><span class="s2">)</span>
+        <span class="s1">emptyView </span><span class="s2">= </span><span class="s1">findViewById</span><span class="s2">(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">text_empty_messages</span><span class="s2">)</span>
+        <span class="s1">headerView </span><span class="s2">= </span><span class="s1">findViewById</span><span class="s2">(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">text_conversation_header</span><span class="s2">)</span>
+
+        <span class="s1">recyclerView</span><span class="s2">.</span><span class="s1">layoutManager </span><span class="s2">= </span><span class="s1">LinearLayoutManager</span><span class="s2">(</span><span class="s0">this</span><span class="s2">)</span>
+        <span class="s1">adapter </span><span class="s2">= </span><span class="s1">SmsMessageAdapter</span><span class="s2">(</span><span class="s1">messagesList</span><span class="s2">) { </span><span class="s1">message </span><span class="s2">-&gt;</span>
+            <span class="s1">showMessageDetails</span><span class="s2">(</span><span class="s1">message</span><span class="s2">)</span>
+        <span class="s2">}</span>
+        <span class="s1">recyclerView</span><span class="s2">.</span><span class="s1">adapter </span><span class="s2">= </span><span class="s1">adapter</span>
+
+        <span class="s0">val </span><span class="s1">displayName </span><span class="s2">= </span><span class="s1">contactName ?: phoneNumber</span>
+        <span class="s1">headerView</span><span class="s2">.</span><span class="s1">text </span><span class="s2">= </span><span class="s3">&quot;Conversation avec</span><span class="s0">\n$</span><span class="s1">displayName</span><span class="s3">&quot;</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">setupToolbar</span><span class="s2">() {</span>
+        <span class="s1">supportActionBar?</span><span class="s2">.</span><span class="s1">apply </span><span class="s2">{</span>
+            <span class="s1">setDisplayHomeAsUpEnabled</span><span class="s2">(</span><span class="s0">true</span><span class="s2">)</span>
+            <span class="s1">title </span><span class="s2">= </span><span class="s1">contactName ?: phoneNumber</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">override </span><span class="s0">fun </span><span class="s1">onSupportNavigateUp</span><span class="s2">()</span><span class="s1">: Boolean </span><span class="s2">{</span>
+        <span class="s1">finish</span><span class="s2">()</span>
+        <span class="s0">return true</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">loadMessages</span><span class="s2">() {</span>
+        <span class="s1">emptyView</span><span class="s2">.</span><span class="s1">text </span><span class="s2">= </span><span class="s3">&quot;📥 Chargement...&quot;</span>
+        <span class="s1">emptyView</span><span class="s2">.</span><span class="s1">visibility </span><span class="s2">= </span><span class="s1">View</span><span class="s2">.</span><span class="s1">VISIBLE</span>
+
+        <span class="s1">Thread </span><span class="s2">{</span>
+            <span class="s0">val </span><span class="s1">messages </span><span class="s2">= </span><span class="s1">SmsHelper</span><span class="s2">.</span><span class="s1">getSmsByPhoneNumber</span><span class="s2">(</span><span class="s0">this</span><span class="s2">, </span><span class="s1">phoneNumber</span><span class="s2">, </span><span class="s1">smsAnalyzer</span><span class="s2">)</span>
+
+            <span class="s1">runOnUiThread </span><span class="s2">{</span>
+                <span class="s1">messagesList</span><span class="s2">.</span><span class="s1">clear</span><span class="s2">()</span>
+                <span class="s1">messagesList</span><span class="s2">.</span><span class="s1">addAll</span><span class="s2">(</span><span class="s1">messages</span><span class="s2">.</span><span class="s1">sortedBy </span><span class="s2">{ </span><span class="s1">it</span><span class="s2">.</span><span class="s1">date </span><span class="s2">})</span>
+                <span class="s1">adapter</span><span class="s2">.</span><span class="s1">notifyDataSetChanged</span><span class="s2">()</span>
+
+                <span class="s0">if </span><span class="s2">(</span><span class="s1">messagesList</span><span class="s2">.</span><span class="s1">isEmpty</span><span class="s2">()) {</span>
+                    <span class="s1">emptyView</span><span class="s2">.</span><span class="s1">text </span><span class="s2">= </span><span class="s3">&quot;📭 Aucun message&quot;</span>
+                    <span class="s1">emptyView</span><span class="s2">.</span><span class="s1">visibility </span><span class="s2">= </span><span class="s1">View</span><span class="s2">.</span><span class="s1">VISIBLE</span>
+                    <span class="s1">recyclerView</span><span class="s2">.</span><span class="s1">visibility </span><span class="s2">= </span><span class="s1">View</span><span class="s2">.</span><span class="s1">GONE</span>
+                <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+                    <span class="s1">emptyView</span><span class="s2">.</span><span class="s1">visibility </span><span class="s2">= </span><span class="s1">View</span><span class="s2">.</span><span class="s1">GONE</span>
+                    <span class="s1">recyclerView</span><span class="s2">.</span><span class="s1">visibility </span><span class="s2">= </span><span class="s1">View</span><span class="s2">.</span><span class="s1">VISIBLE</span>
+                    <span class="s1">recyclerView</span><span class="s2">.</span><span class="s1">scrollToPosition</span><span class="s2">(</span><span class="s1">messagesList</span><span class="s2">.</span><span class="s1">size </span><span class="s2">- </span><span class="s4">1</span><span class="s2">)</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+        <span class="s2">}.</span><span class="s1">start</span><span class="s2">()</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">showMessageDetails</span><span class="s2">(</span><span class="s1">message: SmsMessage</span><span class="s2">) {</span>
+        <span class="s0">val </span><span class="s1">result </span><span class="s2">= </span><span class="s1">message</span><span class="s2">.</span><span class="s1">suspicionResult</span>
+        <span class="s0">val </span><span class="s1">riskText </span><span class="s2">= </span><span class="s1">smsAnalyzer</span><span class="s2">.</span><span class="s1">getRiskText</span><span class="s2">(</span><span class="s1">result</span><span class="s2">.</span><span class="s1">risk</span><span class="s2">)</span>
+        <span class="s0">val </span><span class="s1">riskEmoji </span><span class="s2">= </span><span class="s0">when </span><span class="s2">(</span><span class="s1">result</span><span class="s2">.</span><span class="s1">risk</span><span class="s2">) {</span>
+            <span class="s1">SuspicionLevel</span><span class="s2">.</span><span class="s1">LOW </span><span class="s2">-&gt; </span><span class="s3">&quot;🟢&quot;</span>
+            <span class="s1">SuspicionLevel</span><span class="s2">.</span><span class="s1">MEDIUM </span><span class="s2">-&gt; </span><span class="s3">&quot;🟡&quot;</span>
+            <span class="s1">SuspicionLevel</span><span class="s2">.</span><span class="s1">HIGH </span><span class="s2">-&gt; </span><span class="s3">&quot;🟠&quot;</span>
+            <span class="s1">SuspicionLevel</span><span class="s2">.</span><span class="s1">CRITICAL </span><span class="s2">-&gt; </span><span class="s3">&quot;🔴&quot;</span>
+        <span class="s2">}</span>
+
+        <span class="s0">val </span><span class="s1">info </span><span class="s2">= </span><span class="s1">StringBuilder</span><span class="s2">()</span>
+        <span class="s1">info</span><span class="s2">.</span><span class="s1">append</span><span class="s2">(</span><span class="s3">&quot;📅 </span><span class="s0">${</span><span class="s1">message</span><span class="s2">.</span><span class="s1">formattedDate</span><span class="s0">}\n\n</span><span class="s3">&quot;</span><span class="s2">)</span>
+        <span class="s1">info</span><span class="s2">.</span><span class="s1">append</span><span class="s2">(</span><span class="s3">&quot;💬 </span><span class="s0">${</span><span class="s1">message</span><span class="s2">.</span><span class="s1">body</span><span class="s0">}\n\n</span><span class="s3">&quot;</span><span class="s2">)</span>
+        <span class="s1">info</span><span class="s2">.</span><span class="s1">append</span><span class="s2">(</span><span class="s3">&quot;</span><span class="s0">$</span><span class="s1">riskEmoji </span><span class="s0">${</span><span class="s1">result</span><span class="s2">.</span><span class="s1">score</span><span class="s0">}</span><span class="s3">% - </span><span class="s0">$</span><span class="s1">riskText</span><span class="s0">\n\n</span><span class="s3">&quot;</span><span class="s2">)</span>
+
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">result</span><span class="s2">.</span><span class="s1">detectedWords</span><span class="s2">.</span><span class="s1">isNotEmpty</span><span class="s2">()) {</span>
+            <span class="s1">info</span><span class="s2">.</span><span class="s1">append</span><span class="s2">(</span><span class="s3">&quot;🔍 Mots:</span><span class="s0">\n</span><span class="s3">&quot;</span><span class="s2">)</span>
+            <span class="s1">result</span><span class="s2">.</span><span class="s1">detectedWords</span><span class="s2">.</span><span class="s1">take</span><span class="s2">(</span><span class="s4">5</span><span class="s2">).</span><span class="s1">forEach </span><span class="s2">{ </span><span class="s1">info</span><span class="s2">.</span><span class="s1">append</span><span class="s2">(</span><span class="s3">&quot;• </span><span class="s0">$</span><span class="s1">it</span><span class="s0">\n</span><span class="s3">&quot;</span><span class="s2">) }</span>
+            <span class="s1">info</span><span class="s2">.</span><span class="s1">append</span><span class="s2">(</span><span class="s3">&quot;</span><span class="s0">\n</span><span class="s3">&quot;</span><span class="s2">)</span>
+        <span class="s2">}</span>
+
+        <span class="s1">info</span><span class="s2">.</span><span class="s1">append</span><span class="s2">(</span><span class="s3">&quot;📋 </span><span class="s0">${</span><span class="s1">result</span><span class="s2">.</span><span class="s1">explanation</span><span class="s0">}</span><span class="s3">&quot;</span><span class="s2">)</span>
+
+        <span class="s1">AlertDialog</span><span class="s2">.</span><span class="s1">Builder</span><span class="s2">(</span><span class="s0">this</span><span class="s2">)</span>
+            <span class="s2">.</span><span class="s1">setTitle</span><span class="s2">(</span><span class="s3">&quot;Analyse&quot;</span><span class="s2">)</span>
+            <span class="s2">.</span><span class="s1">setMessage</span><span class="s2">(</span><span class="s1">info</span><span class="s2">.</span><span class="s1">toString</span><span class="s2">())</span>
+            <span class="s2">.</span><span class="s1">setPositiveButton</span><span class="s2">(</span><span class="s3">&quot;Fermer&quot;</span><span class="s2">, </span><span class="s0">null</span><span class="s2">)</span>
+            <span class="s2">.</span><span class="s1">setNeutralButton</span><span class="s2">(</span><span class="s3">&quot;Bloquer&quot;</span><span class="s2">) { </span><span class="s1">_</span><span class="s2">, </span><span class="s1">_ </span><span class="s2">-&gt;</span>
+                <span class="s1">blockPhoneNumber</span><span class="s2">(</span><span class="s1">phoneNumber</span><span class="s2">)</span>
+            <span class="s2">}</span>
+            <span class="s2">.</span><span class="s1">show</span><span class="s2">()</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">blockPhoneNumber</span><span class="s2">(</span><span class="s1">number: String</span><span class="s2">) {</span>
+        <span class="s0">val </span><span class="s1">prefs </span><span class="s2">= </span><span class="s1">getSharedPreferences</span><span class="s2">(</span><span class="s3">&quot;StopDemarchagePrefs&quot;</span><span class="s2">, </span><span class="s1">MODE_PRIVATE</span><span class="s2">)</span>
+        <span class="s0">val </span><span class="s1">blacklist </span><span class="s2">= </span><span class="s1">prefs</span><span class="s2">.</span><span class="s1">getStringSet</span><span class="s2">(</span><span class="s3">&quot;blacklist&quot;</span><span class="s2">, </span><span class="s1">mutableSetOf</span><span class="s2">()) </span><span class="s1">?: mutableSetOf</span><span class="s2">()</span>
+        <span class="s1">blacklist</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s1">number</span><span class="s2">)</span>
+        <span class="s1">prefs</span><span class="s2">.</span><span class="s1">edit</span><span class="s2">().</span><span class="s1">putStringSet</span><span class="s2">(</span><span class="s3">&quot;blacklist&quot;</span><span class="s2">, </span><span class="s1">blacklist</span><span class="s2">).</span><span class="s1">apply</span><span class="s2">()</span>
+
+        <span class="s1">Toast</span><span class="s2">.</span><span class="s1">makeText</span><span class="s2">(</span><span class="s0">this</span><span class="s2">, </span><span class="s3">&quot;📵 Numéro bloqué&quot;</span><span class="s2">, </span><span class="s1">Toast</span><span class="s2">.</span><span class="s1">LENGTH_SHORT</span><span class="s2">).</span><span class="s1">show</span><span class="s2">()</span>
+        <span class="s1">finish</span><span class="s2">()</span>
+    <span class="s2">}</span>
+<span class="s2">}</span></pre>
+</body>
+</html>

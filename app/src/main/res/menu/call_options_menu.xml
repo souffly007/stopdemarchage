@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Rappeler -->
+    <item
+        android:id="@+id/action_call_back"
+        android:title="Rappeler"
+        android:icon="@drawable/ic_call" />
+
+    <!-- Envoyer un message -->
+    <item
+        android:id="@+id/action_send_message"
+        android:title="Envoyer un message"
+        android:icon="@drawable/ic_message" />
+
+    <!-- Ajouter aux contacts -->
+    <item
+        android:id="@+id/action_add_contact"
+        android:title="Ajouter aux contacts"
+        android:icon="@drawable/ic_person_add" />
+
+    <!-- Bloquer ce numéro -->
+    <item
+        android:id="@+id/action_block"
+        android:title="Bloquer ce numéro"
+        android:icon="@drawable/ic_blocked_circle" />
+
+    <!-- Détails de l'appel -->
+    <item
+        android:id="@+id/action_details"
+        android:title="Détails de l'appel"
+        android:icon="@drawable/ic_info" />
+
+</menu>

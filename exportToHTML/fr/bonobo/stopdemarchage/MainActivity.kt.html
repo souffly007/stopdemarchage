@@ -1,0 +1,371 @@
+<html>
+<head>
+<title>MainActivity.kt</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #6aab73;}
+.s4 { color: #2aacb8;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+MainActivity.kt</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">fr</span><span class="s2">.</span><span class="s1">bonobo</span><span class="s2">.</span><span class="s1">stopdemarchage</span>
+
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">Manifest</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">app</span><span class="s2">.</span><span class="s1">AlertDialog</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">app</span><span class="s2">.</span><span class="s1">NotificationChannel</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">app</span><span class="s2">.</span><span class="s1">NotificationManager</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">content</span><span class="s2">.</span><span class="s1">Context</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">content</span><span class="s2">.</span><span class="s1">Intent</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">content</span><span class="s2">.</span><span class="s1">SharedPreferences</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">content</span><span class="s2">.</span><span class="s1">pm</span><span class="s2">.</span><span class="s1">PackageManager</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">graphics</span><span class="s2">.</span><span class="s1">Color</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">net</span><span class="s2">.</span><span class="s1">Uri</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">os</span><span class="s2">.</span><span class="s1">Build</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">os</span><span class="s2">.</span><span class="s1">Bundle</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">provider</span><span class="s2">.</span><span class="s1">Settings</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">Log</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">view</span><span class="s2">.</span><span class="s1">WindowInsetsController</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">widget</span><span class="s2">.</span><span class="s1">Toast</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">activity</span><span class="s2">.</span><span class="s1">result</span><span class="s2">.</span><span class="s1">contract</span><span class="s2">.</span><span class="s1">ActivityResultContracts</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">appcompat</span><span class="s2">.</span><span class="s1">app</span><span class="s2">.</span><span class="s1">AppCompatActivity</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">core</span><span class="s2">.</span><span class="s1">content</span><span class="s2">.</span><span class="s1">ContextCompat</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">fragment</span><span class="s2">.</span><span class="s1">app</span><span class="s2">.</span><span class="s1">Fragment</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">fragment</span><span class="s2">.</span><span class="s1">app</span><span class="s2">.</span><span class="s1">FragmentActivity</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">viewpager2</span><span class="s2">.</span><span class="s1">adapter</span><span class="s2">.</span><span class="s1">FragmentStateAdapter</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">viewpager2</span><span class="s2">.</span><span class="s1">widget</span><span class="s2">.</span><span class="s1">ViewPager2</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">google</span><span class="s2">.</span><span class="s1">android</span><span class="s2">.</span><span class="s1">material</span><span class="s2">.</span><span class="s1">tabs</span><span class="s2">.</span><span class="s1">TabLayout</span>
+<span class="s1">import com</span><span class="s2">.</span><span class="s1">google</span><span class="s2">.</span><span class="s1">android</span><span class="s2">.</span><span class="s1">material</span><span class="s2">.</span><span class="s1">tabs</span><span class="s2">.</span><span class="s1">TabLayoutMediator</span>
+<span class="s1">import fr</span><span class="s2">.</span><span class="s1">bonobo</span><span class="s2">.</span><span class="s1">stopdemarchage</span><span class="s2">.</span><span class="s1">databinding</span><span class="s2">.</span><span class="s1">ActivityMainBinding</span>
+<span class="s1">import fr</span><span class="s2">.</span><span class="s1">bonobo</span><span class="s2">.</span><span class="s1">stopdemarchage</span><span class="s2">.</span><span class="s1">fragments</span><span class="s2">.</span><span class="s1">ListsFragment</span>
+<span class="s1">import fr</span><span class="s2">.</span><span class="s1">bonobo</span><span class="s2">.</span><span class="s1">stopdemarchage</span><span class="s2">.</span><span class="s1">fragments</span><span class="s2">.</span><span class="s1">SettingsFragment</span>
+
+<span class="s0">class </span><span class="s1">MainActivity : AppCompatActivity</span><span class="s2">() {</span>
+    <span class="s1">private </span><span class="s0">val </span><span class="s1">PREFS_NAME </span><span class="s2">= </span><span class="s3">&quot;StopDemarchagePrefs&quot;</span>
+    <span class="s1">private </span><span class="s0">val </span><span class="s1">KEY_BLOCK_PRIVATE_NUMBERS </span><span class="s2">= </span><span class="s3">&quot;block_private_numbers&quot;</span>
+    <span class="s1">private </span><span class="s0">val </span><span class="s1">TAG </span><span class="s2">= </span><span class="s3">&quot;MainActivity&quot;</span>
+    <span class="s1">private </span><span class="s0">val </span><span class="s1">NOTIFICATION_CHANNEL_ID </span><span class="s2">= </span><span class="s3">&quot;blocked_calls_channel&quot;</span>
+    <span class="s1">private lateinit </span><span class="s0">var </span><span class="s1">sharedPrefs: SharedPreferences</span>
+    <span class="s1">private lateinit </span><span class="s0">var </span><span class="s1">smsAnalyzer: SmsSuspicionAnalyzer</span>
+
+    <span class="s1">private lateinit </span><span class="s0">var </span><span class="s1">binding: ActivityMainBinding</span>
+    <span class="s1">private lateinit </span><span class="s0">var </span><span class="s1">viewPager: ViewPager2</span>
+    <span class="s1">private lateinit </span><span class="s0">var </span><span class="s1">tabLayout: TabLayout</span>
+
+    <span class="s1">private </span><span class="s0">val </span><span class="s1">requestPermissionLauncher </span><span class="s2">=</span>
+        <span class="s1">registerForActivityResult</span><span class="s2">(</span><span class="s1">ActivityResultContracts</span><span class="s2">.</span><span class="s1">RequestMultiplePermissions</span><span class="s2">()) { </span><span class="s1">permissions </span><span class="s2">-&gt;</span>
+            <span class="s0">val </span><span class="s1">allGranted </span><span class="s2">= </span><span class="s1">permissions</span><span class="s2">.</span><span class="s1">entries</span><span class="s2">.</span><span class="s1">all </span><span class="s2">{ </span><span class="s1">it</span><span class="s2">.</span><span class="s1">value </span><span class="s2">}</span>
+            <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Permissions result: </span><span class="s0">$</span><span class="s1">permissions</span><span class="s3">&quot;</span><span class="s2">)</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">allGranted</span><span class="s2">) {</span>
+                <span class="s1">Toast</span><span class="s2">.</span><span class="s1">makeText</span><span class="s2">(</span><span class="s0">this</span><span class="s2">, </span><span class="s3">&quot;Toutes les permissions sont accordées.&quot;</span><span class="s2">, </span><span class="s1">Toast</span><span class="s2">.</span><span class="s1">LENGTH_SHORT</span><span class="s2">).</span><span class="s1">show</span><span class="s2">()</span>
+            <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+                <span class="s1">Toast</span><span class="s2">.</span><span class="s1">makeText</span><span class="s2">(</span>
+                    <span class="s0">this</span><span class="s2">,</span>
+                    <span class="s3">&quot;Certaines permissions sont nécessaires.&quot;</span><span class="s2">,</span>
+                    <span class="s1">Toast</span><span class="s2">.</span><span class="s1">LENGTH_LONG</span>
+                <span class="s2">).</span><span class="s1">show</span><span class="s2">()</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+
+    <span class="s1">override </span><span class="s0">fun </span><span class="s1">onCreate</span><span class="s2">(</span><span class="s1">savedInstanceState: Bundle?</span><span class="s2">) {</span>
+        <span class="s0">super</span><span class="s2">.</span><span class="s1">onCreate</span><span class="s2">(</span><span class="s1">savedInstanceState</span><span class="s2">)</span>
+        <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;onCreate() appelé&quot;</span><span class="s2">)</span>
+
+        <span class="s1">binding </span><span class="s2">= </span><span class="s1">ActivityMainBinding</span><span class="s2">.</span><span class="s1">inflate</span><span class="s2">(</span><span class="s1">layoutInflater</span><span class="s2">)</span>
+        <span class="s1">setContentView</span><span class="s2">(</span><span class="s1">binding</span><span class="s2">.</span><span class="s1">root</span><span class="s2">)</span>
+
+        <span class="s1">supportActionBar?</span><span class="s2">.</span><span class="s1">hide</span><span class="s2">()</span>
+
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">Build</span><span class="s2">.</span><span class="s1">VERSION</span><span class="s2">.</span><span class="s1">SDK_INT </span><span class="s2">&gt;= </span><span class="s1">Build</span><span class="s2">.</span><span class="s1">VERSION_CODES</span><span class="s2">.</span><span class="s1">R</span><span class="s2">) {</span>
+            <span class="s1">window</span><span class="s2">.</span><span class="s1">insetsController?</span><span class="s2">.</span><span class="s1">setSystemBarsAppearance</span><span class="s2">(</span>
+                <span class="s4">0</span><span class="s2">,</span>
+                <span class="s1">WindowInsetsController</span><span class="s2">.</span><span class="s1">APPEARANCE_LIGHT_STATUS_BARS</span>
+            <span class="s2">)</span>
+        <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+            <span class="s1">@Suppress</span><span class="s2">(</span><span class="s3">&quot;DEPRECATION&quot;</span><span class="s2">)</span>
+            <span class="s1">window</span><span class="s2">.</span><span class="s1">statusBarColor </span><span class="s2">= </span><span class="s1">Color</span><span class="s2">.</span><span class="s1">TRANSPARENT</span>
+        <span class="s2">}</span>
+
+        <span class="s1">sharedPrefs </span><span class="s2">= </span><span class="s1">getSharedPreferences</span><span class="s2">(</span><span class="s1">PREFS_NAME</span><span class="s2">, </span><span class="s1">MODE_PRIVATE</span><span class="s2">)</span>
+
+        <span class="s0">val </span><span class="s1">countryDetector </span><span class="s2">= </span><span class="s1">fr</span><span class="s2">.</span><span class="s1">bonobo</span><span class="s2">.</span><span class="s1">stopdemarchage</span><span class="s2">.</span><span class="s1">utils</span><span class="s2">.</span><span class="s1">CountryDetector</span><span class="s2">(</span><span class="s0">this</span><span class="s2">)</span>
+        <span class="s0">val </span><span class="s1">detectedCountry </span><span class="s2">= </span><span class="s1">countryDetector</span><span class="s2">.</span><span class="s1">detectCountry</span><span class="s2">()</span>
+        <span class="s1">smsAnalyzer </span><span class="s2">= </span><span class="s1">SmsSuspicionAnalyzer</span><span class="s2">(</span><span class="s0">this</span><span class="s2">, </span><span class="s1">detectedCountry</span><span class="s2">)</span>
+        <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Analyseur SMS pour: </span><span class="s0">$</span><span class="s1">detectedCountry</span><span class="s3">&quot;</span><span class="s2">)</span>
+
+        <span class="s1">createNotificationChannels</span><span class="s2">()</span>
+        <span class="s1">checkAndRequestPermissions</span><span class="s2">()</span>
+
+        <span class="s1">setupMainToggle</span><span class="s2">()</span>
+        <span class="s1">setupTabsAndViewPager</span><span class="s2">()</span>
+        <span class="s1">startEntranceAnimation</span><span class="s2">()</span>
+        <span class="s1">checkAndShowDefaultAppWarning</span><span class="s2">()</span>
+        <span class="s1">handleIntent</span><span class="s2">(</span><span class="s1">intent</span><span class="s2">)</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">checkAndShowDefaultAppWarning</span><span class="s2">() {</span>
+        <span class="s0">val </span><span class="s1">dontAskAgain </span><span class="s2">= </span><span class="s1">sharedPrefs</span><span class="s2">.</span><span class="s1">getBoolean</span><span class="s2">(</span><span class="s3">&quot;dont_ask_default_app&quot;</span><span class="s2">, </span><span class="s0">false</span><span class="s2">)</span>
+
+        <span class="s0">if </span><span class="s2">(!</span><span class="s1">dontAskAgain</span><span class="s2">) {</span>
+            <span class="s1">AlertDialog</span><span class="s2">.</span><span class="s1">Builder</span><span class="s2">(</span><span class="s0">this</span><span class="s2">)</span>
+                <span class="s2">.</span><span class="s1">setTitle</span><span class="s2">(</span><span class="s3">&quot;⚠️ Configuration Importante&quot;</span><span class="s2">)</span>
+                <span class="s2">.</span><span class="s1">setMessage</span><span class="s2">(</span><span class="s3">&quot;&quot;&quot;</span>
+                    <span class="s3">Pour que StopDémarchage fonctionne correctement :</span>
+                    
+                    <span class="s3">📱 Paramètres &gt; Applications &gt; Applications par défaut &gt; Appli Numéro de l'appelant et spam</span>
+                    
+                    <span class="s3">➡️ Sélectionnez &quot;StopDémarchage&quot;</span>
+                    
+                    <span class="s3">Cette étape est OBLIGATOIRE pour bloquer les appels et SMS indésirables.</span>
+                <span class="s3">&quot;&quot;&quot;</span><span class="s2">.</span><span class="s1">trimIndent</span><span class="s2">())</span>
+                <span class="s2">.</span><span class="s1">setPositiveButton</span><span class="s2">(</span><span class="s3">&quot;Ouvrir maintenant&quot;</span><span class="s2">) { </span><span class="s1">_</span><span class="s2">, </span><span class="s1">_ </span><span class="s2">-&gt;</span>
+                    <span class="s1">openCallScreeningSettings</span><span class="s2">()</span>
+                <span class="s2">}</span>
+                <span class="s2">.</span><span class="s1">setNeutralButton</span><span class="s2">(</span><span class="s3">&quot;Me rappeler plus tard&quot;</span><span class="s2">) { </span><span class="s1">dialog</span><span class="s2">, </span><span class="s1">_ </span><span class="s2">-&gt;</span>
+                    <span class="s1">dialog</span><span class="s2">.</span><span class="s1">dismiss</span><span class="s2">()</span>
+                <span class="s2">}</span>
+                <span class="s2">.</span><span class="s1">setNegativeButton</span><span class="s2">(</span><span class="s3">&quot;Ne plus afficher&quot;</span><span class="s2">) { </span><span class="s1">_</span><span class="s2">, </span><span class="s1">_ </span><span class="s2">-&gt;</span>
+                    <span class="s1">sharedPrefs</span><span class="s2">.</span><span class="s1">edit</span><span class="s2">().</span><span class="s1">putBoolean</span><span class="s2">(</span><span class="s3">&quot;dont_ask_default_app&quot;</span><span class="s2">, </span><span class="s0">true</span><span class="s2">).</span><span class="s1">apply</span><span class="s2">()</span>
+                <span class="s2">}</span>
+                <span class="s2">.</span><span class="s1">setCancelable</span><span class="s2">(</span><span class="s0">false</span><span class="s2">)</span>
+                <span class="s2">.</span><span class="s1">show</span><span class="s2">()</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">startEntranceAnimation</span><span class="s2">() {</span>
+        <span class="s1">binding</span><span class="s2">.</span><span class="s1">root</span><span class="s2">.</span><span class="s1">alpha </span><span class="s2">= </span><span class="s4">0f</span>
+        <span class="s1">binding</span><span class="s2">.</span><span class="s1">root</span><span class="s2">.</span><span class="s1">animate</span><span class="s2">()</span>
+            <span class="s2">.</span><span class="s1">alpha</span><span class="s2">(</span><span class="s4">1f</span><span class="s2">)</span>
+            <span class="s2">.</span><span class="s1">setDuration</span><span class="s2">(</span><span class="s4">800</span><span class="s2">)</span>
+            <span class="s2">.</span><span class="s1">start</span><span class="s2">()</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">setupMainToggle</span><span class="s2">() {</span>
+        <span class="s1">binding</span><span class="s2">.</span><span class="s1">switchBlockPrivateNumbers</span><span class="s2">.</span><span class="s1">isChecked </span><span class="s2">= </span><span class="s1">sharedPrefs</span><span class="s2">.</span><span class="s1">getBoolean</span><span class="s2">(</span><span class="s1">KEY_BLOCK_PRIVATE_NUMBERS</span><span class="s2">, </span><span class="s0">false</span><span class="s2">)</span>
+
+        <span class="s0">fun </span><span class="s1">updateSwitchState</span><span class="s2">(</span><span class="s1">isChecked: Boolean</span><span class="s2">) {</span>
+            <span class="s0">val </span><span class="s1">colorStateList </span><span class="s2">= </span><span class="s0">if </span><span class="s2">(</span><span class="s1">isChecked</span><span class="s2">) {</span>
+                <span class="s1">ContextCompat</span><span class="s2">.</span><span class="s1">getColorStateList</span><span class="s2">(</span><span class="s0">this</span><span class="s2">, </span><span class="s1">android</span><span class="s2">.</span><span class="s1">R</span><span class="s2">.</span><span class="s1">color</span><span class="s2">.</span><span class="s1">holo_green_dark</span><span class="s2">)</span>
+            <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+                <span class="s1">ContextCompat</span><span class="s2">.</span><span class="s1">getColorStateList</span><span class="s2">(</span><span class="s0">this</span><span class="s2">, </span><span class="s1">android</span><span class="s2">.</span><span class="s1">R</span><span class="s2">.</span><span class="s1">color</span><span class="s2">.</span><span class="s1">holo_red_dark</span><span class="s2">)</span>
+            <span class="s2">}</span>
+            <span class="s1">binding</span><span class="s2">.</span><span class="s1">switchBlockPrivateNumbers</span><span class="s2">.</span><span class="s1">thumbTintList </span><span class="s2">= </span><span class="s1">colorStateList</span>
+            <span class="s1">binding</span><span class="s2">.</span><span class="s1">switchBlockPrivateNumbers</span><span class="s2">.</span><span class="s1">trackTintList </span><span class="s2">= </span><span class="s1">colorStateList</span>
+        <span class="s2">}</span>
+
+        <span class="s1">updateSwitchState</span><span class="s2">(</span><span class="s1">binding</span><span class="s2">.</span><span class="s1">switchBlockPrivateNumbers</span><span class="s2">.</span><span class="s1">isChecked</span><span class="s2">)</span>
+
+        <span class="s1">binding</span><span class="s2">.</span><span class="s1">switchBlockPrivateNumbers</span><span class="s2">.</span><span class="s1">setOnCheckedChangeListener </span><span class="s2">{ </span><span class="s1">_</span><span class="s2">, </span><span class="s1">isChecked </span><span class="s2">-&gt;</span>
+            <span class="s1">sharedPrefs</span><span class="s2">.</span><span class="s1">edit</span><span class="s2">().</span><span class="s1">putBoolean</span><span class="s2">(</span><span class="s1">KEY_BLOCK_PRIVATE_NUMBERS</span><span class="s2">, </span><span class="s1">isChecked</span><span class="s2">).</span><span class="s1">apply</span><span class="s2">()</span>
+            <span class="s1">updateSwitchState</span><span class="s2">(</span><span class="s1">isChecked</span><span class="s2">)</span>
+            <span class="s0">val </span><span class="s1">status </span><span class="s2">= </span><span class="s0">if </span><span class="s2">(</span><span class="s1">isChecked</span><span class="s2">) </span><span class="s3">&quot;activé&quot; </span><span class="s0">else </span><span class="s3">&quot;désactivé&quot;</span>
+            <span class="s1">Toast</span><span class="s2">.</span><span class="s1">makeText</span><span class="s2">(</span><span class="s0">this</span><span class="s2">, </span><span class="s3">&quot;Détection des numéros masqués : </span><span class="s0">$</span><span class="s1">status</span><span class="s3">&quot;</span><span class="s2">, </span><span class="s1">Toast</span><span class="s2">.</span><span class="s1">LENGTH_SHORT</span><span class="s2">).</span><span class="s1">show</span><span class="s2">()</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">setupTabsAndViewPager</span><span class="s2">() {</span>
+        <span class="s1">viewPager </span><span class="s2">= </span><span class="s1">findViewById</span><span class="s2">(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">view_pager</span><span class="s2">)</span>
+        <span class="s1">tabLayout </span><span class="s2">= </span><span class="s1">findViewById</span><span class="s2">(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">tab_layout</span><span class="s2">)</span>
+
+        <span class="s0">val </span><span class="s1">adapter </span><span class="s2">= </span><span class="s1">ViewPagerAdapter</span><span class="s2">(</span><span class="s0">this</span><span class="s2">)</span>
+        <span class="s1">viewPager</span><span class="s2">.</span><span class="s1">adapter </span><span class="s2">= </span><span class="s1">adapter</span>
+
+        <span class="s1">TabLayoutMediator</span><span class="s2">(</span><span class="s1">tabLayout</span><span class="s2">, </span><span class="s1">viewPager</span><span class="s2">) { </span><span class="s1">tab</span><span class="s2">, </span><span class="s1">position </span><span class="s2">-&gt;</span>
+            <span class="s1">tab</span><span class="s2">.</span><span class="s1">text </span><span class="s2">= </span><span class="s0">when </span><span class="s2">(</span><span class="s1">position</span><span class="s2">) {</span>
+                <span class="s4">0 </span><span class="s2">-&gt; </span><span class="s3">&quot;📋 Listes&quot;</span>
+                <span class="s4">1 </span><span class="s2">-&gt; </span><span class="s3">&quot;⚙️ Réglages&quot;</span>
+                <span class="s0">else </span><span class="s2">-&gt; </span><span class="s3">&quot;Onglet </span><span class="s0">$</span><span class="s1">position</span><span class="s3">&quot;</span>
+            <span class="s2">}</span>
+        <span class="s2">}.</span><span class="s1">attach</span><span class="s2">()</span>
+
+        <span class="s1">viewPager</span><span class="s2">.</span><span class="s1">offscreenPageLimit </span><span class="s2">= </span><span class="s4">2</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">class </span><span class="s1">ViewPagerAdapter</span><span class="s2">(</span><span class="s1">fragmentActivity: FragmentActivity</span><span class="s2">) </span><span class="s1">: FragmentStateAdapter</span><span class="s2">(</span><span class="s1">fragmentActivity</span><span class="s2">) {</span>
+        <span class="s1">override </span><span class="s0">fun </span><span class="s1">getItemCount</span><span class="s2">()</span><span class="s1">: Int </span><span class="s2">= </span><span class="s4">2</span>
+
+        <span class="s1">override </span><span class="s0">fun </span><span class="s1">createFragment</span><span class="s2">(</span><span class="s1">position: Int</span><span class="s2">)</span><span class="s1">: Fragment </span><span class="s2">{</span>
+            <span class="s0">return when </span><span class="s2">(</span><span class="s1">position</span><span class="s2">) {</span>
+                <span class="s4">0 </span><span class="s2">-&gt; </span><span class="s1">ListsFragment</span><span class="s2">.</span><span class="s1">newInstance</span><span class="s2">()</span>
+                <span class="s4">1 </span><span class="s2">-&gt; </span><span class="s1">SettingsFragment</span><span class="s2">.</span><span class="s1">newInstance</span><span class="s2">()</span>
+                <span class="s0">else </span><span class="s2">-&gt; </span><span class="s1">ListsFragment</span><span class="s2">.</span><span class="s1">newInstance</span><span class="s2">()</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">fun </span><span class="s1">openCallScreeningSettings</span><span class="s2">() {</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">Build</span><span class="s2">.</span><span class="s1">VERSION</span><span class="s2">.</span><span class="s1">SDK_INT </span><span class="s2">&gt;= </span><span class="s1">Build</span><span class="s2">.</span><span class="s1">VERSION_CODES</span><span class="s2">.</span><span class="s1">Q</span><span class="s2">) {</span>
+            <span class="s0">try </span><span class="s2">{</span>
+                <span class="s0">val </span><span class="s1">intent </span><span class="s2">= </span><span class="s1">Intent</span><span class="s2">(</span><span class="s3">&quot;android.telecom.action.CHANGE_CALL_SCREENING_APP&quot;</span><span class="s2">).</span><span class="s1">apply </span><span class="s2">{</span>
+                    <span class="s1">putExtra</span><span class="s2">(</span><span class="s3">&quot;android.telecom.extra.CALL_SCREENING_APP_PACKAGE_NAME&quot;</span><span class="s2">, </span><span class="s1">packageName</span><span class="s2">)</span>
+                <span class="s2">}</span>
+                <span class="s1">startActivity</span><span class="s2">(</span><span class="s1">intent</span><span class="s2">)</span>
+            <span class="s2">} </span><span class="s1">catch </span><span class="s2">(</span><span class="s1">e: Exception</span><span class="s2">) {</span>
+                <span class="s0">val </span><span class="s1">fallbackIntent </span><span class="s2">= </span><span class="s1">Intent</span><span class="s2">(</span><span class="s1">Settings</span><span class="s2">.</span><span class="s1">ACTION_MANAGE_DEFAULT_APPS_SETTINGS</span><span class="s2">)</span>
+                <span class="s1">startActivity</span><span class="s2">(</span><span class="s1">fallbackIntent</span><span class="s2">)</span>
+            <span class="s2">}</span>
+        <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+            <span class="s1">Toast</span><span class="s2">.</span><span class="s1">makeText</span><span class="s2">(</span><span class="s0">this</span><span class="s2">, </span><span class="s3">&quot;Android 10+ requis&quot;</span><span class="s2">, </span><span class="s1">Toast</span><span class="s2">.</span><span class="s1">LENGTH_LONG</span><span class="s2">).</span><span class="s1">show</span><span class="s2">()</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">fun </span><span class="s1">showDetectionTestDialog</span><span class="s2">() {</span>
+        <span class="s0">val </span><span class="s1">testMessages </span><span class="s2">= </span><span class="s1">arrayOf</span><span class="s2">(</span>
+            <span class="s3">&quot;URGENT: Votre compte sera suspendu dans 24h! Cliquez ici: bit.ly/xxx&quot;</span><span class="s2">,</span>
+            <span class="s3">&quot;Félicitations! Vous avez gagné 1000€. Réclamez maintenant!&quot;</span><span class="s2">,</span>
+            <span class="s3">&quot;Votre commande Amazon sera livrée demain&quot;</span><span class="s2">,</span>
+            <span class="s3">&quot;Bonjour, rendez-vous médical confirmé pour demain à 14h&quot;</span><span class="s2">,</span>
+            <span class="s3">&quot;ALERTE SECURITE: Connexion suspecte détectée sur votre compte PayPal&quot;</span>
+        <span class="s2">)</span>
+        <span class="s1">AlertDialog</span><span class="s2">.</span><span class="s1">Builder</span><span class="s2">(</span><span class="s0">this</span><span class="s2">)</span>
+            <span class="s2">.</span><span class="s1">setTitle</span><span class="s2">(</span><span class="s3">&quot;Test Détection&quot;</span><span class="s2">)</span>
+            <span class="s2">.</span><span class="s1">setItems</span><span class="s2">(</span><span class="s1">testMessages</span><span class="s2">) { </span><span class="s1">_</span><span class="s2">, </span><span class="s1">which </span><span class="s2">-&gt;</span>
+                <span class="s0">val </span><span class="s1">result </span><span class="s2">= </span><span class="s1">smsAnalyzer</span><span class="s2">.</span><span class="s1">analyzeSms</span><span class="s2">(</span><span class="s3">&quot;0899123456&quot;</span><span class="s2">, </span><span class="s1">testMessages</span><span class="s2">[</span><span class="s1">which</span><span class="s2">])</span>
+                <span class="s1">showAnalysisResult</span><span class="s2">(</span><span class="s1">testMessages</span><span class="s2">[</span><span class="s1">which</span><span class="s2">], </span><span class="s1">result</span><span class="s2">)</span>
+            <span class="s2">}</span>
+            <span class="s2">.</span><span class="s1">setNegativeButton</span><span class="s2">(</span><span class="s3">&quot;Annuler&quot;</span><span class="s2">, </span><span class="s0">null</span><span class="s2">)</span>
+            <span class="s2">.</span><span class="s1">show</span><span class="s2">()</span>
+    <span class="s2">}</span>
+
+    <span class="s0">fun </span><span class="s1">showProtectionTips</span><span class="s2">() {</span>
+        <span class="s1">AlertDialog</span><span class="s2">.</span><span class="s1">Builder</span><span class="s2">(</span><span class="s0">this</span><span class="s2">)</span>
+            <span class="s2">.</span><span class="s1">setTitle</span><span class="s2">(</span><span class="s3">&quot;🛡️ Conseils de Protection SMS&quot;</span><span class="s2">)</span>
+            <span class="s2">.</span><span class="s1">setMessage</span><span class="s2">(</span><span class="s3">&quot;&quot;&quot;</span>
+                <span class="s3">🔗 Ne cliquez jamais sur les liens suspects</span>
+                <span class="s3">🔐 Ne communiquez jamais vos données personnelles par SMS</span>
+                <span class="s3">⚠️ Méfiez-vous des urgences fictives (compte bloqué, amende, etc.)</span>
+                <span class="s3">📱 Vérifiez l'expéditeur avant de répondre</span>
+                <span class="s3">📞 Signalez les SMS suspects au 33700</span>
+                <span class="s3">🏦 Les vrais organismes (impôts, sécu, banque) n'envoient pas de liens par SMS</span>
+                <span class="s3">❓ En cas de doute, contactez directement l'organisme par téléphone</span>
+
+                <span class="s3">🧠 Notre IA analyse maintenant automatiquement vos SMS pour vous protéger !</span>
+            <span class="s3">&quot;&quot;&quot;</span><span class="s2">.</span><span class="s1">trimIndent</span><span class="s2">())</span>
+            <span class="s2">.</span><span class="s1">setPositiveButton</span><span class="s2">(</span><span class="s3">&quot;Compris&quot;</span><span class="s2">, </span><span class="s0">null</span><span class="s2">)</span>
+            <span class="s2">.</span><span class="s1">setNegativeButton</span><span class="s2">(</span><span class="s3">&quot;Plus d'infos&quot;</span><span class="s2">) { </span><span class="s1">_</span><span class="s2">, </span><span class="s1">_ </span><span class="s2">-&gt;</span>
+                <span class="s0">val </span><span class="s1">intent </span><span class="s2">= </span><span class="s1">Intent</span><span class="s2">(</span><span class="s1">Intent</span><span class="s2">.</span><span class="s1">ACTION_VIEW</span><span class="s2">, </span><span class="s1">Uri</span><span class="s2">.</span><span class="s1">parse</span><span class="s2">(</span><span class="s3">&quot;https://www.cybermalveillance.gouv.fr&quot;</span><span class="s2">))</span>
+                <span class="s1">startActivity</span><span class="s2">(</span><span class="s1">intent</span><span class="s2">)</span>
+            <span class="s2">}</span>
+            <span class="s2">.</span><span class="s1">show</span><span class="s2">()</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">showAnalysisResult</span><span class="s2">(</span><span class="s1">message: String</span><span class="s2">, </span><span class="s1">result: SuspicionResult</span><span class="s2">) {</span>
+        <span class="s0">val </span><span class="s1">riskText </span><span class="s2">= </span><span class="s1">smsAnalyzer</span><span class="s2">.</span><span class="s1">getRiskText</span><span class="s2">(</span><span class="s1">result</span><span class="s2">.</span><span class="s1">risk</span><span class="s2">)</span>
+        <span class="s0">val </span><span class="s1">riskEmoji </span><span class="s2">= </span><span class="s0">when </span><span class="s2">(</span><span class="s1">result</span><span class="s2">.</span><span class="s1">risk</span><span class="s2">) {</span>
+            <span class="s1">SuspicionLevel</span><span class="s2">.</span><span class="s1">LOW </span><span class="s2">-&gt; </span><span class="s3">&quot;🟢&quot;</span>
+            <span class="s1">SuspicionLevel</span><span class="s2">.</span><span class="s1">MEDIUM </span><span class="s2">-&gt; </span><span class="s3">&quot;🟡&quot;</span>
+            <span class="s1">SuspicionLevel</span><span class="s2">.</span><span class="s1">HIGH </span><span class="s2">-&gt; </span><span class="s3">&quot;🟠&quot;</span>
+            <span class="s1">SuspicionLevel</span><span class="s2">.</span><span class="s1">CRITICAL </span><span class="s2">-&gt; </span><span class="s3">&quot;🔴&quot;</span>
+        <span class="s2">}</span>
+
+        <span class="s0">val </span><span class="s1">info </span><span class="s2">= </span><span class="s1">StringBuilder</span><span class="s2">()</span>
+        <span class="s1">info</span><span class="s2">.</span><span class="s1">append</span><span class="s2">(</span><span class="s3">&quot;SMS: </span><span class="s0">\&quot;$</span><span class="s1">message</span><span class="s0">\&quot;\n\n</span><span class="s3">&quot;</span><span class="s2">)</span>
+        <span class="s1">info</span><span class="s2">.</span><span class="s1">append</span><span class="s2">(</span><span class="s3">&quot;</span><span class="s0">$</span><span class="s1">riskEmoji </span><span class="s0">${</span><span class="s1">result</span><span class="s2">.</span><span class="s1">score</span><span class="s0">}</span><span class="s3">% - </span><span class="s0">$</span><span class="s1">riskText</span><span class="s0">\n\n</span><span class="s3">&quot;</span><span class="s2">)</span>
+
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">result</span><span class="s2">.</span><span class="s1">detectedWords</span><span class="s2">.</span><span class="s1">isNotEmpty</span><span class="s2">()) {</span>
+            <span class="s1">info</span><span class="s2">.</span><span class="s1">append</span><span class="s2">(</span><span class="s3">&quot;Mots:</span><span class="s0">\n</span><span class="s3">&quot;</span><span class="s2">)</span>
+            <span class="s1">result</span><span class="s2">.</span><span class="s1">detectedWords</span><span class="s2">.</span><span class="s1">take</span><span class="s2">(</span><span class="s4">5</span><span class="s2">).</span><span class="s1">forEach </span><span class="s2">{ </span><span class="s1">info</span><span class="s2">.</span><span class="s1">append</span><span class="s2">(</span><span class="s3">&quot;• </span><span class="s0">$</span><span class="s1">it</span><span class="s0">\n</span><span class="s3">&quot;</span><span class="s2">) }</span>
+        <span class="s2">}</span>
+
+        <span class="s1">AlertDialog</span><span class="s2">.</span><span class="s1">Builder</span><span class="s2">(</span><span class="s0">this</span><span class="s2">)</span>
+            <span class="s2">.</span><span class="s1">setTitle</span><span class="s2">(</span><span class="s3">&quot;Analyse&quot;</span><span class="s2">)</span>
+            <span class="s2">.</span><span class="s1">setMessage</span><span class="s2">(</span><span class="s1">info</span><span class="s2">.</span><span class="s1">toString</span><span class="s2">())</span>
+            <span class="s2">.</span><span class="s1">setPositiveButton</span><span class="s2">(</span><span class="s3">&quot;Compris&quot;</span><span class="s2">, </span><span class="s0">null</span><span class="s2">)</span>
+            <span class="s2">.</span><span class="s1">show</span><span class="s2">()</span>
+    <span class="s2">}</span>
+
+    <span class="s0">fun </span><span class="s1">showVersionDialog</span><span class="s2">() {</span>
+        <span class="s0">try </span><span class="s2">{</span>
+            <span class="s0">val </span><span class="s1">packageInfo </span><span class="s2">= </span><span class="s1">packageManager</span><span class="s2">.</span><span class="s1">getPackageInfo</span><span class="s2">(</span><span class="s1">packageName</span><span class="s2">, </span><span class="s4">0</span><span class="s2">)</span>
+            <span class="s0">val </span><span class="s1">versionName </span><span class="s2">= </span><span class="s1">packageInfo</span><span class="s2">.</span><span class="s1">versionName</span>
+            <span class="s1">AlertDialog</span><span class="s2">.</span><span class="s1">Builder</span><span class="s2">(</span><span class="s0">this</span><span class="s2">)</span>
+                <span class="s2">.</span><span class="s1">setTitle</span><span class="s2">(</span><span class="s3">&quot;📱 Stop Démarchage&quot;</span><span class="s2">)</span>
+                <span class="s2">.</span><span class="s1">setMessage</span><span class="s2">(</span><span class="s3">&quot;Version </span><span class="s0">$</span><span class="s1">versionName</span><span class="s0">\n\n\n </span><span class="s3">Développée avec ❤️</span><span class="s0">\n</span><span class="s3">pour votre tranquillité</span><span class="s0">\n\n</span><span class="s3">✨ Protégez-vous des appels et SMS indésirables</span><span class="s0">\n\n</span><span class="s3">🧠 Nouvelle détection intelligente !&quot;</span><span class="s2">)</span>
+                <span class="s2">.</span><span class="s1">setPositiveButton</span><span class="s2">(</span><span class="s3">&quot;Merci ! ❤️&quot;</span><span class="s2">) { </span><span class="s1">dialog</span><span class="s2">, </span><span class="s1">_ </span><span class="s2">-&gt;</span>
+                    <span class="s1">dialog</span><span class="s2">.</span><span class="s1">dismiss</span><span class="s2">()</span>
+                    <span class="s1">Toast</span><span class="s2">.</span><span class="s1">makeText</span><span class="s2">(</span><span class="s0">this</span><span class="s2">, </span><span class="s3">&quot;Merci d'utiliser Stop Démarchage !&quot;</span><span class="s2">, </span><span class="s1">Toast</span><span class="s2">.</span><span class="s1">LENGTH_SHORT</span><span class="s2">)</span>
+                        <span class="s2">.</span><span class="s1">show</span><span class="s2">()</span>
+                <span class="s2">}</span>
+                <span class="s2">.</span><span class="s1">create</span><span class="s2">()</span>
+                <span class="s2">.</span><span class="s1">show</span><span class="s2">()</span>
+        <span class="s2">} </span><span class="s1">catch </span><span class="s2">(</span><span class="s1">e: Exception</span><span class="s2">) {</span>
+            <span class="s1">AlertDialog</span><span class="s2">.</span><span class="s1">Builder</span><span class="s2">(</span><span class="s0">this</span><span class="s2">)</span>
+                <span class="s2">.</span><span class="s1">setTitle</span><span class="s2">(</span><span class="s3">&quot;📱 Stop Démarchage&quot;</span><span class="s2">)</span>
+                <span class="s2">.</span><span class="s1">setMessage</span><span class="s2">(</span><span class="s3">&quot;Version 2.0</span><span class="s0">\n</span><span class="s3">Alligné avec le buildgradle (:app) ?</span><span class="s0">\n\n </span><span class="s3">Développée avec ❤️</span><span class="s0">\n</span><span class="s3">pour votre tranquillité</span><span class="s0">\n\n</span><span class="s3">✨ Protégez-vous des appels et SMS indésirables</span><span class="s0">\n\n</span><span class="s3">🧠 Nouvelle détection intelligente !&quot;</span><span class="s2">)</span>
+                <span class="s2">.</span><span class="s1">setPositiveButton</span><span class="s2">(</span><span class="s3">&quot;Merci ! ❤️&quot;</span><span class="s2">) { </span><span class="s1">dialog</span><span class="s2">, </span><span class="s1">_ </span><span class="s2">-&gt;</span>
+                    <span class="s1">dialog</span><span class="s2">.</span><span class="s1">dismiss</span><span class="s2">()</span>
+                    <span class="s1">Toast</span><span class="s2">.</span><span class="s1">makeText</span><span class="s2">(</span><span class="s0">this</span><span class="s2">, </span><span class="s3">&quot;Merci d'utiliser Stop Démarchage !&quot;</span><span class="s2">, </span><span class="s1">Toast</span><span class="s2">.</span><span class="s1">LENGTH_SHORT</span><span class="s2">)</span>
+                        <span class="s2">.</span><span class="s1">show</span><span class="s2">()</span>
+                <span class="s2">}</span>
+                <span class="s2">.</span><span class="s1">create</span><span class="s2">()</span>
+                <span class="s2">.</span><span class="s1">show</span><span class="s2">()</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">override </span><span class="s0">fun </span><span class="s1">onNewIntent</span><span class="s2">(</span><span class="s1">intent: Intent</span><span class="s2">) {</span>
+        <span class="s0">super</span><span class="s2">.</span><span class="s1">onNewIntent</span><span class="s2">(</span><span class="s1">intent</span><span class="s2">)</span>
+        <span class="s1">handleIntent</span><span class="s2">(</span><span class="s1">intent</span><span class="s2">)</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">handleIntent</span><span class="s2">(</span><span class="s1">intent: Intent?</span><span class="s2">) {</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">intent </span><span class="s2">!= </span><span class="s0">null </span><span class="s2">&amp;&amp; (</span><span class="s1">Intent</span><span class="s2">.</span><span class="s1">ACTION_DIAL </span><span class="s2">== </span><span class="s1">intent</span><span class="s2">.</span><span class="s1">action </span><span class="s2">|| (</span><span class="s1">Intent</span><span class="s2">.</span><span class="s1">ACTION_VIEW </span><span class="s2">== </span><span class="s1">intent</span><span class="s2">.</span><span class="s1">action </span><span class="s2">&amp;&amp; </span><span class="s3">&quot;tel&quot; </span><span class="s2">== </span><span class="s1">intent</span><span class="s2">.</span><span class="s1">scheme</span><span class="s2">))) {</span>
+            <span class="s0">val </span><span class="s1">callLogIntent </span><span class="s2">= </span><span class="s1">Intent</span><span class="s2">(</span><span class="s0">this</span><span class="s2">, </span><span class="s1">CallLogActivity::</span><span class="s0">class</span><span class="s2">.</span><span class="s1">java</span><span class="s2">).</span><span class="s1">apply </span><span class="s2">{</span>
+                <span class="s1">putExtra</span><span class="s2">(</span><span class="s3">&quot;show_keypad&quot;</span><span class="s2">, </span><span class="s0">true</span><span class="s2">)</span>
+            <span class="s2">}</span>
+            <span class="s1">startActivity</span><span class="s2">(</span><span class="s1">callLogIntent</span><span class="s2">)</span>
+            <span class="s1">finish</span><span class="s2">()</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">createNotificationChannels</span><span class="s2">() {</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">Build</span><span class="s2">.</span><span class="s1">VERSION</span><span class="s2">.</span><span class="s1">SDK_INT </span><span class="s2">&gt;= </span><span class="s1">Build</span><span class="s2">.</span><span class="s1">VERSION_CODES</span><span class="s2">.</span><span class="s1">O</span><span class="s2">) {</span>
+            <span class="s0">val </span><span class="s1">notificationManager </span><span class="s2">= </span><span class="s1">getSystemService</span><span class="s2">(</span><span class="s1">NOTIFICATION_SERVICE</span><span class="s2">) </span><span class="s0">as </span><span class="s1">NotificationManager</span>
+            <span class="s0">val </span><span class="s1">callChannel </span><span class="s2">= </span><span class="s1">NotificationChannel</span><span class="s2">(</span>
+                <span class="s1">NOTIFICATION_CHANNEL_ID</span><span class="s2">,</span>
+                <span class="s3">&quot;Appels bloqués&quot;</span><span class="s2">,</span>
+                <span class="s1">NotificationManager</span><span class="s2">.</span><span class="s1">IMPORTANCE_DEFAULT</span>
+            <span class="s2">)</span>
+            <span class="s0">val </span><span class="s1">smsChannel </span><span class="s2">= </span><span class="s1">NotificationChannel</span><span class="s2">(</span>
+                <span class="s3">&quot;suspicious_sms&quot;</span><span class="s2">,</span>
+                <span class="s3">&quot;SMS Suspects&quot;</span><span class="s2">,</span>
+                <span class="s1">NotificationManager</span><span class="s2">.</span><span class="s1">IMPORTANCE_DEFAULT</span>
+            <span class="s2">)</span>
+            <span class="s1">notificationManager</span><span class="s2">.</span><span class="s1">createNotificationChannel</span><span class="s2">(</span><span class="s1">callChannel</span><span class="s2">)</span>
+            <span class="s1">notificationManager</span><span class="s2">.</span><span class="s1">createNotificationChannel</span><span class="s2">(</span><span class="s1">smsChannel</span><span class="s2">)</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">fun </span><span class="s1">analyzeIncomingSms</span><span class="s2">(</span><span class="s1">phoneNumber: String</span><span class="s2">, </span><span class="s1">messageBody: String</span><span class="s2">)</span><span class="s1">: SuspicionResult </span><span class="s2">{</span>
+        <span class="s0">return </span><span class="s1">smsAnalyzer</span><span class="s2">.</span><span class="s1">analyzeSms</span><span class="s2">(</span><span class="s1">phoneNumber</span><span class="s2">, </span><span class="s1">messageBody</span><span class="s2">)</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">checkAndRequestPermissions</span><span class="s2">() {</span>
+        <span class="s0">val </span><span class="s1">permissionsToRequest </span><span class="s2">= </span><span class="s1">mutableListOf</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">&gt;()</span>
+        <span class="s0">val </span><span class="s1">requiredPermissions </span><span class="s2">= </span><span class="s1">listOf</span><span class="s2">(</span>
+            <span class="s1">Manifest</span><span class="s2">.</span><span class="s1">permission</span><span class="s2">.</span><span class="s1">READ_CALL_LOG</span><span class="s2">,</span>
+            <span class="s1">Manifest</span><span class="s2">.</span><span class="s1">permission</span><span class="s2">.</span><span class="s1">READ_PHONE_STATE</span><span class="s2">,</span>
+            <span class="s1">Manifest</span><span class="s2">.</span><span class="s1">permission</span><span class="s2">.</span><span class="s1">READ_CONTACTS</span><span class="s2">,</span>
+            <span class="s1">Manifest</span><span class="s2">.</span><span class="s1">permission</span><span class="s2">.</span><span class="s1">RECEIVE_SMS</span><span class="s2">,</span>
+            <span class="s1">Manifest</span><span class="s2">.</span><span class="s1">permission</span><span class="s2">.</span><span class="s1">READ_SMS</span><span class="s2">,</span>
+            <span class="s2">*(</span><span class="s0">if </span><span class="s2">(</span><span class="s1">Build</span><span class="s2">.</span><span class="s1">VERSION</span><span class="s2">.</span><span class="s1">SDK_INT </span><span class="s2">&gt;= </span><span class="s1">Build</span><span class="s2">.</span><span class="s1">VERSION_CODES</span><span class="s2">.</span><span class="s1">P</span><span class="s2">) </span><span class="s1">arrayOf</span><span class="s2">(</span><span class="s1">Manifest</span><span class="s2">.</span><span class="s1">permission</span><span class="s2">.</span><span class="s1">ANSWER_PHONE_CALLS</span><span class="s2">) </span><span class="s0">else </span><span class="s1">emptyArray</span><span class="s2">()),</span>
+            <span class="s2">*(</span><span class="s0">if </span><span class="s2">(</span><span class="s1">Build</span><span class="s2">.</span><span class="s1">VERSION</span><span class="s2">.</span><span class="s1">SDK_INT </span><span class="s2">&gt;= </span><span class="s1">Build</span><span class="s2">.</span><span class="s1">VERSION_CODES</span><span class="s2">.</span><span class="s1">TIRAMISU</span><span class="s2">) </span><span class="s1">arrayOf</span><span class="s2">(</span><span class="s1">Manifest</span><span class="s2">.</span><span class="s1">permission</span><span class="s2">.</span><span class="s1">POST_NOTIFICATIONS</span><span class="s2">) </span><span class="s0">else </span><span class="s1">emptyArray</span><span class="s2">())</span>
+        <span class="s2">)</span>
+        <span class="s0">for </span><span class="s2">(</span><span class="s1">permission </span><span class="s0">in </span><span class="s1">requiredPermissions</span><span class="s2">) {</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">ContextCompat</span><span class="s2">.</span><span class="s1">checkSelfPermission</span><span class="s2">(</span><span class="s0">this</span><span class="s2">, </span><span class="s1">permission</span><span class="s2">) != </span><span class="s1">PackageManager</span><span class="s2">.</span><span class="s1">PERMISSION_GRANTED</span><span class="s2">) {</span>
+                <span class="s1">permissionsToRequest</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s1">permission</span><span class="s2">)</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">permissionsToRequest</span><span class="s2">.</span><span class="s1">isNotEmpty</span><span class="s2">()) {</span>
+            <span class="s1">requestPermissionLauncher</span><span class="s2">.</span><span class="s1">launch</span><span class="s2">(</span><span class="s1">permissionsToRequest</span><span class="s2">.</span><span class="s1">toTypedArray</span><span class="s2">())</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+<span class="s2">}</span></pre>
+</body>
+</html>

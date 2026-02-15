@@ -1,0 +1,200 @@
+<html>
+<head>
+<title>ContactsManager.kt</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #6aab73;}
+.s4 { color: #5f826b; font-style: italic;}
+.s5 { color: #67a37c; font-style: italic;}
+.s6 { color: #7a7e85;}
+.s7 { color: #2aacb8;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+ContactsManager.kt</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">fr</span><span class="s2">.</span><span class="s1">bonobo</span><span class="s2">.</span><span class="s1">stopdemarchage</span><span class="s2">.</span><span class="s1">utils</span>
+
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">Manifest</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">content</span><span class="s2">.</span><span class="s1">Context</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">content</span><span class="s2">.</span><span class="s1">pm</span><span class="s2">.</span><span class="s1">PackageManager</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">database</span><span class="s2">.</span><span class="s1">Cursor</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">provider</span><span class="s2">.</span><span class="s1">ContactsContract</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">Log</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">core</span><span class="s2">.</span><span class="s1">content</span><span class="s2">.</span><span class="s1">ContextCompat</span>
+<span class="s1">import javax</span><span class="s2">.</span><span class="s1">inject</span><span class="s2">.</span><span class="s1">Inject</span>
+<span class="s1">import javax</span><span class="s2">.</span><span class="s1">inject</span><span class="s2">.</span><span class="s1">Singleton</span>
+
+<span class="s1">@Singleton</span>
+<span class="s0">class </span><span class="s1">ContactsManager @Inject constructor</span><span class="s2">() {</span>
+
+    <span class="s1">companion </span><span class="s0">object </span><span class="s2">{</span>
+        <span class="s1">private const </span><span class="s0">val </span><span class="s1">TAG </span><span class="s2">= </span><span class="s3">&quot;ContactsManager&quot;</span>
+    <span class="s2">}</span>
+
+    <span class="s4">/**</span>
+     <span class="s4">* Vérifie si un numéro de téléphone est présent dans les contacts</span>
+     <span class="s4">* </span><span class="s5">@param </span><span class="s4">context Contexte Android</span>
+     <span class="s4">* </span><span class="s5">@param </span><span class="s4">phoneNumber Numéro à vérifier (peut contenir des espaces, tirets, etc.)</span>
+     <span class="s4">* </span><span class="s5">@return </span><span class="s4">true si le numéro est trouvé dans les contacts</span>
+     <span class="s4">*/</span>
+    <span class="s0">fun </span><span class="s1">isNumberInContacts</span><span class="s2">(</span><span class="s1">context: Context</span><span class="s2">, </span><span class="s1">phoneNumber: String</span><span class="s2">)</span><span class="s1">: Boolean </span><span class="s2">{</span>
+        <span class="s0">if </span><span class="s2">(!</span><span class="s1">hasContactsPermission</span><span class="s2">(</span><span class="s1">context</span><span class="s2">)) {</span>
+            <span class="s1">Log</span><span class="s2">.</span><span class="s1">w</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Permission READ_CONTACTS non accordée&quot;</span><span class="s2">)</span>
+            <span class="s0">return false</span>
+        <span class="s2">}</span>
+
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">phoneNumber</span><span class="s2">.</span><span class="s1">isBlank</span><span class="s2">()) {</span>
+            <span class="s0">return false</span>
+        <span class="s2">}</span>
+
+        <span class="s6">// Nettoyer le numéro (supprimer espaces, tirets, parenthèses)</span>
+        <span class="s0">val </span><span class="s1">cleanedNumber </span><span class="s2">= </span><span class="s1">cleanPhoneNumber</span><span class="s2">(</span><span class="s1">phoneNumber</span><span class="s2">)</span>
+
+        <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Vérification contact pour: </span><span class="s0">$</span><span class="s1">phoneNumber </span><span class="s3">(nettoyé: </span><span class="s0">$</span><span class="s1">cleanedNumber</span><span class="s3">)&quot;</span><span class="s2">)</span>
+
+        <span class="s0">return try </span><span class="s2">{</span>
+            <span class="s1">searchInContacts</span><span class="s2">(</span><span class="s1">context</span><span class="s2">, </span><span class="s1">cleanedNumber</span><span class="s2">)</span>
+        <span class="s2">} </span><span class="s1">catch </span><span class="s2">(</span><span class="s1">e: Exception</span><span class="s2">) {</span>
+            <span class="s1">Log</span><span class="s2">.</span><span class="s1">e</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Erreur lors de la recherche dans les contacts&quot;</span><span class="s2">, </span><span class="s1">e</span><span class="s2">)</span>
+            <span class="s0">false</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s4">/**</span>
+     <span class="s4">* Recherche un numéro dans les contacts</span>
+     <span class="s4">*/</span>
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">searchInContacts</span><span class="s2">(</span><span class="s1">context: Context</span><span class="s2">, </span><span class="s1">phoneNumber: String</span><span class="s2">)</span><span class="s1">: Boolean </span><span class="s2">{</span>
+        <span class="s0">val </span><span class="s1">uri </span><span class="s2">= </span><span class="s1">ContactsContract</span><span class="s2">.</span><span class="s1">CommonDataKinds</span><span class="s2">.</span><span class="s1">Phone</span><span class="s2">.</span><span class="s1">CONTENT_URI</span>
+        <span class="s0">val </span><span class="s1">projection </span><span class="s2">= </span><span class="s1">arrayOf</span><span class="s2">(</span>
+            <span class="s1">ContactsContract</span><span class="s2">.</span><span class="s1">CommonDataKinds</span><span class="s2">.</span><span class="s1">Phone</span><span class="s2">.</span><span class="s1">NUMBER</span><span class="s2">,</span>
+            <span class="s1">ContactsContract</span><span class="s2">.</span><span class="s1">CommonDataKinds</span><span class="s2">.</span><span class="s1">Phone</span><span class="s2">.</span><span class="s1">DISPLAY_NAME</span>
+        <span class="s2">)</span>
+
+        <span class="s0">var </span><span class="s1">cursor: Cursor? </span><span class="s2">= </span><span class="s0">null</span>
+        <span class="s0">try </span><span class="s2">{</span>
+            <span class="s1">cursor </span><span class="s2">= </span><span class="s1">context</span><span class="s2">.</span><span class="s1">contentResolver</span><span class="s2">.</span><span class="s1">query</span><span class="s2">(</span><span class="s1">uri</span><span class="s2">, </span><span class="s1">projection</span><span class="s2">, </span><span class="s0">null</span><span class="s2">, </span><span class="s0">null</span><span class="s2">, </span><span class="s0">null</span><span class="s2">)</span>
+            <span class="s1">cursor?</span><span class="s2">.</span><span class="s1">let </span><span class="s2">{</span>
+                <span class="s0">while </span><span class="s2">(</span><span class="s1">it</span><span class="s2">.</span><span class="s1">moveToNext</span><span class="s2">()) {</span>
+                    <span class="s0">val </span><span class="s1">contactNumber </span><span class="s2">= </span><span class="s1">it</span><span class="s2">.</span><span class="s1">getString</span><span class="s2">(</span><span class="s7">0</span><span class="s2">)</span>
+                    <span class="s0">val </span><span class="s1">contactName </span><span class="s2">= </span><span class="s1">it</span><span class="s2">.</span><span class="s1">getString</span><span class="s2">(</span><span class="s7">1</span><span class="s2">)</span>
+
+                    <span class="s0">if </span><span class="s2">(</span><span class="s1">contactNumber </span><span class="s2">!= </span><span class="s0">null</span><span class="s2">) {</span>
+                        <span class="s0">val </span><span class="s1">cleanedContactNumber </span><span class="s2">= </span><span class="s1">cleanPhoneNumber</span><span class="s2">(</span><span class="s1">contactNumber</span><span class="s2">)</span>
+
+                        <span class="s6">// Comparaison exacte ou en fin de chaîne (pour gérer les indicatifs)</span>
+                        <span class="s0">if </span><span class="s2">(</span><span class="s1">numbersMatch</span><span class="s2">(</span><span class="s1">phoneNumber</span><span class="s2">, </span><span class="s1">cleanedContactNumber</span><span class="s2">)) {</span>
+                            <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Contact trouvé: </span><span class="s0">$</span><span class="s1">contactName </span><span class="s3">(</span><span class="s0">$</span><span class="s1">contactNumber</span><span class="s3">)&quot;</span><span class="s2">)</span>
+                            <span class="s0">return true</span>
+                        <span class="s2">}</span>
+                    <span class="s2">}</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+        <span class="s2">} </span><span class="s1">finally </span><span class="s2">{</span>
+            <span class="s1">cursor?</span><span class="s2">.</span><span class="s1">close</span><span class="s2">()</span>
+        <span class="s2">}</span>
+
+        <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Aucun contact trouvé pour: </span><span class="s0">$</span><span class="s1">phoneNumber</span><span class="s3">&quot;</span><span class="s2">)</span>
+        <span class="s0">return false</span>
+    <span class="s2">}</span>
+
+    <span class="s4">/**</span>
+     <span class="s4">* Nettoie un numéro de téléphone en supprimant tous les caractères non-numériques</span>
+     <span class="s4">* sauf le + initial pour les indicatifs internationaux</span>
+     <span class="s4">*/</span>
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">cleanPhoneNumber</span><span class="s2">(</span><span class="s1">phoneNumber: String</span><span class="s2">)</span><span class="s1">: String </span><span class="s2">{</span>
+        <span class="s0">return </span><span class="s1">phoneNumber</span><span class="s2">.</span><span class="s1">replace</span><span class="s2">(</span><span class="s1">Regex</span><span class="s2">(</span><span class="s3">&quot;[^+</span><span class="s0">\\</span><span class="s3">d]&quot;</span><span class="s2">), </span><span class="s3">&quot;&quot;</span><span class="s2">)</span>
+    <span class="s2">}</span>
+
+    <span class="s4">/**</span>
+     <span class="s4">* Compare deux numéros de téléphone en tenant compte des variations possibles</span>
+     <span class="s4">* (avec/sans indicatif pays, formatage différent)</span>
+     <span class="s4">*/</span>
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">numbersMatch</span><span class="s2">(</span><span class="s1">number1: String</span><span class="s2">, </span><span class="s1">number2: String</span><span class="s2">)</span><span class="s1">: Boolean </span><span class="s2">{</span>
+        <span class="s6">// Comparaison exacte</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">number1 </span><span class="s2">== </span><span class="s1">number2</span><span class="s2">) </span><span class="s0">return true</span>
+
+        <span class="s6">// Supprimer les + pour comparaison</span>
+        <span class="s0">val </span><span class="s1">num1Clean </span><span class="s2">= </span><span class="s1">number1</span><span class="s2">.</span><span class="s1">removePrefix</span><span class="s2">(</span><span class="s3">&quot;+&quot;</span><span class="s2">)</span>
+        <span class="s0">val </span><span class="s1">num2Clean </span><span class="s2">= </span><span class="s1">number2</span><span class="s2">.</span><span class="s1">removePrefix</span><span class="s2">(</span><span class="s3">&quot;+&quot;</span><span class="s2">)</span>
+
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">num1Clean </span><span class="s2">== </span><span class="s1">num2Clean</span><span class="s2">) </span><span class="s0">return true</span>
+
+        <span class="s6">// Vérifier si l'un se termine par l'autre (gestion indicatifs)</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">num1Clean</span><span class="s2">.</span><span class="s1">length </span><span class="s2">!= </span><span class="s1">num2Clean</span><span class="s2">.</span><span class="s1">length</span><span class="s2">) {</span>
+            <span class="s0">val </span><span class="s1">shorter </span><span class="s2">= </span><span class="s0">if </span><span class="s2">(</span><span class="s1">num1Clean</span><span class="s2">.</span><span class="s1">length </span><span class="s2">&lt; </span><span class="s1">num2Clean</span><span class="s2">.</span><span class="s1">length</span><span class="s2">) </span><span class="s1">num1Clean </span><span class="s0">else </span><span class="s1">num2Clean</span>
+            <span class="s0">val </span><span class="s1">longer </span><span class="s2">= </span><span class="s0">if </span><span class="s2">(</span><span class="s1">num1Clean</span><span class="s2">.</span><span class="s1">length </span><span class="s2">&gt; </span><span class="s1">num2Clean</span><span class="s2">.</span><span class="s1">length</span><span class="s2">) </span><span class="s1">num1Clean </span><span class="s0">else </span><span class="s1">num2Clean</span>
+
+            <span class="s6">// Vérifier si le numéro court correspond à la fin du numéro long</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">longer</span><span class="s2">.</span><span class="s1">endsWith</span><span class="s2">(</span><span class="s1">shorter</span><span class="s2">) &amp;&amp; </span><span class="s1">longer</span><span class="s2">.</span><span class="s1">length </span><span class="s2">- </span><span class="s1">shorter</span><span class="s2">.</span><span class="s1">length </span><span class="s2">&lt;= </span><span class="s7">4</span><span class="s2">) {</span>
+                <span class="s0">return true</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+
+        <span class="s0">return false</span>
+    <span class="s2">}</span>
+
+    <span class="s4">/**</span>
+     <span class="s4">* Vérifie si l'application a la permission de lire les contacts</span>
+     <span class="s4">*/</span>
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">hasContactsPermission</span><span class="s2">(</span><span class="s1">context: Context</span><span class="s2">)</span><span class="s1">: Boolean </span><span class="s2">{</span>
+        <span class="s0">return </span><span class="s1">ContextCompat</span><span class="s2">.</span><span class="s1">checkSelfPermission</span><span class="s2">(</span>
+            <span class="s1">context</span><span class="s2">,</span>
+            <span class="s1">Manifest</span><span class="s2">.</span><span class="s1">permission</span><span class="s2">.</span><span class="s1">READ_CONTACTS</span>
+        <span class="s2">) == </span><span class="s1">PackageManager</span><span class="s2">.</span><span class="s1">PERMISSION_GRANTED</span>
+    <span class="s2">}</span>
+
+    <span class="s4">/**</span>
+     <span class="s4">* Récupère la liste de tous les contacts (pour debug ou autre usage)</span>
+     <span class="s4">*/</span>
+    <span class="s0">fun </span><span class="s1">getAllContacts</span><span class="s2">(</span><span class="s1">context: Context</span><span class="s2">)</span><span class="s1">: List</span><span class="s2">&lt;</span><span class="s1">Contact</span><span class="s2">&gt; {</span>
+        <span class="s0">if </span><span class="s2">(!</span><span class="s1">hasContactsPermission</span><span class="s2">(</span><span class="s1">context</span><span class="s2">)) {</span>
+            <span class="s1">Log</span><span class="s2">.</span><span class="s1">w</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Permission READ_CONTACTS non accordée&quot;</span><span class="s2">)</span>
+            <span class="s0">return </span><span class="s1">emptyList</span><span class="s2">()</span>
+        <span class="s2">}</span>
+
+        <span class="s0">val </span><span class="s1">contacts </span><span class="s2">= </span><span class="s1">mutableListOf</span><span class="s2">&lt;</span><span class="s1">Contact</span><span class="s2">&gt;()</span>
+        <span class="s0">val </span><span class="s1">uri </span><span class="s2">= </span><span class="s1">ContactsContract</span><span class="s2">.</span><span class="s1">CommonDataKinds</span><span class="s2">.</span><span class="s1">Phone</span><span class="s2">.</span><span class="s1">CONTENT_URI</span>
+        <span class="s0">val </span><span class="s1">projection </span><span class="s2">= </span><span class="s1">arrayOf</span><span class="s2">(</span>
+            <span class="s1">ContactsContract</span><span class="s2">.</span><span class="s1">CommonDataKinds</span><span class="s2">.</span><span class="s1">Phone</span><span class="s2">.</span><span class="s1">NUMBER</span><span class="s2">,</span>
+            <span class="s1">ContactsContract</span><span class="s2">.</span><span class="s1">CommonDataKinds</span><span class="s2">.</span><span class="s1">Phone</span><span class="s2">.</span><span class="s1">DISPLAY_NAME</span>
+        <span class="s2">)</span>
+
+        <span class="s0">var </span><span class="s1">cursor: Cursor? </span><span class="s2">= </span><span class="s0">null</span>
+        <span class="s0">try </span><span class="s2">{</span>
+            <span class="s1">cursor </span><span class="s2">= </span><span class="s1">context</span><span class="s2">.</span><span class="s1">contentResolver</span><span class="s2">.</span><span class="s1">query</span><span class="s2">(</span><span class="s1">uri</span><span class="s2">, </span><span class="s1">projection</span><span class="s2">, </span><span class="s0">null</span><span class="s2">, </span><span class="s0">null</span><span class="s2">, </span><span class="s0">null</span><span class="s2">)</span>
+            <span class="s1">cursor?</span><span class="s2">.</span><span class="s1">let </span><span class="s2">{</span>
+                <span class="s0">while </span><span class="s2">(</span><span class="s1">it</span><span class="s2">.</span><span class="s1">moveToNext</span><span class="s2">()) {</span>
+                    <span class="s0">val </span><span class="s1">number </span><span class="s2">= </span><span class="s1">it</span><span class="s2">.</span><span class="s1">getString</span><span class="s2">(</span><span class="s7">0</span><span class="s2">)</span>
+                    <span class="s0">val </span><span class="s1">name </span><span class="s2">= </span><span class="s1">it</span><span class="s2">.</span><span class="s1">getString</span><span class="s2">(</span><span class="s7">1</span><span class="s2">)</span>
+                    <span class="s0">if </span><span class="s2">(</span><span class="s1">number </span><span class="s2">!= </span><span class="s0">null </span><span class="s2">&amp;&amp; </span><span class="s1">name </span><span class="s2">!= </span><span class="s0">null</span><span class="s2">) {</span>
+                        <span class="s1">contacts</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s1">Contact</span><span class="s2">(</span><span class="s1">name</span><span class="s2">, </span><span class="s1">number</span><span class="s2">))</span>
+                    <span class="s2">}</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+        <span class="s2">} </span><span class="s1">catch </span><span class="s2">(</span><span class="s1">e: Exception</span><span class="s2">) {</span>
+            <span class="s1">Log</span><span class="s2">.</span><span class="s1">e</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Erreur lors de la récupération des contacts&quot;</span><span class="s2">, </span><span class="s1">e</span><span class="s2">)</span>
+        <span class="s2">} </span><span class="s1">finally </span><span class="s2">{</span>
+            <span class="s1">cursor?</span><span class="s2">.</span><span class="s1">close</span><span class="s2">()</span>
+        <span class="s2">}</span>
+
+        <span class="s1">Log</span><span class="s2">.</span><span class="s1">d</span><span class="s2">(</span><span class="s1">TAG</span><span class="s2">, </span><span class="s3">&quot;Trouvé </span><span class="s0">${</span><span class="s1">contacts</span><span class="s2">.</span><span class="s1">size</span><span class="s0">} </span><span class="s3">contacts&quot;</span><span class="s2">)</span>
+        <span class="s0">return </span><span class="s1">contacts</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+
+<span class="s4">/**</span>
+ <span class="s4">* Classe de données pour représenter un contact</span>
+ <span class="s4">*/</span>
+<span class="s1">data </span><span class="s0">class </span><span class="s1">Contact</span><span class="s2">(</span>
+    <span class="s0">val </span><span class="s1">name: String</span><span class="s2">,</span>
+    <span class="s0">val </span><span class="s1">phoneNumber: String</span>
+<span class="s2">)</span></pre>
+</body>
+</html>

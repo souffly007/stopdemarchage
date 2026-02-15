@@ -1,0 +1,57 @@
+<html>
+<head>
+<title>themes.xml</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #d5b778;}
+.s1 { color: #bcbec4;}
+.s2 { color: #6aab73;}
+.s3 { color: #bcbec4;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+themes.xml</font>
+</center></td></tr></table>
+<pre><span class="s0">&lt;?</span><span class="s1">xml version</span><span class="s2">=&quot;1.0&quot; </span><span class="s1">encoding</span><span class="s2">=&quot;utf-8&quot;</span><span class="s0">?&gt;</span>
+<span class="s0">&lt;resources </span><span class="s1">xmlns:tools</span><span class="s2">=&quot;http://schemas.android.com/tools&quot;</span><span class="s0">&gt;</span>
+    <span class="s0">&lt;style </span><span class="s1">name</span><span class="s2">=&quot;Theme.StopDemarchage&quot; </span><span class="s1">parent</span><span class="s2">=&quot;Theme.MaterialComponents.DayNight&quot;</span><span class="s0">&gt;</span>
+        <span class="s0">&lt;item </span><span class="s1">name</span><span class="s2">=&quot;colorPrimary&quot;</span><span class="s0">&gt;</span><span class="s3">#00BCD4</span><span class="s0">&lt;/item&gt;</span>
+        <span class="s0">&lt;item </span><span class="s1">name</span><span class="s2">=&quot;colorOnPrimary&quot;</span><span class="s0">&gt;</span><span class="s3">#FFF8DC</span><span class="s0">&lt;/item&gt;</span>
+        <span class="s0">&lt;item </span><span class="s1">name</span><span class="s2">=&quot;android:statusBarColor&quot;</span><span class="s0">&gt;</span><span class="s3">#001B15</span><span class="s0">&lt;/item&gt;</span>
+        <span class="s0">&lt;item </span><span class="s1">name</span><span class="s2">=&quot;android:navigationBarColor&quot;</span><span class="s0">&gt;</span><span class="s3">#002D25</span><span class="s0">&lt;/item&gt;</span>
+        <span class="s0">&lt;item </span><span class="s1">name</span><span class="s2">=&quot;android:windowBackground&quot;</span><span class="s0">&gt;</span><span class="s3">#000000</span><span class="s0">&lt;/item&gt;</span>
+
+        <span class="s0">&lt;item </span><span class="s1">name</span><span class="s2">=&quot;popupMenuStyle&quot;</span><span class="s0">&gt;</span><span class="s3">@style/PopupMenuDark</span><span class="s0">&lt;/item&gt;</span>
+        <span class="s0">&lt;item </span><span class="s1">name</span><span class="s2">=&quot;android:popupMenuStyle&quot;</span><span class="s0">&gt;</span><span class="s3">@style/PopupMenuDark</span><span class="s0">&lt;/item&gt;</span>
+    <span class="s0">&lt;/style&gt;</span>
+
+    <span class="s0">&lt;style </span><span class="s1">name</span><span class="s2">=&quot;PopupMenuDark&quot; </span><span class="s1">parent</span><span class="s2">=&quot;Widget.AppCompat.PopupMenu&quot;</span><span class="s0">&gt;</span>
+        <span class="s0">&lt;item </span><span class="s1">name</span><span class="s2">=&quot;android:background&quot;</span><span class="s0">&gt;</span><span class="s3">#000000</span><span class="s0">&lt;/item&gt;</span>
+        <span class="s0">&lt;item </span><span class="s1">name</span><span class="s2">=&quot;android:textColor&quot;</span><span class="s0">&gt;</span><span class="s3">@color/text_on_popup_dark</span><span class="s0">&lt;/item&gt;</span>
+    <span class="s0">&lt;/style&gt;</span>
+
+    <span class="s0">&lt;style </span><span class="s1">name</span><span class="s2">=&quot;ButtonStyle&quot; </span><span class="s1">parent</span><span class="s2">=&quot;Widget.AppCompat.Button&quot;</span><span class="s0">&gt;</span>
+        <span class="s0">&lt;item </span><span class="s1">name</span><span class="s2">=&quot;backgroundTint&quot;</span><span class="s0">&gt;</span><span class="s3">#FF5722</span><span class="s0">&lt;/item&gt;</span>
+        <span class="s0">&lt;item </span><span class="s1">name</span><span class="s2">=&quot;android:textColor&quot;</span><span class="s0">&gt;</span><span class="s3">#FFF8DC</span><span class="s0">&lt;/item&gt;</span>
+    <span class="s0">&lt;/style&gt;</span>
+
+    <span class="s0">&lt;style </span><span class="s1">name</span><span class="s2">=&quot;BottomSheetDialogTheme&quot; </span><span class="s1">parent</span><span class="s2">=&quot;Theme.MaterialComponents.BottomSheetDialog&quot;</span><span class="s0">&gt;</span>
+        <span class="s0">&lt;item </span><span class="s1">name</span><span class="s2">=&quot;android:windowIsFloating&quot;</span><span class="s0">&gt;</span><span class="s3">false</span><span class="s0">&lt;/item&gt;</span>
+        <span class="s0">&lt;item </span><span class="s1">name</span><span class="s2">=&quot;android:statusBarColor&quot;</span><span class="s0">&gt;</span><span class="s3">@android:color/transparent</span><span class="s0">&lt;/item&gt;</span>
+        <span class="s0">&lt;item </span><span class="s1">name</span><span class="s2">=&quot;android:windowSoftInputMode&quot;</span><span class="s0">&gt;</span><span class="s3">adjustResize</span><span class="s0">&lt;/item&gt;</span>
+        <span class="s0">&lt;item </span><span class="s1">name</span><span class="s2">=&quot;android:textColor&quot;</span><span class="s0">&gt;</span><span class="s3">@color/text_on_popup_dark</span><span class="s0">&lt;/item&gt;</span>
+    <span class="s0">&lt;/style&gt;</span>
+
+    <span class="s0">&lt;style </span><span class="s1">name</span><span class="s2">=&quot;TextTitleBlockedList&quot; </span><span class="s1">parent</span><span class="s2">=&quot;TextAppearance.AppCompat.Body1&quot;</span><span class="s0">&gt;</span>
+        <span class="s0">&lt;item </span><span class="s1">name</span><span class="s2">=&quot;android:textColor&quot;</span><span class="s0">&gt;</span><span class="s3">@color/white</span><span class="s0">&lt;/item&gt;</span>
+        <span class="s0">&lt;item </span><span class="s1">name</span><span class="s2">=&quot;android:textSize&quot;</span><span class="s0">&gt;</span><span class="s3">18sp</span><span class="s0">&lt;/item&gt;</span>
+        <span class="s0">&lt;item </span><span class="s1">name</span><span class="s2">=&quot;android:textStyle&quot;</span><span class="s0">&gt;</span><span class="s3">bold</span><span class="s0">&lt;/item&gt;</span>
+    <span class="s0">&lt;/style&gt;</span>
+
+
+<span class="s0">&lt;/resources&gt;</span></pre>
+</body>
+</html>

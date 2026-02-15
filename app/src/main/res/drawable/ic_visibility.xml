@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+
+    <!-- Fond transparent -->
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M0,0h24v24H0z" />
+
+    <!-- Contour de l'œil (vert technologique) -->
+    <path
+        android:fillColor="#4CAF50"
+    android:strokeColor="#4CAF50"
+    android:strokeWidth="1.5"
+    android:pathData="M12,4.5C7,4.5 2.73,7.61 1,12c1.73,4.39 6,7.5 11,7.5s9.27,-3.11 11,-7.5c-1.73,-4.39 -6,-7.5 -11,-7.5z" />
+
+    <!-- Pupille (noire) -->
+    <path
+        android:fillColor="#000000"
+        android:pathData="M12,10a2,2 0,1 0,0 4a2,2 0,0 0,0 -4z" />
+
+    <!-- Reflet (blanc) -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M12,12a0.5,0.5 0,1 0,0 1a0.5,0.5 0,0 0,0 -1z" />
+
+    <!-- Arc supérieur (pour le design) -->
+    <path
+        android:fillColor="#FF5252"
+        android:pathData="M12,15c-1.66,0 -3,-1.34 -3,-3s1.34,-3 3,-3s3,1.34 3,3s-1.34,3 -3,3z" />
+
+    <!-- Cils (optionnel, pour un effet plus réaliste) -->
+    <path
+        android:strokeColor="#4CAF50"
+        android:strokeWidth="1.5"
+        android:pathData="M8,12c0,2 4,4 4,4s4,-2 4,-4" />
+    <path
+        android:strokeColor="#4CAF50"
+        android:strokeWidth="1.5"
+        android:pathData="M7,12c0,-2 4,-4 4,-4s4,2 4,4" />
+</vector>

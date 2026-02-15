@@ -1,0 +1,83 @@
+kotlin version: 2.2.10
+error message: java.lang.RuntimeException: Exception while generating code for:
+FUN name:shouldBlockNumber visibility:public modality:FINAL returnType:fr.bonobo.stopdemarchage.filter.AdvancedSpamDetector.kt.BlockDecision
+  VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:fr.bonobo.stopdemarchage.filter.AdvancedSpamDetector.kt
+  VALUE_PARAMETER kind:Regular name:phoneNumber index:1 type:kotlin.String
+  VALUE_PARAMETER kind:Regular name:country index:2 type:kotlin.String
+    EXPRESSION_BODY
+      ERROR_EXPR 'Default Stub' type=kotlin.String
+  BLOCK_BODY
+    RETURN type=kotlin.Nothing from='public final fun shouldBlockNumber (phoneNumber: kotlin.String, country: kotlin.String): fr.bonobo.stopdemarchage.filter.AdvancedSpamDetector.kt.BlockDecision declared in fr.bonobo.stopdemarchage.filter.AdvancedSpamDetector.kt'
+      ERROR_EXPR 'skipBodies' type=kotlin.Nothing
+
+	at org.jetbrains.kotlin.backend.jvm.codegen.FunctionCodegen.generate(FunctionCodegen.kt:50)
+	at org.jetbrains.kotlin.backend.jvm.codegen.FunctionCodegen.generate$default(FunctionCodegen.kt:43)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ClassCodegen.generateMethodNode(ClassCodegen.kt:422)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ClassCodegen.generateMethod(ClassCodegen.kt:439)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ClassCodegen.generate(ClassCodegen.kt:164)
+	at org.jetbrains.kotlin.backend.jvm.JvmIrCodegenFactory.generateFile(JvmIrCodegenFactory.kt:419)
+	at org.jetbrains.kotlin.backend.jvm.JvmIrCodegenFactory.invokeCodegen(JvmIrCodegenFactory.kt:388)
+	at org.jetbrains.kotlin.cli.jvm.compiler.legacy.pipeline.JvmCompilerPipelineKt.generateCodeFromIr(jvmCompilerPipeline.kt:174)
+	at org.jetbrains.kotlin.kapt.FirKaptAnalysisHandlerExtension.contextForStubGeneration(FirKaptAnalysisHandlerExtension.kt:223)
+	at org.jetbrains.kotlin.kapt.FirKaptAnalysisHandlerExtension.doAnalysis(FirKaptAnalysisHandlerExtension.kt:117)
+	at org.jetbrains.kotlin.fir.extensions.FirAnalysisHandlerExtension$Companion.analyze(FirAnalysisHandlerExtension.kt:29)
+	at org.jetbrains.kotlin.cli.pipeline.jvm.JvmFrontendPipelinePhase.executePhase(JvmFrontendPipelinePhase.kt:84)
+	at org.jetbrains.kotlin.cli.pipeline.jvm.JvmFrontendPipelinePhase.executePhase(JvmFrontendPipelinePhase.kt:56)
+	at org.jetbrains.kotlin.cli.pipeline.PipelinePhase.phaseBody(PipelinePhase.kt:68)
+	at org.jetbrains.kotlin.cli.pipeline.PipelinePhase.phaseBody(PipelinePhase.kt:58)
+	at org.jetbrains.kotlin.config.phaser.NamedCompilerPhase.invoke(CompilerPhase.kt:102)
+	at org.jetbrains.kotlin.backend.common.phaser.CompositePhase.invoke(PhaseBuilders.kt:22)
+	at org.jetbrains.kotlin.config.phaser.CompilerPhaseKt.invokeToplevel(CompilerPhase.kt:53)
+	at org.jetbrains.kotlin.cli.pipeline.AbstractCliPipeline.runPhasedPipeline(AbstractCliPipeline.kt:109)
+	at org.jetbrains.kotlin.cli.pipeline.AbstractCliPipeline.execute(AbstractCliPipeline.kt:68)
+	at org.jetbrains.kotlin.cli.jvm.K2JVMCompiler.doExecutePhased(K2JVMCompiler.kt:78)
+	at org.jetbrains.kotlin.cli.jvm.K2JVMCompiler.doExecutePhased(K2JVMCompiler.kt:44)
+	at org.jetbrains.kotlin.cli.common.CLICompiler.execImpl(CLICompiler.kt:90)
+	at org.jetbrains.kotlin.cli.common.CLICompiler.exec(CLICompiler.kt:352)
+	at org.jetbrains.kotlin.incremental.IncrementalJvmCompilerRunnerBase.runCompiler(IncrementalJvmCompilerRunnerBase.kt:175)
+	at org.jetbrains.kotlin.incremental.IncrementalJvmCompilerRunnerBase.runCompiler(IncrementalJvmCompilerRunnerBase.kt:38)
+	at org.jetbrains.kotlin.incremental.IncrementalCompilerRunner.doCompile(IncrementalCompilerRunner.kt:504)
+	at org.jetbrains.kotlin.incremental.IncrementalCompilerRunner.compileImpl(IncrementalCompilerRunner.kt:421)
+	at org.jetbrains.kotlin.incremental.IncrementalCompilerRunner.compileNonIncrementally(IncrementalCompilerRunner.kt:306)
+	at org.jetbrains.kotlin.incremental.IncrementalCompilerRunner.compile(IncrementalCompilerRunner.kt:133)
+	at org.jetbrains.kotlin.daemon.CompileServiceImplBase.execIncrementalCompiler(CompileServiceImpl.kt:679)
+	at org.jetbrains.kotlin.daemon.CompileServiceImplBase.access$execIncrementalCompiler(CompileServiceImpl.kt:93)
+	at org.jetbrains.kotlin.daemon.CompileServiceImpl.compile(CompileServiceImpl.kt:1806)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(Unknown Source)
+	at java.base/java.lang.reflect.Method.invoke(Unknown Source)
+	at java.rmi/sun.rmi.server.UnicastServerRef.dispatch(Unknown Source)
+	at java.rmi/sun.rmi.transport.Transport$1.run(Unknown Source)
+	at java.rmi/sun.rmi.transport.Transport$1.run(Unknown Source)
+	at java.base/java.security.AccessController.doPrivileged(Unknown Source)
+	at java.rmi/sun.rmi.transport.Transport.serviceCall(Unknown Source)
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport.handleMessages(Unknown Source)
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport$ConnectionHandler.run0(Unknown Source)
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport$ConnectionHandler.lambda$run$0(Unknown Source)
+	at java.base/java.security.AccessController.doPrivileged(Unknown Source)
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport$ConnectionHandler.run(Unknown Source)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.base/java.lang.Thread.run(Unknown Source)
+Caused by: java.lang.IllegalArgumentException: Invalid class name (must not contain . ; [ < > or :): fr/bonobo/stopdemarchage/filter/AdvancedSpamDetector.kt$BlockDecision
+	at org.jetbrains.org.objectweb.asm.util.CheckSignatureAdapter.checkClassName(CheckSignatureAdapter.java:342)
+	at org.jetbrains.org.objectweb.asm.util.CheckSignatureAdapter.visitClassType(CheckSignatureAdapter.java:284)
+	at org.jetbrains.kotlin.codegen.signature.BothSignatureWriter.writeClassBegin(BothSignatureWriter.java:78)
+	at org.jetbrains.kotlin.codegen.signature.JvmSignatureWriter.writeAsmType(JvmSignatureWriter.java:45)
+	at org.jetbrains.kotlin.codegen.signature.BothSignatureWriter.writeAsmType(BothSignatureWriter.java:72)
+	at org.jetbrains.kotlin.backend.jvm.mapping.IrTypeMapper.writeGenericType(IrTypeMapper.kt:157)
+	at org.jetbrains.kotlin.backend.jvm.mapping.IrTypeMapper.writeGenericType(IrTypeMapper.kt:43)
+	at org.jetbrains.kotlin.types.AbstractTypeMapper.mapClassType(AbstractTypeMapper.kt:199)
+	at org.jetbrains.kotlin.types.AbstractTypeMapper.mapType(AbstractTypeMapper.kt:89)
+	at org.jetbrains.kotlin.types.AbstractTypeMapper.mapType(AbstractTypeMapper.kt:53)
+	at org.jetbrains.kotlin.backend.jvm.mapping.IrTypeMapper.mapType(IrTypeMapper.kt:147)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ClassCodegen$typeMapper$1.mapType(ClassCodegen.kt:95)
+	at org.jetbrains.kotlin.backend.jvm.mapping.MethodSignatureMapper.mapReturnType(MethodSignatureMapper.kt:181)
+	at org.jetbrains.kotlin.backend.jvm.mapping.MethodSignatureMapper.mapReturnType(MethodSignatureMapper.kt:170)
+	at org.jetbrains.kotlin.backend.jvm.mapping.MethodSignatureMapper.mapSignature(MethodSignatureMapper.kt:259)
+	at org.jetbrains.kotlin.backend.jvm.mapping.MethodSignatureMapper.mapSignature$default(MethodSignatureMapper.kt:220)
+	at org.jetbrains.kotlin.backend.jvm.mapping.MethodSignatureMapper.mapSignatureWithGeneric(MethodSignatureMapper.kt:218)
+	at org.jetbrains.kotlin.backend.jvm.codegen.FunctionCodegen.doGenerate(FunctionCodegen.kt:54)
+	at org.jetbrains.kotlin.backend.jvm.codegen.FunctionCodegen.generate(FunctionCodegen.kt:47)
+	... 47 more
+
+

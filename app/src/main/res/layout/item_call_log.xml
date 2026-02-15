@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="12dp"
+    android:background="?android:attr/selectableItemBackground"
+    android:gravity="center_vertical">
+
+    <!-- Icône du type d'appel -->
+    <ImageView
+        android:id="@+id/call_type_icon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginEnd="12dp"
+        android:src="@drawable/ic_call_incoming"
+        app:tint="@color/call_incoming" />
+
+    <!-- Informations de l'appel -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <!-- Ligne principale : nom/numéro + indicateur bloqué -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/contact_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Marie Dubois"
+                android:textColor="#FF9800"
+                android:textSize="16sp"
+                android:textStyle="normal"
+                android:maxLines="1"
+                android:ellipsize="end" />
+
+            <!-- Icône bloqué -->
+            <ImageView
+                android:id="@+id/blocked_icon"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginStart="8dp"
+                android:src="@drawable/ic_blocked_circle"
+                android:visibility="gone"
+                app:tint="@color/error_red" />
+
+        </LinearLayout>
+
+        <!-- Numéro de téléphone (si différent du nom) -->
+        <TextView
+            android:id="@+id/phone_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="+33 6 12 34 56 78"
+            android:textColor="@color/on_surface_variant"
+            android:textSize="14sp"
+            android:layout_marginTop="2dp"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+    <!-- Informations temporelles -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="end"
+        android:layout_marginStart="12dp">
+
+        <TextView
+            android:id="@+id/call_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Il y a 5 min"
+            android:textColor="@color/on_surface_variant"
+            android:textSize="12sp"
+            android:gravity="end" />
+
+        <TextView
+            android:id="@+id/call_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2 min 34 s"
+            android:textColor="@color/on_surface_variant"
+            android:textSize="12sp"
+            android:layout_marginTop="2dp"
+            android:gravity="end"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+    <!-- Bouton menu (3 points) -->
+    <ImageButton
+        android:id="@+id/menu_button"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginStart="8dp"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
+        android:src="@drawable/ic_more_horiz"
+        android:contentDescription="Options"
+        android:scaleType="centerInside"
+        android:padding="4dp" />
+
+</LinearLayout>

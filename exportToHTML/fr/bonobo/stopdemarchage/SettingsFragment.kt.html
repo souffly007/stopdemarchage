@@ -1,0 +1,186 @@
+<html>
+<head>
+<title>SettingsFragment.kt</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #7a7e85;}
+.s4 { color: #6aab73;}
+.s5 { color: #2aacb8;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+SettingsFragment.kt</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">fr</span><span class="s2">.</span><span class="s1">bonobo</span><span class="s2">.</span><span class="s1">stopdemarchage</span><span class="s2">.</span><span class="s1">fragments</span>
+
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">os</span><span class="s2">.</span><span class="s1">Bundle</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">view</span><span class="s2">.</span><span class="s1">LayoutInflater</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">view</span><span class="s2">.</span><span class="s1">View</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">view</span><span class="s2">.</span><span class="s1">ViewGroup</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">widget</span><span class="s2">.</span><span class="s1">AdapterView</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">widget</span><span class="s2">.</span><span class="s1">ArrayAdapter</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">widget</span><span class="s2">.</span><span class="s1">Spinner</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">widget</span><span class="s2">.</span><span class="s1">Switch</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">widget</span><span class="s2">.</span><span class="s1">Toast</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">fragment</span><span class="s2">.</span><span class="s1">app</span><span class="s2">.</span><span class="s1">Fragment</span>
+<span class="s1">import fr</span><span class="s2">.</span><span class="s1">bonobo</span><span class="s2">.</span><span class="s1">stopdemarchage</span><span class="s2">.</span><span class="s1">R</span>
+<span class="s1">import fr</span><span class="s2">.</span><span class="s1">bonobo</span><span class="s2">.</span><span class="s1">stopdemarchage</span><span class="s2">.</span><span class="s1">filter</span><span class="s2">.</span><span class="s1">SpamFilterManager</span>
+<span class="s1">import fr</span><span class="s2">.</span><span class="s1">bonobo</span><span class="s2">.</span><span class="s1">stopdemarchage</span><span class="s2">.</span><span class="s1">utils</span><span class="s2">.</span><span class="s1">CountryDetector</span>
+<span class="s1">import fr</span><span class="s2">.</span><span class="s1">bonobo</span><span class="s2">.</span><span class="s1">stopdemarchage</span><span class="s2">.</span><span class="s1">MainActivity</span>
+
+<span class="s0">class </span><span class="s1">SettingsFragment : Fragment</span><span class="s2">() {</span>
+
+    <span class="s1">private lateinit </span><span class="s0">var </span><span class="s1">filterManager: SpamFilterManager</span>
+    <span class="s1">private lateinit </span><span class="s0">var </span><span class="s1">countryDetector: CountryDetector</span>
+
+    <span class="s1">private </span><span class="s0">var </span><span class="s1">switchAutoDetect: Switch? </span><span class="s2">= </span><span class="s0">null</span>
+    <span class="s1">private </span><span class="s0">var </span><span class="s1">spinnerCountry: Spinner? </span><span class="s2">= </span><span class="s0">null</span>
+
+    <span class="s1">override </span><span class="s0">fun </span><span class="s1">onCreateView</span><span class="s2">(</span>
+        <span class="s1">inflater: LayoutInflater</span><span class="s2">,</span>
+        <span class="s1">container: ViewGroup?</span><span class="s2">,</span>
+        <span class="s1">savedInstanceState: Bundle?</span>
+    <span class="s2">)</span><span class="s1">: View? </span><span class="s2">{</span>
+        <span class="s0">return </span><span class="s1">inflater</span><span class="s2">.</span><span class="s1">inflate</span><span class="s2">(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.</span><span class="s1">fragment_settings</span><span class="s2">, </span><span class="s1">container</span><span class="s2">, </span><span class="s0">false</span><span class="s2">)</span>
+    <span class="s2">}</span>
+
+    <span class="s1">override </span><span class="s0">fun </span><span class="s1">onViewCreated</span><span class="s2">(</span><span class="s1">view: View</span><span class="s2">, </span><span class="s1">savedInstanceState: Bundle?</span><span class="s2">) {</span>
+        <span class="s0">super</span><span class="s2">.</span><span class="s1">onViewCreated</span><span class="s2">(</span><span class="s1">view</span><span class="s2">, </span><span class="s1">savedInstanceState</span><span class="s2">)</span>
+
+        <span class="s1">filterManager </span><span class="s2">= </span><span class="s1">SpamFilterManager</span><span class="s2">(</span><span class="s1">requireContext</span><span class="s2">())</span>
+        <span class="s1">countryDetector </span><span class="s2">= </span><span class="s1">CountryDetector</span><span class="s2">(</span><span class="s1">requireContext</span><span class="s2">())</span>
+        <span class="s1">filterManager</span><span class="s2">.</span><span class="s1">initialize</span><span class="s2">()</span>
+
+        <span class="s1">setupCardClicks</span><span class="s2">(</span><span class="s1">view</span><span class="s2">)</span>
+        <span class="s1">setupCountrySettings</span><span class="s2">(</span><span class="s1">view</span><span class="s2">)</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">setupCountrySettings</span><span class="s2">(</span><span class="s1">view: View</span><span class="s2">) {</span>
+        <span class="s1">switchAutoDetect </span><span class="s2">= </span><span class="s1">view</span><span class="s2">.</span><span class="s1">findViewById</span><span class="s2">(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">switch_auto_detect_country</span><span class="s2">)</span>
+        <span class="s1">spinnerCountry </span><span class="s2">= </span><span class="s1">view</span><span class="s2">.</span><span class="s1">findViewById</span><span class="s2">(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">spinner_country_selection</span><span class="s2">)</span>
+
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">switchAutoDetect </span><span class="s2">== </span><span class="s0">null </span><span class="s2">|| </span><span class="s1">spinnerCountry </span><span class="s2">== </span><span class="s0">null</span><span class="s2">) {</span>
+            <span class="s0">return</span>
+        <span class="s2">}</span>
+
+        <span class="s3">// Configuration du Switch de détection automatique</span>
+        <span class="s1">switchAutoDetect?</span><span class="s2">.</span><span class="s1">apply </span><span class="s2">{</span>
+            <span class="s1">isChecked </span><span class="s2">= </span><span class="s1">filterManager</span><span class="s2">.</span><span class="s1">isAutoDetectEnabled</span><span class="s2">()</span>
+            <span class="s1">setOnCheckedChangeListener </span><span class="s2">{ </span><span class="s1">_</span><span class="s2">, </span><span class="s1">isChecked </span><span class="s2">-&gt;</span>
+                <span class="s0">if </span><span class="s2">(</span><span class="s1">isChecked</span><span class="s2">) {</span>
+                    <span class="s0">val </span><span class="s1">detectedCountry </span><span class="s2">= </span><span class="s1">countryDetector</span><span class="s2">.</span><span class="s1">detectCountry</span><span class="s2">()</span>
+                    <span class="s1">filterManager</span><span class="s2">.</span><span class="s1">setCountry</span><span class="s2">(</span><span class="s1">detectedCountry</span><span class="s2">, </span><span class="s1">autoDetect </span><span class="s2">= </span><span class="s0">true</span><span class="s2">)</span>
+                    <span class="s1">Toast</span><span class="s2">.</span><span class="s1">makeText</span><span class="s2">(</span>
+                        <span class="s1">requireContext</span><span class="s2">(),</span>
+                        <span class="s4">&quot;Pays détecté: </span><span class="s0">${</span><span class="s1">getCountryName</span><span class="s2">(</span><span class="s1">detectedCountry</span><span class="s2">)</span><span class="s0">}</span><span class="s4">&quot;</span><span class="s2">,</span>
+                        <span class="s1">Toast</span><span class="s2">.</span><span class="s1">LENGTH_SHORT</span>
+                    <span class="s2">).</span><span class="s1">show</span><span class="s2">()</span>
+                <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+                    <span class="s1">filterManager</span><span class="s2">.</span><span class="s1">setCountry</span><span class="s2">(</span><span class="s1">filterManager</span><span class="s2">.</span><span class="s1">getCurrentCountry</span><span class="s2">(), </span><span class="s1">autoDetect </span><span class="s2">= </span><span class="s0">false</span><span class="s2">)</span>
+                    <span class="s1">Toast</span><span class="s2">.</span><span class="s1">makeText</span><span class="s2">(</span>
+                        <span class="s1">requireContext</span><span class="s2">(),</span>
+                        <span class="s4">&quot;Mode manuel activé&quot;</span><span class="s2">,</span>
+                        <span class="s1">Toast</span><span class="s2">.</span><span class="s1">LENGTH_SHORT</span>
+                    <span class="s2">).</span><span class="s1">show</span><span class="s2">()</span>
+                <span class="s2">}</span>
+                <span class="s1">updateCountryUI</span><span class="s2">()</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+
+        <span class="s3">// Configuration du Spinner de sélection manuelle</span>
+        <span class="s1">spinnerCountry?</span><span class="s2">.</span><span class="s1">apply </span><span class="s2">{</span>
+            <span class="s0">val </span><span class="s1">countries </span><span class="s2">= </span><span class="s1">arrayOf</span><span class="s2">(</span><span class="s4">&quot;🇫🇷 France&quot;</span><span class="s2">, </span><span class="s4">&quot;🇧🇪 Belgique&quot;</span><span class="s2">)</span>
+            <span class="s0">val </span><span class="s1">adapter </span><span class="s2">= </span><span class="s1">ArrayAdapter</span><span class="s2">(</span>
+                <span class="s1">requireContext</span><span class="s2">(),</span>
+                <span class="s1">android</span><span class="s2">.</span><span class="s1">R</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.</span><span class="s1">simple_spinner_item</span><span class="s2">,</span>
+                <span class="s1">countries</span>
+            <span class="s2">)</span>
+            <span class="s1">adapter</span><span class="s2">.</span><span class="s1">setDropDownViewResource</span><span class="s2">(</span><span class="s1">android</span><span class="s2">.</span><span class="s1">R</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.</span><span class="s1">simple_spinner_dropdown_item</span><span class="s2">)</span>
+            <span class="s0">this</span><span class="s2">.</span><span class="s1">adapter </span><span class="s2">= </span><span class="s1">adapter</span>
+
+            <span class="s1">onItemSelectedListener </span><span class="s2">= </span><span class="s0">object </span><span class="s1">: AdapterView</span><span class="s2">.</span><span class="s1">OnItemSelectedListener </span><span class="s2">{</span>
+                <span class="s1">override </span><span class="s0">fun </span><span class="s1">onItemSelected</span><span class="s2">(</span><span class="s1">parent: AdapterView</span><span class="s2">&lt;*&gt;</span><span class="s1">?</span><span class="s2">, </span><span class="s1">view: View?</span><span class="s2">, </span><span class="s1">position: Int</span><span class="s2">, </span><span class="s1">id: Long</span><span class="s2">) {</span>
+                    <span class="s0">if </span><span class="s2">(</span><span class="s1">filterManager</span><span class="s2">.</span><span class="s1">isAutoDetectEnabled</span><span class="s2">()) </span><span class="s0">return</span>
+
+                    <span class="s0">val </span><span class="s1">country </span><span class="s2">= </span><span class="s0">when </span><span class="s2">(</span><span class="s1">position</span><span class="s2">) {</span>
+                        <span class="s5">0 </span><span class="s2">-&gt; </span><span class="s1">CountryDetector</span><span class="s2">.</span><span class="s1">COUNTRY_FRANCE</span>
+                        <span class="s5">1 </span><span class="s2">-&gt; </span><span class="s1">CountryDetector</span><span class="s2">.</span><span class="s1">COUNTRY_BELGIUM</span>
+                        <span class="s0">else </span><span class="s2">-&gt; </span><span class="s1">CountryDetector</span><span class="s2">.</span><span class="s1">COUNTRY_FRANCE</span>
+                    <span class="s2">}</span>
+
+                    <span class="s1">filterManager</span><span class="s2">.</span><span class="s1">setCountry</span><span class="s2">(</span><span class="s1">country</span><span class="s2">, </span><span class="s1">autoDetect </span><span class="s2">= </span><span class="s0">false</span><span class="s2">)</span>
+                    <span class="s1">updateCountryUI</span><span class="s2">()</span>
+
+                    <span class="s1">Toast</span><span class="s2">.</span><span class="s1">makeText</span><span class="s2">(</span>
+                        <span class="s1">requireContext</span><span class="s2">(),</span>
+                        <span class="s4">&quot;Filtrage configuré pour </span><span class="s0">${</span><span class="s1">getCountryName</span><span class="s2">(</span><span class="s1">country</span><span class="s2">)</span><span class="s0">}</span><span class="s4">&quot;</span><span class="s2">,</span>
+                        <span class="s1">Toast</span><span class="s2">.</span><span class="s1">LENGTH_SHORT</span>
+                    <span class="s2">).</span><span class="s1">show</span><span class="s2">()</span>
+                <span class="s2">}</span>
+
+                <span class="s1">override </span><span class="s0">fun </span><span class="s1">onNothingSelected</span><span class="s2">(</span><span class="s1">parent: AdapterView</span><span class="s2">&lt;*&gt;</span><span class="s1">?</span><span class="s2">) {}</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+
+        <span class="s1">updateCountryUI</span><span class="s2">()</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">updateCountryUI</span><span class="s2">() {</span>
+        <span class="s0">val </span><span class="s1">currentCountry </span><span class="s2">= </span><span class="s1">filterManager</span><span class="s2">.</span><span class="s1">getCurrentCountry</span><span class="s2">()</span>
+        <span class="s0">val </span><span class="s1">isAutoDetect </span><span class="s2">= </span><span class="s1">filterManager</span><span class="s2">.</span><span class="s1">isAutoDetectEnabled</span><span class="s2">()</span>
+
+        <span class="s1">switchAutoDetect?</span><span class="s2">.</span><span class="s1">isChecked </span><span class="s2">= </span><span class="s1">isAutoDetect</span>
+
+        <span class="s1">spinnerCountry?</span><span class="s2">.</span><span class="s1">apply </span><span class="s2">{</span>
+            <span class="s1">isEnabled </span><span class="s2">= !</span><span class="s1">isAutoDetect</span>
+            <span class="s1">alpha </span><span class="s2">= </span><span class="s0">if </span><span class="s2">(</span><span class="s1">isAutoDetect</span><span class="s2">) </span><span class="s5">0.5f </span><span class="s0">else </span><span class="s5">1.0f</span>
+            <span class="s1">setSelection</span><span class="s2">(</span><span class="s0">when </span><span class="s2">(</span><span class="s1">currentCountry</span><span class="s2">) {</span>
+                <span class="s1">CountryDetector</span><span class="s2">.</span><span class="s1">COUNTRY_FRANCE </span><span class="s2">-&gt; </span><span class="s5">0</span>
+                <span class="s1">CountryDetector</span><span class="s2">.</span><span class="s1">COUNTRY_BELGIUM </span><span class="s2">-&gt; </span><span class="s5">1</span>
+                <span class="s0">else </span><span class="s2">-&gt; </span><span class="s5">0</span>
+            <span class="s2">})</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">getCountryName</span><span class="s2">(</span><span class="s1">countryCode: String</span><span class="s2">)</span><span class="s1">: String </span><span class="s2">{</span>
+        <span class="s0">return when </span><span class="s2">(</span><span class="s1">countryCode</span><span class="s2">) {</span>
+            <span class="s1">CountryDetector</span><span class="s2">.</span><span class="s1">COUNTRY_FRANCE </span><span class="s2">-&gt; </span><span class="s4">&quot;France 🇫🇷&quot;</span>
+            <span class="s1">CountryDetector</span><span class="s2">.</span><span class="s1">COUNTRY_BELGIUM </span><span class="s2">-&gt; </span><span class="s4">&quot;Belgique 🇧🇪&quot;</span>
+            <span class="s0">else </span><span class="s2">-&gt; </span><span class="s4">&quot;Inconnu&quot;</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">override </span><span class="s0">fun </span><span class="s1">onResume</span><span class="s2">() {</span>
+        <span class="s0">super</span><span class="s2">.</span><span class="s1">onResume</span><span class="s2">()</span>
+        <span class="s1">updateCountryUI</span><span class="s2">()</span>
+    <span class="s2">}</span>
+
+    <span class="s1">private </span><span class="s0">fun </span><span class="s1">setupCardClicks</span><span class="s2">(</span><span class="s1">view: View</span><span class="s2">) {</span>
+        <span class="s3">// Paramètres Android</span>
+        <span class="s1">view</span><span class="s2">.</span><span class="s1">findViewById</span><span class="s2">&lt;</span><span class="s1">View</span><span class="s2">&gt;(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">cardAppSettings</span><span class="s2">)</span><span class="s1">?</span><span class="s2">.</span><span class="s1">setOnClickListener </span><span class="s2">{</span>
+            <span class="s2">(</span><span class="s1">activity </span><span class="s0">as? </span><span class="s1">MainActivity</span><span class="s2">)</span><span class="s1">?</span><span class="s2">.</span><span class="s1">openCallScreeningSettings</span><span class="s2">()</span>
+        <span class="s2">}</span>
+
+        <span class="s3">// À propos</span>
+        <span class="s1">view</span><span class="s2">.</span><span class="s1">findViewById</span><span class="s2">&lt;</span><span class="s1">View</span><span class="s2">&gt;(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">cardAbout</span><span class="s2">)</span><span class="s1">?</span><span class="s2">.</span><span class="s1">setOnClickListener </span><span class="s2">{</span>
+            <span class="s2">(</span><span class="s1">activity </span><span class="s0">as? </span><span class="s1">MainActivity</span><span class="s2">)</span><span class="s1">?</span><span class="s2">.</span><span class="s1">showVersionDialog</span><span class="s2">()</span>
+        <span class="s2">}</span>
+
+        <span class="s3">// Aide et Conseils</span>
+        <span class="s1">view</span><span class="s2">.</span><span class="s1">findViewById</span><span class="s2">&lt;</span><span class="s1">View</span><span class="s2">&gt;(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">cardHelp</span><span class="s2">)</span><span class="s1">?</span><span class="s2">.</span><span class="s1">setOnClickListener </span><span class="s2">{</span>
+            <span class="s2">(</span><span class="s1">activity </span><span class="s0">as? </span><span class="s1">MainActivity</span><span class="s2">)</span><span class="s1">?</span><span class="s2">.</span><span class="s1">showProtectionTips</span><span class="s2">()</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">companion </span><span class="s0">object </span><span class="s2">{</span>
+        <span class="s0">fun </span><span class="s1">newInstance</span><span class="s2">() = </span><span class="s1">SettingsFragment</span><span class="s2">()</span>
+    <span class="s2">}</span>
+<span class="s2">}</span></pre>
+</body>
+</html>

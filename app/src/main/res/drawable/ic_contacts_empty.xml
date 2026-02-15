@@ -1,0 +1,28 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="120dp"
+    android:height="120dp"
+    android:viewportWidth="120"
+    android:viewportHeight="120"
+    android:tint="?attr/colorOnSurface"
+    android:alpha="0.6">
+
+    <!-- Silhouette principale -->
+    <path
+        android:fillColor="@android:color/white"
+        android:pathData="M60,10C71.05,10 80,18.95 80,30S71.05,50 60,50 40,41.05 40,30 48.95,10 60,10ZM60,60C76.67,60 110,68.33 110,85v15H10V85C10,68.33 43.33,60 60,60Z"/>
+
+    <!-- Ligne diagonale pour indiquer "vide" -->
+    <path
+        android:strokeColor="@android:color/white"
+        android:strokeWidth="3"
+        android:strokeLineCap="round"
+        android:pathData="M25,25L95,95"/>
+
+    <!-- Cercle autour -->
+    <path
+        android:strokeColor="@android:color/white"
+        android:strokeWidth="2"
+        android:fillColor="@android:color/transparent"
+        android:pathData="M60,60m-55,0a55,55 0,1 1,110 0a55,55 0,1 1,-110 0"/>
+
+</vector>

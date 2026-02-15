@@ -1,0 +1,10 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <bitmap
+            android:src="@drawable/bonobo_image"
+            android:gravity="fill"/>
+    </item>
+    <item>
+        <color android:color="#80000000"/> <!-- Overlay semi-transparent -->
+    </item>
+</layer-list>

@@ -1,0 +1,60 @@
+<html>
+<head>
+<title>ChatAdapter.kt</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #6aab73;}
+.s4 { color: #2aacb8;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+ChatAdapter.kt</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">fr</span><span class="s2">.</span><span class="s1">bonobo</span><span class="s2">.</span><span class="s1">stopdemarchage</span><span class="s2">.</span><span class="s1">adapters</span>
+
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">view</span><span class="s2">.</span><span class="s1">LayoutInflater</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">view</span><span class="s2">.</span><span class="s1">View</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">view</span><span class="s2">.</span><span class="s1">ViewGroup</span>
+<span class="s1">import android</span><span class="s2">.</span><span class="s1">widget</span><span class="s2">.</span><span class="s1">TextView</span>
+<span class="s1">import androidx</span><span class="s2">.</span><span class="s1">recyclerview</span><span class="s2">.</span><span class="s1">widget</span><span class="s2">.</span><span class="s1">RecyclerView</span>
+<span class="s1">import fr</span><span class="s2">.</span><span class="s1">bonobo</span><span class="s2">.</span><span class="s1">stopdemarchage</span><span class="s2">.</span><span class="s1">R</span>
+<span class="s1">import fr</span><span class="s2">.</span><span class="s1">bonobo</span><span class="s2">.</span><span class="s1">stopdemarchage</span><span class="s2">.</span><span class="s1">data</span><span class="s2">.</span><span class="s1">SmsMessageEntry</span>
+<span class="s1">import java</span><span class="s2">.</span><span class="s1">text</span><span class="s2">.</span><span class="s1">SimpleDateFormat</span>
+<span class="s1">import java</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.*</span>
+
+<span class="s0">class </span><span class="s1">ChatAdapter</span><span class="s2">(</span><span class="s1">private </span><span class="s0">val </span><span class="s1">messages: List</span><span class="s2">&lt;</span><span class="s1">SmsMessageEntry</span><span class="s2">&gt;) </span><span class="s1">:</span>
+    <span class="s1">RecyclerView</span><span class="s2">.</span><span class="s1">Adapter</span><span class="s2">&lt;</span><span class="s1">ChatAdapter</span><span class="s2">.</span><span class="s1">ChatViewHolder</span><span class="s2">&gt;() {</span>
+
+    <span class="s1">private </span><span class="s0">val </span><span class="s1">dateFormat </span><span class="s2">= </span><span class="s1">SimpleDateFormat</span><span class="s2">(</span><span class="s3">&quot;HH:mm&quot;</span><span class="s2">, </span><span class="s1">Locale</span><span class="s2">.</span><span class="s1">getDefault</span><span class="s2">())</span>
+
+    <span class="s0">class </span><span class="s1">ChatViewHolder</span><span class="s2">(</span><span class="s1">view: View</span><span class="s2">) </span><span class="s1">: RecyclerView</span><span class="s2">.</span><span class="s1">ViewHolder</span><span class="s2">(</span><span class="s1">view</span><span class="s2">) {</span>
+        <span class="s0">val </span><span class="s1">messageText: TextView </span><span class="s2">= </span><span class="s1">view</span><span class="s2">.</span><span class="s1">findViewById</span><span class="s2">(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">textMessage</span><span class="s2">)</span>
+        <span class="s0">val </span><span class="s1">messageDate: TextView </span><span class="s2">= </span><span class="s1">view</span><span class="s2">.</span><span class="s1">findViewById</span><span class="s2">(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">textMessageDate</span><span class="s2">)</span>
+    <span class="s2">}</span>
+
+    <span class="s1">override </span><span class="s0">fun </span><span class="s1">onCreateViewHolder</span><span class="s2">(</span><span class="s1">parent: ViewGroup</span><span class="s2">, </span><span class="s1">viewType: Int</span><span class="s2">)</span><span class="s1">: ChatViewHolder </span><span class="s2">{</span>
+        <span class="s0">val </span><span class="s1">layoutId </span><span class="s2">= </span><span class="s0">if </span><span class="s2">(</span><span class="s1">viewType </span><span class="s2">== </span><span class="s4">1</span><span class="s2">) </span><span class="s1">R</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.</span><span class="s1">item_message_sent </span><span class="s0">else </span><span class="s1">R</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.</span><span class="s1">item_message_received</span>
+        <span class="s0">val </span><span class="s1">view </span><span class="s2">= </span><span class="s1">LayoutInflater</span><span class="s2">.</span><span class="s1">from</span><span class="s2">(</span><span class="s1">parent</span><span class="s2">.</span><span class="s1">context</span><span class="s2">).</span><span class="s1">inflate</span><span class="s2">(</span><span class="s1">layoutId</span><span class="s2">, </span><span class="s1">parent</span><span class="s2">, </span><span class="s0">false</span><span class="s2">)</span>
+        <span class="s0">return </span><span class="s1">ChatViewHolder</span><span class="s2">(</span><span class="s1">view</span><span class="s2">)</span>
+    <span class="s2">}</span>
+
+    <span class="s1">override </span><span class="s0">fun </span><span class="s1">onBindViewHolder</span><span class="s2">(</span><span class="s1">holder: ChatViewHolder</span><span class="s2">, </span><span class="s1">position: Int</span><span class="s2">) {</span>
+        <span class="s0">val </span><span class="s1">message </span><span class="s2">= </span><span class="s1">messages</span><span class="s2">[</span><span class="s1">position</span><span class="s2">]</span>
+        <span class="s1">holder</span><span class="s2">.</span><span class="s1">messageText</span><span class="s2">.</span><span class="s1">text </span><span class="s2">= </span><span class="s1">message</span><span class="s2">.</span><span class="s1">body</span>
+        <span class="s1">holder</span><span class="s2">.</span><span class="s1">messageDate</span><span class="s2">.</span><span class="s1">text </span><span class="s2">= </span><span class="s1">dateFormat</span><span class="s2">.</span><span class="s1">format</span><span class="s2">(</span><span class="s1">Date</span><span class="s2">(</span><span class="s1">message</span><span class="s2">.</span><span class="s1">date</span><span class="s2">))</span>
+    <span class="s2">}</span>
+
+    <span class="s1">override </span><span class="s0">fun </span><span class="s1">getItemCount</span><span class="s2">()</span><span class="s1">: Int </span><span class="s2">= </span><span class="s1">messages</span><span class="s2">.</span><span class="s1">size</span>
+
+    <span class="s1">override </span><span class="s0">fun </span><span class="s1">getItemViewType</span><span class="s2">(</span><span class="s1">position: Int</span><span class="s2">)</span><span class="s1">: Int </span><span class="s2">{</span>
+        <span class="s0">return if </span><span class="s2">(</span><span class="s1">messages</span><span class="s2">[</span><span class="s1">position</span><span class="s2">].</span><span class="s1">isSent</span><span class="s2">) </span><span class="s4">1 </span><span class="s0">else </span><span class="s4">0</span>
+    <span class="s2">}</span>
+<span class="s2">}</span></pre>
+</body>
+</html>
