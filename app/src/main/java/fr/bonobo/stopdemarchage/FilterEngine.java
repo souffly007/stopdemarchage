@@ -22,8 +22,13 @@ public final class FilterEngine {
     }
     public static String normalize(String raw) {
         if (raw == null) return "";
-        String n = raw.replaceAll("[\\s().-]", "");
+        // Include Unicode spaces commonly inserted by websites and address books.
+        String n = raw.replaceAll("[\\s\\p{Z}.-]", "");
         if (n.startsWith("00")) n = "+" + n.substring(2);
+        // French international notation sometimes explicitly includes the optional trunk zero.
+        // Do not discard a bare extra zero or a significant zero in another country (e.g. Italy).
+        n = n.replaceFirst("^\\+33\\(0\\)(?=[1-9][0-9]{8}$)", "+33");
+        n = n.replace("(", "").replace(")", "");
         // These NPV national roots unambiguously identify their territory.
         if (n.matches("0[1-9][0-9]{8}")) return "+" + countryForNational(n) + n.substring(1);
         if (n.matches("33[1-9][0-9]{8}")) return "+" + n;
@@ -91,3 +96,4 @@ public final class FilterEngine {
         return contactsOnly ? "Mode strict : hors contacts et autorisations" : null;
     }
 }
+
