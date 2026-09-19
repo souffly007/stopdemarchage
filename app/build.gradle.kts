@@ -25,8 +25,8 @@ android {
         minSdk = 29
         targetSdk = 36
         // Correctif de démarrage : code croissant pour installation par-dessus la V1.0.
-        versionCode = 9
-        versionName = "1.0-beta7"
+        versionCode = 10
+        versionName = "1.0-beta8"
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -41,3 +41,4 @@ android {
     }
 }
 // Aucun SDK publicitaire, aucune bibliothèque externe, aucun code natif.
+

@@ -108,6 +108,35 @@ public final class FilterEngineTest {
         same("Filtre France : 0424", FilterEngine.reason("0424119501", true, true, Set.of(), Set.of(), Set.of(), false, false, true));
         same("Numéro bloqué manuellement", FilterEngine.reason("+390612345678", true, false, Set.of(), Set.of("+390612345678"), Set.of(), false, false, true));
         same("Communauté PhoneZen : au moins 10 signalements", FilterEngine.reason("+390612345678", true, false, Set.of(), Set.of(), Set.of(), false, true, true));
+        // A rule entered in any supported French format must match every incoming variant.
+        for (String national : new String[]{"0612345678", "0712345678", "0112345678", "0424119501", "0912345678"}) {
+            String tail = national.substring(1);
+            String canonical = "+33" + tail;
+            String[] forms = {national, canonical, "0033" + tail, "33" + tail,
+                "+33 (0)" + tail, "00 33 (0)" + tail,
+                "+33\u00a0" + tail, "+33\u202f" + tail,
+                national.replaceAll("(.{2})(?!$)", "$1 "),
+                national.replaceAll("(.{2})(?!$)", "$1-"),
+                national.replaceAll("(.{2})(?!$)", "$1.")};
+            for (String entered : forms) {
+                String saved = FilterEngine.normalize(entered);
+                same(canonical, saved);
+                same(true, FilterEngine.fullNumber(saved));
+                for (String incoming : forms) {
+                    same("Numéro bloqué manuellement", FilterEngine.reason(incoming, true, false,
+                        Set.of(), Set.of(saved), Set.of(), false, false, false));
+                    same(null, FilterEngine.reason(incoming, true, true,
+                        Set.of(saved), Set.of(saved), Set.of("0"), true, true, true));
+                    same(null, FilterEngine.reason(incoming, false, true,
+                        Set.of(), Set.of(saved), Set.of(), true, true, true));
+                }
+            }
+        }
+        same("+390612345678", FilterEngine.normalize("+39 (06) 1234 5678"));
+        same("+33162", FilterEngine.normalize("00 33 162"));
+        same(false, FilterEngine.fullNumber(FilterEngine.normalize("+33 (0)6")));
+        same("", FilterEngine.normalize("+33 abc 612345678"));
         System.out.println(checks + " checks passed");
     }
 }
+
