@@ -2,6 +2,11 @@
 
 **Un filtre d’appels Android simple et léger, créé pour votre tranquillité.**
 
+<p align="center">
+  <img src="docs/images/stop-demarchage-interface.png" alt="Aperçu de l’interface de Stop Démarchage" width="900">
+</p>
+
+
 Stop Démarchage bloque les appels indésirables tout en vous laissant utiliser votre application Téléphone habituelle. La nouvelle base **1.0** se concentre sur l’essentiel : protéger vos appels, consulter les blocages et autoriser facilement un numéro en cas d’erreur.
 
 > **Nouvelle version : 1.0 bêta 7.** Cette présentation accompagne la refonte à venir dans le dépôt. Le code et les APK des anciennes versions peuvent encore être présents pendant la mise à jour. Vérifiez la version indiquée avant de télécharger.
