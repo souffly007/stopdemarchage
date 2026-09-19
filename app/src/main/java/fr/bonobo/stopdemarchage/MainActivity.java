@@ -306,7 +306,7 @@ public final class MainActivity extends Activity {
         about.addView(text("Logiciel libre • GNU GPL v3", 15, ink, true));
         about.addView(button("Lire la licence GPL v3", () -> showLicense("GPL-3.0.txt", "Licence GNU GPL v3"), false));
         about.addView(button("Crédits et licences tierces", () -> showLicense("THIRD_PARTY_NOTICES.txt", "Crédits et licences tierces"), false));
-        about.addView(text("Version 1.0 • bêta 7\n\nPas de compte, pas de publicité. La communauté utilise Internet uniquement pour télécharger les signalements. Le journal, les contacts et les règles personnelles ne sont pas envoyés. Aucun service ne tourne en permanence.", 15, muted, false));
+        about.addView(text("Version 1.0 • bêta 8\n\nPas de compte, pas de publicité. La communauté utilise Internet uniquement pour télécharger les signalements. Le journal, les contacts et les règles personnelles ne sont pas envoyés. Aucun service ne tourne en permanence.", 15, muted, false));
         about.addView(button("Fonctionnement et limites", () -> info("À savoir", "• Android 10 minimum.\n\n• Choisissez Stop Démarchage comme application de filtrage / identification des appels. Un seul filtre peut être sélectionné à la fois.\n\n• Les contacts enregistrés ne sont pas transmis au filtre et restent autorisés, même s’ils figurent dans vos règles.\n\n• Android ne transmet pas les numéros masqués à ce service : utilisez le réglage de votre application Téléphone pour les refuser.\n\n• Le journal contient uniquement les appels rejetés par Stop Démarchage. Autoriser un numéro ne supprime pas son historique.\n\n• Les appels WhatsApp et autres appels d’applications ne sont pas filtrés.\n\n• Pour les numéros étrangers, saisissez le préfixe international + suivi de l’indicatif."), false));
         about.addView(button("Applications par défaut", () -> {
             try { startActivity(new Intent(Settings.ACTION_MANAGE_DEFAULT_APPS_SETTINGS)); }
@@ -326,15 +326,24 @@ public final class MainActivity extends Activity {
             });
         });
     }
+    private EditText numberField(boolean prefix) {
+        EditText field = new EditText(this);
+        // Some phone keyboards hide '+'. A text keyboard supports direct entry and paste.
+        field.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
+        field.setSingleLine(true);
+        field.setTextColor(ink); field.setHintTextColor(muted);
+        field.setHint(prefix ? "Ex. 0162 ou +33162" : "Ex. 06… / +336… / 00336…");
+        field.setContentDescription(prefix ? "Préfixe national ou international" : "Numéro national ou international, avec ou sans espaces");
+        return field;
+    }
     private void testNumber() {
-        EditText field = new EditText(this); field.setSingleLine(true);
-        field.setInputType(InputType.TYPE_CLASS_PHONE); field.setHint("Numéro complet, ex. +33…");
+        EditText field = numberField(false);
         LinearLayout box = column(); box.setPadding(dp(24), dp(12), dp(24), 0); box.addView(field);
         AlertDialog dialog = new AlertDialog.Builder(this).setTitle("Tester un numéro")
             .setView(box).setNegativeButton("Fermer", null).setPositiveButton("Vérifier", null).create();
         dialog.setOnShowListener(d -> dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
             String number = FilterEngine.normalize(field.getText().toString());
-            if (!FilterEngine.fullNumber(number)) { field.setError("Saisissez un numéro complet avec son indicatif."); return; }
+            if (!FilterEngine.fullNumber(number)) { field.setError("Numéro complet : 06… / +336… / 00336… ; +indicatif pour l’étranger."); return; }
             String reason = FilterEngine.reason(number, prefs.enabled(), prefs.france(), prefs.set("allowed"), prefs.set("blocked"), prefs.set("prefixes"), prefs.contactsOnly(), Community.blocked(this, number), prefs.blockForeign());
             String result = !prefs.enabled() ? "Protection en pause : l’appel passerait."
                 : reason != null ? "Le filtre rejetterait ce numéro.\nMotif : " + reason
@@ -389,16 +398,14 @@ public final class MainActivity extends Activity {
         body.addView(list, new LinearLayout.LayoutParams(-1, 0, 1));
     }
     private void addNumber(String key) {
-        EditText field = new EditText(this); field.setSingleLine(true); field.setInputType(InputType.TYPE_CLASS_PHONE);
-        field.setHint("prefixes".equals(key) ? "Ex. 0162 ou +33162" : "Ex. 06 12 34 56 78 ou +32…");
-        field.setTextColor(ink); field.setHintTextColor(muted);
+        EditText field = numberField("prefixes".equals(key));
         LinearLayout box = column(); box.setPadding(dp(24), dp(12), dp(24), 0); box.addView(field);
         AlertDialog dialog = new AlertDialog.Builder(this).setTitle("prefixes".equals(key) ? "Ajouter un préfixe" : "Ajouter un numéro")
             .setView(box).setNegativeButton("Annuler", null).setPositiveButton("Ajouter", null).create();
         dialog.setOnShowListener(d -> dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
             String n = FilterEngine.normalize(field.getText().toString()); boolean prefix = "prefixes".equals(key);
             if (prefix ? !n.matches("\\+?[0-9]{4,9}") : !FilterEngine.fullNumber(n)) {
-                field.setError(prefix ? "Saisissez un préfixe de 4 à 9 chiffres." : "Saisissez un numéro complet, avec +indicatif pour l’étranger."); return;
+                field.setError(prefix ? "Saisissez un préfixe de 4 à 9 chiffres." : "Numéro complet : 06… / +336… / 00336… ; +indicatif pour l’étranger."); return;
             }
             Runnable save = () -> {
                 if (prefix) prefs.prefix(n); else if ("allowed".equals(key)) prefs.allow(n); else prefs.block(n);
@@ -472,3 +479,4 @@ public final class MainActivity extends Activity {
     private void toast(String message) { Toast.makeText(this, message, Toast.LENGTH_SHORT).show(); }
     private void info(String title, String message) { new AlertDialog.Builder(this).setTitle(title).setMessage(message).setPositiveButton("Compris", null).show(); }
 }
+
