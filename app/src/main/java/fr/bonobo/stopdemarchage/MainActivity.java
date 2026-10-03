@@ -8,6 +8,7 @@ import android.app.role.RoleManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.IntentFilter;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
@@ -190,6 +191,10 @@ public final class MainActivity extends Activity {
         status.addView(text("Les appels indésirables sont filtrés sur votre téléphone. Votre application Téléphone habituelle reste en place.", 15, muted, false));
         if (!hasRole()) status.addView(button("Activer le filtrage", this::activate, true));
         else toggle(status, "Protection des appels", prefs.enabled(), value -> { prefs.flag("enabled", value); render(); });
+        if (hasRole() && !prefs.enabled()) {
+            status.addView(text("La pause arrête le filtrage, mais Stop Démarchage reste l’application de filtrage sélectionnée par Android. Pour en choisir une autre ou aucune, utilisez les réglages Android.", 14, muted, false));
+            status.addView(button("Changer l’application de filtrage", this::openDefaultAppsSettings, false));
+        }
         if (prefs.contactsOnly() && prefs.enabled()) status.addView(text("MODE STRICT : seuls les contacts et vos numéros autorisés passent.", 15, accent, true));
         LinearLayout rules = card(page);
         rules.addView(text("Filtrage", 19, ink, true));
@@ -294,6 +299,13 @@ public final class MainActivity extends Activity {
                 .setNegativeButton("Annuler", null).setPositiveButton("Activer", (d, w) -> { prefs.flag("contacts_only", true); render(); }).show();
         }, false));
         toggle(filtering, "Masquer la notification de rejet", prefs.quiet(), value -> prefs.flag("quiet", value));
+        toggle(filtering, "Demander pour les mobiles inconnus (06 / 07)", prefs.askUnknown(), value -> {
+            prefs.flag("ask_unknown", value);
+            if (value && !notificationsAllowed()) requestPermissions(new String[]{android.Manifest.permission.POST_NOTIFICATIONS}, 43);
+        });
+        filtering.addView(text("Quand un mobile 06/07 inconnu appelle, une notification propose « Spam » (numéro bloqué) ou « Légitime » (numéro autorisé). L’appel sonne normalement ; votre choix s’applique aux appels suivants. Les contacts ne sont pas concernés. Rien n’est envoyé sur Internet.", 14, muted, false));
+        if (prefs.askUnknown() && !notificationsAllowed())
+            filtering.addView(text("Les notifications sont désactivées pour l’application : autorisez-les dans les réglages Android pour recevoir la question.", 14, muted, true));
         filtering.addView(text("Demande à Android de ne pas afficher sa notification d’appel rejeté. Les blocages restent dans le journal de Stop Démarchage. Le rendu dépend de l’application Téléphone.", 14, muted, false));
         filtering.addView(button("Tester un numéro", this::testNumber, false));
         LinearLayout manage = card(page); manage.addView(text("Règles personnelles", 20, ink, true));
@@ -306,12 +318,23 @@ public final class MainActivity extends Activity {
         about.addView(text("Logiciel libre • GNU GPL v3", 15, ink, true));
         about.addView(button("Lire la licence GPL v3", () -> showLicense("GPL-3.0.txt", "Licence GNU GPL v3"), false));
         about.addView(button("Crédits et licences tierces", () -> showLicense("THIRD_PARTY_NOTICES.txt", "Crédits et licences tierces"), false));
-        about.addView(text("Version 1.0 • bêta 7\n\nPas de compte, pas de publicité. La communauté utilise Internet uniquement pour télécharger les signalements. Le journal, les contacts et les règles personnelles ne sont pas envoyés. Aucun service ne tourne en permanence.", 15, muted, false));
-        about.addView(button("Fonctionnement et limites", () -> info("À savoir", "• Android 10 minimum.\n\n• Choisissez Stop Démarchage comme application de filtrage / identification des appels. Un seul filtre peut être sélectionné à la fois.\n\n• Les contacts enregistrés ne sont pas transmis au filtre et restent autorisés, même s’ils figurent dans vos règles.\n\n• Android ne transmet pas les numéros masqués à ce service : utilisez le réglage de votre application Téléphone pour les refuser.\n\n• Le journal contient uniquement les appels rejetés par Stop Démarchage. Autoriser un numéro ne supprime pas son historique.\n\n• Les appels WhatsApp et autres appels d’applications ne sont pas filtrés.\n\n• Pour les numéros étrangers, saisissez le préfixe international + suivi de l’indicatif."), false));
-        about.addView(button("Applications par défaut", () -> {
-            try { startActivity(new Intent(Settings.ACTION_MANAGE_DEFAULT_APPS_SETTINGS)); }
-            catch (android.content.ActivityNotFoundException e) { info("Réglages Android", "Ouvrez les réglages Android, puis Applications et Applications par défaut."); }
-        }, false));
+        about.addView(text("Version 1.1\n\nPas de compte, pas de publicité. La communauté utilise Internet uniquement pour télécharger les signalements. Le journal, les contacts et les règles personnelles ne sont pas envoyés. Aucun service ne tourne en permanence.", 15, muted, false));
+        about.addView(button("Fonctionnement et limites", () -> info("À savoir", "• Android 10 minimum.\n\n• Choisissez Stop Démarchage comme application de filtrage / identification des appels. Un seul filtre peut être sélectionné à la fois.\n\n• Les contacts enregistrés ne sont pas transmis au filtre et restent autorisés, même s’ils figurent dans vos règles.\n\n• Android ne transmet pas les numéros masqués à ce service : utilisez le réglage de votre application Téléphone pour les refuser.\n\n• Le journal contient uniquement les appels rejetés par Stop Démarchage. Autoriser un numéro ne supprime pas son historique.\n\n• Les appels WhatsApp et autres appels d’applications ne sont pas filtrés.\n\n• L’option « Demander pour les mobiles inconnus » ne peut pas interrompre un appel en cours : elle pose la question par notification, et la réponse vaut pour les appels suivants.\n\n• Pour les numéros étrangers, saisissez le préfixe international + suivi de l’indicatif."), false));
+        about.addView(button("Applications par défaut", this::openDefaultAppsSettings, false));
+    }
+    private boolean notificationsAllowed() {
+        return Build.VERSION.SDK_INT < 33 || checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED;
+    }
+    @Override public void onRequestPermissionsResult(int code, String[] permissions, int[] results) {
+        super.onRequestPermissionsResult(code, permissions, results);
+        if (code == 43 && (results.length == 0 || results[0] != PackageManager.PERMISSION_GRANTED)) {
+            prefs.flag("ask_unknown", false); render();
+            info("Notifications refusées", "Sans notification, Stop Démarchage ne peut pas poser la question. Autorisez les notifications dans les réglages Android de l’application, puis réactivez l’option.");
+        }
+    }
+    private void openDefaultAppsSettings() {
+        try { startActivity(new Intent(Settings.ACTION_MANAGE_DEFAULT_APPS_SETTINGS)); }
+        catch (android.content.ActivityNotFoundException e) { info("Réglages Android", "Ouvrez les réglages Android, puis Applications et Applications par défaut."); }
     }
     private boolean communitySyncRunning;
     private void syncCommunity() {

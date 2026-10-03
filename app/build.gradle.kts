@@ -24,9 +24,10 @@ android {
         buildConfigField("String", "SUPABASE_PUBLISHABLE_KEY", javaLiteral(publicKey))
         minSdk = 29
         targetSdk = 36
-        // Correctif de démarrage : code croissant pour installation par-dessus la V1.0.
-        versionCode = 9
-        versionName = "1.0-beta7"
+        // 1.0 stable. Si une bêta avec un versionCode supérieur est déjà
+        // installée sur un appareil de test, l'augmenter avant publication.
+        versionCode = 11
+        versionName = "1.1"
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17

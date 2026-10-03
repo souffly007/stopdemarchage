@@ -54,6 +54,17 @@ public final class FilterEngine {
         if (n.matches("\\+33[1-9][0-9]{8}")) return normalize("0" + n.substring(3));
         return n;
     }
+    /**
+     * Mobile 06/07 inconnu à faire confirmer par l'utilisateur (spam ou légitime).
+     * À appeler seulement quand aucune règle n'a bloqué l'appel. Seuls les numéros
+     * présentés en +33 6/7 sont concernés ; les mobiles présentés avec un indicatif
+     * ultramarin (+590 690…, +262 692…) ne le sont pas.
+     */
+    public static boolean shouldAsk(String raw, boolean enabled, boolean askUnknown, Set<String> allowed) {
+        if (!enabled || !askUnknown) return false;
+        String n = normalize(raw);
+        return n.matches("\\+33[67][0-9]{8}") && !allowed.contains(n);
+    }
     public static String reason(String raw, boolean enabled, boolean france,
                                 Set<String> allowed, Set<String> blocked, Set<String> prefixes) {
         return reason(raw, enabled, france, allowed, blocked, prefixes, false);

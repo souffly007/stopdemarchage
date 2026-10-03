@@ -13,6 +13,7 @@ final class Prefs {
     boolean enabled() { return data.getBoolean("enabled", true); }
     boolean contactsOnly() { return data.getBoolean("contacts_only", false); }
     boolean quiet() { return data.getBoolean("quiet", false); }
+    boolean askUnknown() { return data.getBoolean("ask_unknown", false); }
     boolean blockForeign() { return data.getBoolean("block_foreign", false); }
     boolean france() { return data.getBoolean("france", true); }
     String theme() { return data.getString("theme", "system"); }

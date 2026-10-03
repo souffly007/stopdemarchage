@@ -108,6 +108,17 @@ public final class FilterEngineTest {
         same("Filtre France : 0424", FilterEngine.reason("0424119501", true, true, Set.of(), Set.of(), Set.of(), false, false, true));
         same("Numéro bloqué manuellement", FilterEngine.reason("+390612345678", true, false, Set.of(), Set.of("+390612345678"), Set.of(), false, false, true));
         same("Communauté PhoneZen : au moins 10 signalements", FilterEngine.reason("+390612345678", true, false, Set.of(), Set.of(), Set.of(), false, true, true));
+        // Question « spam ou légitime ? » : uniquement mobiles 06/07 métropolitains, ni autorisés ni désactivés.
+        for (String n : new String[]{"0612345678", "0712345678", "06 12 34 56 78", "+33612345678", "+33 7 12 34 56 78", "0033712345678", "33612345678"}) {
+            same(true, FilterEngine.shouldAsk(n, true, true, Set.of()));
+            same(false, FilterEngine.shouldAsk(n, true, false, Set.of()));
+            same(false, FilterEngine.shouldAsk(n, false, true, Set.of()));
+            same(false, FilterEngine.shouldAsk(n, true, true, Set.of(FilterEngine.normalize(n))));
+        }
+        same(true, FilterEngine.shouldAsk("0612345678", true, true, Set.of("+33712345678")));
+        for (String n : new String[]{"0112345678", "0162123456", "0512345678", "0812345678", "0800123456", "+590690123456",
+                "+262692123456", "+32470123456", "+441234567890", "+33612345", "+330612345678", "112", "15", "", "anonymous", null})
+            same(false, FilterEngine.shouldAsk(n, true, true, Set.of()));
         System.out.println(checks + " checks passed");
     }
 }

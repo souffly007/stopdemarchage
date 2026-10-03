@@ -24,8 +24,11 @@ public final class CommunityJob extends JobService {
     @Override public boolean onStartJob(JobParameters params) {
         executor = Executors.newSingleThreadExecutor();
         work = executor.submit(() -> {
-            Community.sync(getApplicationContext());
-            if (!Thread.currentThread().isInterrupted()) jobFinished(params, false);
+            try {
+                Community.sync(getApplicationContext());
+            } finally {
+                if (!Thread.currentThread().isInterrupted()) jobFinished(params, false);
+            }
         });
         executor.shutdown();
         return true;
